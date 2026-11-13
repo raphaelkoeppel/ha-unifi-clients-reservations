@@ -69,6 +69,22 @@ UniFi Network › Client Devices. Every column can be sorted (click the header) 
 - **Inactive filter:** not seen for > 30 / 90 / 365 days or never seen.
 - **IP column:** *Fix* (DHCP reservation, or for UniFi devices a static IP configured on the device) or *DHCP*; filter and sort like any column.
 - **Light / dark:** the button at the bottom of the filter pane switches *Auto* (follows the system) → *Light* → *Dark*; the app version is shown next to it.
+- **Firewall (read only):** switch *Clients / IP Plan / Firewall*. Needs UniFi Network 9.0 or later with the zone-based firewall;
+  the app only reads it, policies are changed in UniFi.
+  - *Zone matrix*: one row per source zone, one column per destination zone. A cell shows the default of the zone pair
+    (*Allow All*, *Block All*, *Allow Return*, derived from UniFi's built-in policies) and in brackets the number of custom
+    policies. Click a cell to list the policies of that pair, a zone name to list everything from or to it, *All policies* to reset.
+  - *Policy list*: name, action, IP version, protocol, source / destination zone, address and port, *Hits* and *Last Hit*
+    (UniFi's counters, also without logging) and the ID (UniFi's order). *Export JSON* downloads what the app read.
+    Filters for IPv4, IPv6, built-in, custom and paused policies plus a search. Click a policy for the details with links to the devices.
+  - The sidebar shows the zones with their networks, device counts and custom policies.
+  - The client table has the column and sidebar filter *Firewall zone* (the zone of the device's network; the gateway is in *Gateway*,
+    Teleport clients in *VPN*).
+  - The detail panel shows the zone and every policy that names the device: by MAC, by its fixed or current IP, through an address
+    group, or through its network.
+  - When a fixed IP changes (edit panel, inline edit, CleanUp, Replace subnet, CSV import, Restore) the app warns if a policy uses
+    the old IP, if the new IP falls under a policy, or if the device moves into another zone – update those policies in UniFi.
+  - Versions also store the zones and the custom policies; *Compare › Firewall* lists new, removed and changed policies and zones.
 - **CSV export** of the current filtered view.
 - **CSV import (bulk):** Actions → *Import CSV*. Required column `MAC`; optional `Name`, `Note`,
   `Fixed IP`, `Reservation VLAN` (name or VLAN ID, empty = derived from the IP), `Reserved` (yes/no),
@@ -108,6 +124,7 @@ When the table cannot be loaded, the red banner shows the reason and a hint:
 | Login failed (HTTP 401/403) | Use a **local** UniFi account (UniFi OS › Admins & Users › *Restrict to local access only*); cloud/SSO accounts and accounts with 2FA do not work. |
 | Site not found | Set `site` to the internal name listed in the hint (usually `default`). |
 | Certificate could not be verified / fingerprint mismatch | Turn `verify_ssl` off or pin the certificate with `certificate_fingerprint` (the current value is printed in the app log at start). |
+| Firewall not available | The firewall page needs UniFi Network 9.0 or later with the zone-based firewall, and the UniFi account needs permission to view the firewall settings. Everything else works without it. |
 | Does not look like a UniFi OS console | The app needs UniFi OS (UDM, UDR, UCG, UX, Cloud Key Gen2+, UniFi OS Server); the classic standalone controller is not supported. |
 
 After changing the configuration, restart the app and press *Refresh*.

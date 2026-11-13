@@ -4,7 +4,7 @@
 
 <p align="center">
   <b>See and manage all UniFi clients and DHCP reservations in one table — right inside Home Assistant.</b><br>
-  MAC · name · fixed IP · VLAN · WiFi / wired / Teleport · issues · versions · bulk changes
+  MAC · name · fixed IP · VLAN · firewall zone · WiFi / wired / Teleport · issues · versions · bulk changes
 </p>
 
 <p align="center">
@@ -65,6 +65,18 @@ versions you can compare and restore.
 | **CSV import & export** | Bulk changes with a validated preview and a checkbox per row. An export can be re-imported as is. Hosts-file export of fixed IPs and DNS records. |
 | **Network rules** | “Vendor contains Espressif → IoT”: devices in the wrong network are flagged. |
 | **Safe bulk changes** | Every bulk action (CSV import, restore, replace subnet, names from HA, CleanUp) saves a version of the current settings first, so you can always go back via *Versions › Restore*. |
+
+### Firewall (read only)
+
+| | |
+|---|---|
+| **Zone matrix** | The zone-based firewall of UniFi Network 9+ on its own page (switch *Clients / IP Plan / Firewall*): Allow All, Block All, Allow Return and the number of custom policies per zone pair. Click a cell to filter the policy list below it. |
+| **Policies** | Name, action, IP version, protocol, source and destination with zone, address and port – devices by name, address groups resolved – plus *Hits* and *Last Hit* from UniFi's counters. Filters for IPv4 / IPv6, built-in, custom and paused, plus a search. |
+| **Zones everywhere** | Column and sidebar filter *Firewall zone* in the client table; the detail panel lists every policy that names the device (by MAC, IP, address group or network). |
+| **IP changes check the firewall** | CleanUp, Replace subnet, CSV import, Restore, inline edit and the edit panel warn when a policy still points to the old IP, when the new IP falls under a policy, and when a device moves into another zone. |
+| **Firewall in versions** | Versions keep the zones and custom policies; *Compare* shows new, removed and changed policies. |
+
+Nothing is written to the firewall – policies are changed in UniFi.
 
 ### Versions & history
 
@@ -148,6 +160,7 @@ versions you can compare and restore.
 - Home Assistant **OS** or **Supervised** (apps are required), on `amd64` or `aarch64`.
 - A UniFi OS console running UniFi Network (UDM / UDM Pro / UDR / UCG / UX / Cloud Key Gen2+, or a self-hosted UniFi OS Server).
 - A **local** UniFi account (not a Ubiquiti cloud account, no 2FA) with permission to edit clients.
+- For the firewall page: UniFi Network **9.0 or later** with the zone-based firewall, and an account that may view the firewall settings. Everything else works without it.
 
 ## Installation
 

@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.31.0 – 2026-11-13
+
+**Firewall (read only)** – the zone-based firewall of UniFi Network 9+ next to the clients and the IP plan:
+- New page **Firewall** (switch *Clients / IP Plan / Firewall*): the **zone matrix** like in UniFi (Allow All, Block All, Allow Return and the number of custom policies per zone pair). Click a cell, a row or a column header to filter the **policy list** below; filters for IPv4, IPv6, built-in, custom and paused policies, and a search. A click on a policy shows source and destination in full, with links to the devices.
+- The sidebar lists the **zones** with their networks, devices and policies; *Show … devices* opens the clients of a zone.
+- New column and sidebar filter **Firewall zone** in the client table (at the end of the built-in view *All*; drag it where you like).
+- Detail panel: new section **Firewall** with the device's zone and every policy that names it – by MAC, by its IP, through an address group or its network. A click opens the policy in the firewall view.
+- **IP changes check the firewall:** CleanUp, Replace subnet, CSV import, Restore, the edit panel and inline edit warn when a policy uses the old IP (e.g. *Allow NAS 2 NVR → 192.168.1.10*), when the new IP falls under a policy, and when a device moves into another zone.
+- **Versions** also save the zones and the custom policies. *Compare* has a new filter *Firewall* with new, removed and changed policies and zones.
+- **Hits** and **Last Hit** per policy, read from UniFi's own counters (they count also without logging); sortable, and shown per policy in the detail panel.
+- Sources and destinations as UniFi defines them: devices, IPs (also bound to one MAC), address groups, networks, domains, regions and IPv6 interface IDs, each also inverted (*Not …*).
+- *Export JSON* on the firewall page downloads zones, policies and groups as the app read them – handy to check the view against UniFi.
+- Nothing is written to the firewall. Consoles without the zone-based firewall show a hint instead.
+
 ## 1.30.0 – 2026-11-01
 
 - **New standard views** in *Clients* (view menu): **Problems** (problems, IP ≠ fixed IP, not in override VLAN, duplicates, wrong network), **New devices** (first seen in the last 7 days, newest first), **Offline with fixed IP** (reservations of devices that are gone, oldest first), **Home Assistant** (devices known to HA, errors first) and **WiFi** (SSID, AP, AP lock, VLAN).
