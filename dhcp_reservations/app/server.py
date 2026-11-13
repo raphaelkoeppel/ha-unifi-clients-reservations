@@ -794,6 +794,100 @@ def normalize_mac(v):
     return ":".join(h[i:i + 2] for i in range(0, 12, 2)) if len(h) == 12 else None
 
 
+# ---------------------------------------------------------------- firewall (zone-based, read only)
+# UniFi Network 9+ groups networks into zones; policies allow or block traffic between two zones.
+# Read through the same internal v2 API the UniFi UI uses. Nothing here writes to the firewall.
+FW_POLICY_KEYS = ("name", "description", "enabled", "action", "predefined", "index", "ip_version", "protocol",
+                  "connection_state_type", "connection_states", "create_allow_respond", "logging",
+                  "match_opposite_protocol", "icmp_typename", "icmp_v6_typename", "match_ip_sec")
+FW_HINT = ("The zone-based firewall needs UniFi Network 9.0 or later (Settings › Security › Firewall). "
+           "The UniFi account also needs permission to view the firewall settings.")
+
+
+def _fw_scalar(v):
+    return v is None or isinstance(v, (str, int, float, bool))
+
+
+def _fw_endpoint(e):
+    """Source or destination of a policy: plain values and lists of plain values (zone_id, matching_target,
+    ips, client_macs, network_ids, web_domains, port, ip_group_id …) – field names as UniFi sends them."""
+    out = {}
+    for k, v in (e or {}).items() if isinstance(e, dict) else ():
+        if _fw_scalar(v):
+            out[k] = v
+        elif isinstance(v, list) and all(_fw_scalar(x) for x in v):
+            out[k] = v[:500]
+    return out
+
+
+def fw_policy(p):
+    out = {"id": p.get("_id") or p.get("id") or ""}
+    for k in FW_POLICY_KEYS:
+        if k in p and (_fw_scalar(p[k]) or isinstance(p[k], list)):
+            out[k] = p[k]
+    sch = p.get("schedule")
+    if isinstance(sch, dict):
+        out["schedule"] = {k: v for k, v in sch.items() if _fw_scalar(v) or isinstance(v, list)}
+    out["source"] = _fw_endpoint(p.get("source"))
+    out["destination"] = _fw_endpoint(p.get("destination"))
+    return out
+
+
+def fw_zone(z):
+    return {"id": z.get("_id") or z.get("id") or "", "name": z.get("name") or "?", "key": z.get("zone_key") or "",
+            "default": bool(z.get("default_zone")), "network_ids": [str(x) for x in z.get("network_ids") or []]}
+
+
+def firewall_state(api):
+    """Zones, policies, address/port groups and the names of all networks (WAN and VPN too).
+    {"available": False, "reason": …} when the console has no zone-based firewall or the account may not read it."""
+    try:
+        zones = api.call("GET", "/firewall/zone", v2=True)
+    except UnifiError as e:
+        log("Firewall zones not available:", e)
+        return {"available": False, "reason": str(e), "hint": FW_HINT}
+    zones = [fw_zone(z) for z in zones if isinstance(z, dict)] if isinstance(zones, list) else []
+    if not zones:
+        return {"available": False, "reason": "The controller has no firewall zones.", "hint": FW_HINT}
+    try:
+        pols = api.call("GET", "/firewall-policies", v2=True)
+    except UnifiError as e:
+        log("Firewall policies not available:", e)
+        return {"available": False, "reason": str(e), "hint": FW_HINT}
+    policies = sorted((fw_policy(p) for p in pols if isinstance(p, dict)) if isinstance(pols, list) else [],
+                      key=lambda p: (p.get("index") if isinstance(p.get("index"), (int, float)) else 1e9, p.get("name") or ""))
+    groups = []
+    try:  # address and port groups ("Objects"), referenced by ip_group_id / port_group_id
+        for g in api.call("GET", "/rest/firewallgroup"):
+            groups.append({"id": g.get("_id"), "name": g.get("name") or "", "type": g.get("group_type") or "",
+                           "members": [str(x) for x in g.get("group_members") or []][:1000]})
+    except UnifiError as e:
+        log("Firewall groups not available:", e)
+    nets = {}
+    try:
+        for n in api.call("GET", "/rest/networkconf"):
+            if n.get("_id"):
+                nets[n["_id"]] = {"name": n.get("name") or "?", "purpose": n.get("purpose") or "",
+                                  "vlan": n.get("vlan") if n.get("vlan_enabled") else None, "subnet": n.get("ip_subnet") or ""}
+    except UnifiError as e:
+        log("Networks for the firewall view not available:", e)
+    return {"available": True, "zones": zones, "policies": policies, "groups": groups, "networks": nets,
+            "fetched_at": int(time.time())}
+
+
+def firewall_for_version(api):
+    """What a version keeps of the firewall: zones and the custom policies (built-in ones follow from the zones)."""
+    try:
+        fw = firewall_state(api)
+    except Exception as e:  # noqa: BLE001 – a version must never fail because of the firewall
+        log("Firewall not saved in the version:", repr(e))
+        return None
+    if not fw.get("available"):
+        return None
+    return {"zones": fw["zones"], "policies": [p for p in fw["policies"] if not p.get("predefined")],
+            "groups": fw.get("groups") or [], "networks": fw.get("networks") or {}}
+
+
 # ---------------------------------------------------------------- versions
 def _write_json(path, data):
     tmp = path + ".tmp"
@@ -859,12 +953,18 @@ def create_version(api, kind="manual", label="", user=""):
             clients[c["mac"]] = {k: c.get(k) for k in VERSION_FIELDS}
             if ha is not None:  # info only: how Home Assistant saw the device
                 clients[c["mac"]].update(ha_info(c, ha.get(c["mac"], [])))
+    fw = firewall_for_version(api)
     meta = {"id": vid, "created": now, "kind": kind if kind in ("manual", "daily", "auto") else "manual",
             "label": (label or "").strip()[:80], "user": (user or "")[:60], "pinned": False,
             "devices": len(clients), "reserved": sum(1 for c in clients.values() if c.get("use_fixedip"))}
+    if fw is not None:
+        meta["policies"] = len(fw["policies"])
+    data = {"meta": meta, "networks": snap["networks"], "aps": snap.get("aps", []), "clients": clients}
+    if fw is not None:
+        data["firewall"] = fw
     with VERSIONS_LOCK:
         os.makedirs(VERSIONS_DIR, exist_ok=True)
-        _write_json(_vpath(vid), {"meta": meta, "networks": snap["networks"], "aps": snap.get("aps", []), "clients": clients})
+        _write_json(_vpath(vid), data)
         idx = _index()
         idx.append(meta)
         _save_index(idx)
@@ -1436,6 +1536,8 @@ class Handler(BaseHTTPRequestHandler):
                     return self._send(200, body=f.read().replace(b"__ADDON_VERSION__", ADDON_VERSION.encode()), ctype="text/html; charset=utf-8")
             if method == "GET" and path.endswith("/api/snapshot"):
                 return self._send(200, build_snapshot(API))
+            if method == "GET" and path.endswith("/api/firewall"):
+                return self._send(200, firewall_state(API))
             if method == "POST" and path.endswith("/api/client"):
                 return self._send(200, save_client(API, self._json_body()))
             if method == "POST" and path.endswith("/api/unreserve"):
