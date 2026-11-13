@@ -965,5 +965,12 @@
  "Removed policy": "Règle supprimée",
  "Policy changed": "Règle modifiée",
  "Description": "Description",
- "online": "en ligne"
+ "online": "en ligne",
+ "Hits": "Correspondances",
+ "hits": "correspondances",
+ "Last Hit": "Dernière corresp.",
+ "Last hit": "Dernière correspondance",
+ "Export JSON": "Exporter en JSON",
+ "Download zones, policies and groups as the app read them from UniFi": "Télécharger zones, règles et groupes tels que l'app les a lus dans UniFi",
+ "How often UniFi matched this policy (counted also without logging)": "Nombre de fois où UniFi a appliqué cette règle (compté même sans journalisation)"
 }

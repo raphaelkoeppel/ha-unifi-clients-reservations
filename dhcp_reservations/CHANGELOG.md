@@ -9,6 +9,9 @@
 - Detail panel: new section **Firewall** with the device's zone and every policy that names it – by MAC, by its IP, through an address group or its network. A click opens the policy in the firewall view.
 - **IP changes check the firewall:** CleanUp, Replace subnet, CSV import, Restore, the edit panel and inline edit warn when a policy uses the old IP (e.g. *Allow NAS 2 NVR → 192.168.1.10*), when the new IP falls under a policy, and when a device moves into another zone.
 - **Versions** also save the zones and the custom policies. *Compare* has a new filter *Firewall* with new, removed and changed policies and zones.
+- **Hits** and **Last Hit** per policy, read from UniFi's own counters (they count also without logging); sortable, and shown per policy in the detail panel.
+- Sources and destinations as UniFi defines them: devices, IPs (also bound to one MAC), address groups, networks, domains, regions and IPv6 interface IDs, each also inverted (*Not …*).
+- *Export JSON* on the firewall page downloads zones, policies and groups as the app read them – handy to check the view against UniFi.
 - Nothing is written to the firewall. Consoles without the zone-based firewall show a hint instead.
 
 ## 1.30.0 – 2026-11-01

@@ -74,7 +74,8 @@ UniFi Network › Client Devices. Every column can be sorted (click the header) 
   - *Zone matrix*: one row per source zone, one column per destination zone. A cell shows the default of the zone pair
     (*Allow All*, *Block All*, *Allow Return*, derived from UniFi's built-in policies) and in brackets the number of custom
     policies. Click a cell to list the policies of that pair, a zone name to list everything from or to it, *All policies* to reset.
-  - *Policy list*: name, action, IP version, protocol, source / destination zone, address and port, and the ID (UniFi's order).
+  - *Policy list*: name, action, IP version, protocol, source / destination zone, address and port, *Hits* and *Last Hit*
+    (UniFi's counters, also without logging) and the ID (UniFi's order). *Export JSON* downloads what the app read.
     Filters for IPv4, IPv6, built-in, custom and paused policies plus a search. Click a policy for the details with links to the devices.
   - The sidebar shows the zones with their networks, device counts and custom policies.
   - The client table has the column and sidebar filter *Firewall zone* (the zone of the device's network; the gateway is in *Gateway*,

@@ -965,5 +965,12 @@
  "Removed policy": "Política removida",
  "Policy changed": "Política alterada",
  "Description": "Descrição",
- "online": "online"
+ "online": "online",
+ "Hits": "Ocorrências",
+ "hits": "ocorrências",
+ "Last Hit": "Última ocorrência",
+ "Last hit": "Última ocorrência",
+ "Export JSON": "Exportar JSON",
+ "Download zones, policies and groups as the app read them from UniFi": "Baixar zonas, políticas e grupos como o app os leu do UniFi",
+ "How often UniFi matched this policy (counted also without logging)": "Quantas vezes o UniFi aplicou esta política (contado também sem registro)"
 }

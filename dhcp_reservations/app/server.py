@@ -799,7 +799,8 @@ def normalize_mac(v):
 # Read through the same internal v2 API the UniFi UI uses. Nothing here writes to the firewall.
 FW_POLICY_KEYS = ("name", "description", "enabled", "action", "predefined", "index", "ip_version", "protocol",
                   "connection_state_type", "connection_states", "create_allow_respond", "logging",
-                  "match_opposite_protocol", "icmp_typename", "icmp_v6_typename", "match_ip_sec")
+                  "match_opposite_protocol", "icmp_typename", "icmp_v6_typename", "match_ip_sec",
+                  "hits", "last_hit")  # hits / last_hit (epoch ms): UniFi's counters, also without logging
 FW_HINT = ("The zone-based firewall needs UniFi Network 9.0 or later (Settings › Security › Firewall). "
            "The UniFi account also needs permission to view the firewall settings.")
 
@@ -884,7 +885,9 @@ def firewall_for_version(api):
         return None
     if not fw.get("available"):
         return None
-    return {"zones": fw["zones"], "policies": [p for p in fw["policies"] if not p.get("predefined")],
+    # hit counters change all the time – they are not part of a version
+    pols = [{k: v for k, v in p.items() if k not in ("hits", "last_hit")} for p in fw["policies"] if not p.get("predefined")]
+    return {"zones": fw["zones"], "policies": pols,
             "groups": fw.get("groups") or [], "networks": fw.get("networks") or {}}
 
 

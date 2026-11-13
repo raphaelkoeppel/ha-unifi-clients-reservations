@@ -965,5 +965,12 @@
  "Removed policy": "Borttagen regel",
  "Policy changed": "Regel ändrad",
  "Description": "Beskrivning",
- "online": "online"
+ "online": "online",
+ "Hits": "Träffar",
+ "hits": "träffar",
+ "Last Hit": "Senaste träff",
+ "Last hit": "Senaste träff",
+ "Export JSON": "Exportera JSON",
+ "Download zones, policies and groups as the app read them from UniFi": "Ladda ner zoner, regler och grupper så som appen läste dem från UniFi",
+ "How often UniFi matched this policy (counted also without logging)": "Hur ofta UniFi tillämpade regeln (räknas även utan loggning)"
 }

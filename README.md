@@ -71,7 +71,7 @@ versions you can compare and restore.
 | | |
 |---|---|
 | **Zone matrix** | The zone-based firewall of UniFi Network 9+ on its own page (switch *Clients / IP Plan / Firewall*): Allow All, Block All, Allow Return and the number of custom policies per zone pair. Click a cell to filter the policy list below it. |
-| **Policies** | Name, action, IP version, protocol, source and destination with zone, address and port – devices by name, address groups resolved. Filters for IPv4 / IPv6, built-in, custom and paused, plus a search. |
+| **Policies** | Name, action, IP version, protocol, source and destination with zone, address and port – devices by name, address groups resolved – plus *Hits* and *Last Hit* from UniFi's counters. Filters for IPv4 / IPv6, built-in, custom and paused, plus a search. |
 | **Zones everywhere** | Column and sidebar filter *Firewall zone* in the client table; the detail panel lists every policy that names the device (by MAC, IP, address group or network). |
 | **IP changes check the firewall** | CleanUp, Replace subnet, CSV import, Restore, inline edit and the edit panel warn when a policy still points to the old IP, when the new IP falls under a policy, and when a device moves into another zone. |
 | **Firewall in versions** | Versions keep the zones and custom policies; *Compare* shows new, removed and changed policies. |

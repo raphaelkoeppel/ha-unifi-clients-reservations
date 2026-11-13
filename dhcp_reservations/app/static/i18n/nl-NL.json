@@ -965,5 +965,12 @@
  "Removed policy": "Verwijderde regel",
  "Policy changed": "Regel gewijzigd",
  "Description": "Beschrijving",
- "online": "online"
+ "online": "online",
+ "Hits": "Treffers",
+ "hits": "treffers",
+ "Last Hit": "Laatste treffer",
+ "Last hit": "Laatste treffer",
+ "Export JSON": "JSON exporteren",
+ "Download zones, policies and groups as the app read them from UniFi": "Zones, regels en groepen downloaden zoals de app ze uit UniFi las",
+ "How often UniFi matched this policy (counted also without logging)": "Hoe vaak UniFi deze regel toepaste (ook geteld zonder logboek)"
 }

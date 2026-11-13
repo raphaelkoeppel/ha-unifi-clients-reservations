@@ -390,6 +390,8 @@ body.fw-mode .topbar{border-bottom:2px solid var(--accent)}
 .fw-row.off td{opacity:.6}
 .fw-nm{display:inline-flex;align-items:center;gap:6px}
 .fw-i{color:var(--accent);font-size:11px}
+.fw-table .num{font-variant-numeric:tabular-nums}
+#fwSum .link{font-size:12px}
 .fw-act{font-weight:600}
 .fw-act.allow{color:var(--ok)}.fw-act.block{color:var(--bad)}.fw-act.none{color:var(--muted)}
 .fw-act span{font-weight:400;color:var(--muted)}
@@ -852,7 +854,7 @@ window.I18N = (() => {
             <div class="search fw-search"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input type="search" id="fwQ" placeholder="Search policies" aria-label="Search policies"></div>
           </div>
           <div class="fw-sel" id="fwSel"></div>
-          <div class="imp-table fw-table"><table><thead><tr><th data-sk="name">Name</th><th data-sk="act">Action</th><th data-sk="ver">IP Version</th><th data-sk="proto">Protocol</th><th data-sk="sz">Src. Zone</th><th data-sk="src">Src.</th><th data-sk="sp">Src. Port</th><th data-sk="dz">Dst. Zone</th><th data-sk="dst">Dst.</th><th data-sk="dp">Dst. Port</th><th data-sk="idx" title="Order in which UniFi evaluates the policies">ID</th></tr></thead><tbody id="fwRows"></tbody></table></div>
+          <div class="imp-table fw-table"><table><thead><tr><th data-sk="name">Name</th><th data-sk="act">Action</th><th data-sk="ver">IP Version</th><th data-sk="proto">Protocol</th><th data-sk="sz">Src. Zone</th><th data-sk="src">Src.</th><th data-sk="sp">Src. Port</th><th data-sk="dz">Dst. Zone</th><th data-sk="dst">Dst.</th><th data-sk="dp">Dst. Port</th><th data-sk="hits" title="How often UniFi matched this policy (counted also without logging)">Hits</th><th data-sk="lh">Last Hit</th><th data-sk="idx" title="Order in which UniFi evaluates the policies">ID</th></tr></thead><tbody id="fwRows"></tbody></table></div>
         </div>
       </div>
     </section>
@@ -2185,6 +2187,8 @@ const devByIp = ip => state.clients.find(c => c.use_fixedip && c.fixed_ip === ip
 const fwTarget = e => String(e?.matching_target || "ANY").toUpperCase();
 const fwList = (e, ...keys) => { for (const k of keys) if (Array.isArray(e?.[k]) && e[k].length) return e[k]; return []; };
 const fwMacs = e => ["CLIENT", "MAC", "DEVICE"].includes(fwTarget(e)) ? fwList(e, "client_macs", "macs", "mac_addresses", "device_macs").map(m => String(m).toLowerCase()) : [];
+// a source of type IP can be bound to one MAC (match_mac + mac): the IP only counts for that device
+const fwBoundMac = e => fwTarget(e) === "IP" && e?.match_mac && e?.mac ? String(e.mac).toLowerCase() : "";
 const fwNets = e => fwTarget(e) === "NETWORK" ? fwList(e, "network_ids") : [];
 const fwIsObject = e => String(e?.matching_target_type || "").toUpperCase() === "OBJECT";
 // IP entries of an endpoint: the IPs typed into the policy, or the members of its address group
@@ -2203,7 +2207,7 @@ function ipEntryHas(entry, ip) {
 const fwTitle = s => String(s || "").toLowerCase().replace(/(^|_)([a-z])/g, (m, p, ch) => (p ? " " : "") + ch.toUpperCase());
 // short text for a source / destination (as in UniFi: Any, a device, “14 Devices”, an IP, “3 Domains” …)
 function fwEpText(e, x = FW, d = FW.data) {
-  const t = fwTarget(e), not = e?.match_opposite_ips ? "Not " : "";
+  const t = fwTarget(e), not = (t === "NETWORK" ? e?.match_opposite_networks : t === "IID" ? e?.match_opposite_iid : e?.match_opposite_ips) ? "Not " : "";
   const many = (list, one, n1, nn) => !list.length ? fwTitle(t) : list.length === 1 ? one(list[0]) : `${list.length} ${list.length === 1 ? n1 : nn}`;
   let txt, items = [];
   if (t === "ANY") txt = "Any";
@@ -2212,7 +2216,9 @@ function fwEpText(e, x = FW, d = FW.data) {
     const ents = fwIpEntries(e, x), g = ents[0]?.via;
     items = ents.map(r => { const c = devByIp(r.entry); return c ? `${r.entry} (${devName(c)})` : r.entry; });
     txt = g ? g : many(ents.map(r => r.entry), ip => ip, "IP", "IPs");
+    const bm = fwBoundMac(e); if (bm) { const c = devByMac(bm); items.push(`MAC ${bm}${c ? ` (${devName(c)})` : ""}`); }
   }
+  else if (t === "IID") { items = e.iid ? [String(e.iid)] : []; txt = `IPv6 IID ${e.iid || "?"}`; }
   else if (t === "NETWORK") { const n = fwNets(e); items = n.map(id => fwNetName(id, d)); txt = many(n, id => fwNetName(id, d), "Network", "Networks"); }
   else if (["WEB", "DOMAIN"].includes(t)) { const w = fwList(e, "web_domains", "domains"); items = w; txt = many(w, s => s, "Domain", "Domains"); }
   else if (t === "REGION") { const r = fwList(e, "regions"); items = r; txt = many(r, s => s, "Region", "Regions"); }
@@ -2231,6 +2237,9 @@ const fwPortHtml = e => { const t = fwPortText(e); return t === "Any" ? "Any" : 
 const fwProto = p => { const v = String(p.protocol || "all").toLowerCase(); return v === "all" ? "All" : v === "tcp_udp" ? "TCP/UDP" : v.toUpperCase(); };
 const fwIpVer = p => ({ BOTH: "Both", IPV4: "IPv4", IPV6: "IPv6" })[String(p.ip_version || "BOTH").toUpperCase()] || p.ip_version;
 const fwCst = p => String(p.connection_state_type || "ALL").toUpperCase();
+const fwHits = p => typeof p.hits === "number" ? p.hits : null;
+const fwLast = p => typeof p.last_hit === "number" && p.last_hit > 0 ? Math.round(p.last_hit / 1000) : 0;
+const fwHitsHtml = p => fwHits(p) == null ? `<span class="muted">-</span>` : `<span class="num">${fwHits(p).toLocaleString(I18N.locale)}</span>`;
 const fwSched = p => { const m = String(p.schedule?.mode || "ALWAYS").toUpperCase(); return m === "ALWAYS" ? "" : fwTitle(m); };
 // default of a zone pair from the built-in policies: the last catch-all decides, a built-in "allow return traffic" makes it Allow Return
 function fwPair(s, d) {
@@ -2247,7 +2256,7 @@ function fwDevicePolicies(c) {
   const ips = [...new Set([c.use_fixedip ? c.fixed_ip : "", c.ip].filter(Boolean))], out = [];
   for (const p of FW.data.policies) for (const side of ["source", "destination"]) {
     const e = p[side] || {}, via = [];
-    if (c.mac && fwMacs(e).includes(c.mac)) via.push("MAC");
+    if (c.mac && (fwMacs(e).includes(c.mac) || fwBoundMac(e) === c.mac)) via.push("MAC");
     for (const r of fwIpEntries(e)) { const ip = ips.find(x => ipEntryHas(r.entry, x)); if (ip) via.push(r.via ? `${r.via} (${ip})` : ip); }
     if (c.network_id && fwNets(e).includes(c.network_id)) via.push(fwNetName(c.network_id));
     if (via.length) out.push({ p, side, via: [...new Set(via)] });
@@ -2326,21 +2335,21 @@ function renderFw() {
     return `<td><button type="button" class="fwc ${r.def}${on ? " on" : ""}${dim ? " dim" : ""}" data-fws="${esc(s.id)}" data-fwd="${esc(d.id)}" title="${esc(tip)}">${FW_DEF[r.def]}${r.custom.length ? ` <span class="n">(${r.custom.length})</span>` : ""}</button></td>`;
   }).join("")}</tr>`).join("");
   $("#fwMatrix").innerHTML = `<div class="fw-axis-d">Destination</div><div class="fw-mx-row"><div class="fw-axis-s"><span>Source</span></div><table class="fw-mx"><thead>${head}</thead><tbody>${body}</tbody></table></div>`;
-  $("#fwSum").innerHTML = `<span class="pill">Zones <b>${zs.length}</b></span><span class="pill">Policies <b>${all}</b></span><span class="pill">Custom <b>${nCustom}</b></span><span class="pill" title="Read from UniFi">Updated <b>${new Date(FW.data.fetched_at * 1000).toLocaleTimeString(I18N.locale, { hour: "2-digit", minute: "2-digit" })}</b></span>`;
+  $("#fwSum").innerHTML = `<span class="pill">Zones <b>${zs.length}</b></span><span class="pill">Policies <b>${all}</b></span><span class="pill">Custom <b>${nCustom}</b></span><span class="pill" title="Read from UniFi">Updated <b>${new Date(FW.data.fetched_at * 1000).toLocaleTimeString(I18N.locale, { hour: "2-digit", minute: "2-digit" })}</b></span><button type="button" class="link" data-fwexport title="Download zones, policies and groups as the app read them from UniFi">Export JSON</button>`;
   for (const [k, id] of [["v4", "#fwV4"], ["v6", "#fwV6"], ["builtin", "#fwBuiltin"], ["custom", "#fwCustom"], ["paused", "#fwPaused"]]) $(id).checked = !!FW.show[k];
   // what the list is filtered by
   const zl = id => `<b translate="no">${esc(fwZoneName(id))}</b>`;
   const sel = FW.src && FW.dst ? `<span>From</span> ${zl(FW.src)} <span>to</span> ${zl(FW.dst)}` : FW.src ? `<span>From</span> ${zl(FW.src)}` : FW.dst ? `<span>To</span> ${zl(FW.dst)}` : FW.zone ? `<span>From or to</span> ${zl(FW.zone)}` : "";
   const zid = FW.zone || (FW.src && !FW.dst ? FW.src : !FW.src && FW.dst ? FW.dst : ""), zDevs = zid ? state.clients.filter(c => zoneOf(c)?.id === zid).length : 0;
-  const list = tsorted("fwRows", fwVisible(), { name: p => (p.name || "").toLowerCase(), act: p => p.action, ver: p => fwIpVer(p), proto: p => fwProto(p), sz: p => fwZoneName(p.source?.zone_id), src: p => fwEpText(p.source).txt, sp: p => fwPortText(p.source), dz: p => fwZoneName(p.destination?.zone_id), dst: p => fwEpText(p.destination).txt, dp: p => fwPortText(p.destination), idx: p => p.index ?? 1e9 });
+  const list = tsorted("fwRows", fwVisible(), { name: p => (p.name || "").toLowerCase(), act: p => p.action, ver: p => fwIpVer(p), proto: p => fwProto(p), sz: p => fwZoneName(p.source?.zone_id), src: p => fwEpText(p.source).txt, sp: p => fwPortText(p.source), dz: p => fwZoneName(p.destination?.zone_id), dst: p => fwEpText(p.destination).txt, dp: p => fwPortText(p.destination), hits: p => fwHits(p) ?? -1, lh: p => fwLast(p) || -1, idx: p => p.index ?? 1e9 });
   $("#fwSel").innerHTML = `<span class="muted">${list.length} <span>${list.length === 1 ? "policy" : "policies"}</span></span>${sel ? ` · ${sel} <button type="button" class="link" data-fwall>Show all</button>` : ""}${zid && zDevs ? ` · <button type="button" class="link" data-fwdevs="${esc(zid)}">Show ${zDevs} ${zDevs === 1 ? "device" : "devices"} in ${esc(fwZoneName(zid))} ›</button>` : ""}`;
   const ep = (e, p) => { const t = fwEpText(e), mine = !(t.txt === "Any" || /^\d+ /.test(t.txt)); return `<span${mine ? ' translate="no"' : ""} title="${esc(t.items.join("\n"))}">${esc(t.txt)}</span>${t.items.length > 1 || (t.items.length === 1 && t.items[0] !== t.txt) ? ` <span class="fw-i" aria-hidden="true">ⓘ</span>` : ""}`; };
   const zc = id => `<span class="zchip" translate="no">${esc(fwZoneName(id))}</span>`;
   $("#fwRows").innerHTML = list.map(p => {
     const tags = [p.predefined ? `<span class="st same">Built-in</span>` : "", p.enabled === false ? `<span class="st err">Paused</span>` : "", fwSched(p) ? `<span class="st new" title="Schedule">${esc(fwSched(p))}</span>` : ""].join("");
-    const row = `<tr class="fw-row ${p.enabled === false ? "off" : ""} ${FW.open === p.id ? "open" : ""}" data-fwp="${esc(p.id)}"><td><span class="fw-nm"><b translate="no">${esc(p.name || "(no name)")}</b>${tags}</span></td><td>${fwActTag(p)}</td><td>${fwIpVer(p)}</td><td>${fwProto(p)}</td><td>${zc(p.source?.zone_id)}</td><td>${ep(p.source)}</td><td>${fwPortHtml(p.source)}</td><td>${zc(p.destination?.zone_id)}</td><td>${ep(p.destination)}</td><td>${fwPortHtml(p.destination)}</td><td class="mono muted">${esc(p.index ?? "")}</td></tr>`;
-    return row + (FW.open === p.id ? `<tr class="fw-det"><td colspan="11">${fwDetailHtml(p)}</td></tr>` : "");
-  }).join("") || `<tr><td colspan="11" class="muted">No policy matches.</td></tr>`;
+    const row = `<tr class="fw-row ${p.enabled === false ? "off" : ""} ${FW.open === p.id ? "open" : ""}" data-fwp="${esc(p.id)}"><td><span class="fw-nm"><b translate="no">${esc(p.name || "(no name)")}</b>${tags}</span></td><td>${fwActTag(p)}</td><td>${fwIpVer(p)}</td><td>${fwProto(p)}</td><td>${zc(p.source?.zone_id)}</td><td>${ep(p.source)}</td><td>${fwPortHtml(p.source)}</td><td>${zc(p.destination?.zone_id)}</td><td>${ep(p.destination)}</td><td>${fwPortHtml(p.destination)}</td><td>${fwHitsHtml(p)}</td><td>${fwLast(p) ? `<span class="muted" title="${isoDateTime(fwLast(p))}">${rel(fwLast(p))}</span>` : `<span class="muted">-</span>`}</td><td class="mono muted">${esc(p.index ?? "")}</td></tr>`;
+    return row + (FW.open === p.id ? `<tr class="fw-det"><td colspan="13">${fwDetailHtml(p)}</td></tr>` : "");
+  }).join("") || `<tr><td colspan="13" class="muted">No policy matches.</td></tr>`;
 }
 function fwDetailHtml(p) {
   const side = (label, e) => {
@@ -2348,11 +2357,13 @@ function fwDetailHtml(p) {
     const devs = macs.map(m => { const c = devByMac(m); return c ? `<button type="button" class="link" data-fwdev="${esc(c.mac)}" translate="no">${esc(devName(c))}</button> <span class="mono muted">${esc(m)}</span>` : `<span class="mono">${esc(m)}</span> <span class="muted">(unknown device)</span>`; });
     const ips = ents.map(r => { const c = devByIp(r.entry); return `<span class="mono">${esc(r.entry)}</span>${c ? ` <button type="button" class="link" data-fwdev="${esc(c.mac)}" translate="no">${esc(devName(c))}</button>` : ""}`; });
     const other = !macs.length && !ents.length && t.items.length ? t.items.map(x => `<span translate="no">${esc(x)}</span>`) : [];
-    const lines = [...devs, ...ips, ...other];
+    const bm = fwBoundMac(e), bc = bm && devByMac(bm);
+    const bound = bm ? [`<span class="muted">MAC</span> ${bc ? `<button type="button" class="link" data-fwdev="${esc(bc.mac)}" translate="no">${esc(devName(bc))}</button> ` : ""}<span class="mono muted">${esc(bm)}</span>`] : [];
+    const lines = [...devs, ...ips, ...bound, ...other];
     return `<div class="fw-side"><div class="sec-title">${label}</div><div><span class="zchip" translate="no">${esc(fwZoneName(e?.zone_id))}</span> ${ents[0]?.via ? `<span class="muted"><span>Address group</span> <b translate="no">${esc(ents[0].via)}</b></span>` : ""}</div>${lines.length ? `<div class="fw-items">${lines.map(l => `<div>${l}</div>`).join("")}</div>` : `<div${t.txt === "Any" || /^\d+ /.test(t.txt) ? "" : ' translate="no"'}>${esc(t.txt)}</div>`}<div class="muted"><span>Port</span> ${fwPortHtml(e)}</div></div>`;
   };
   const facts = [["Action", fwActTag(p)], ["Connection state", fwCst(p) === "ALL" ? "All" : fwCst(p) === "RESPOND_ONLY" ? "Return traffic only" : esc((p.connection_states || []).map(fwTitle).join(", ") || fwTitle(fwCst(p)))],
-    ["Protocol", fwProto(p) + (p.match_opposite_protocol ? " (inverted)" : "")], ["IP version", fwIpVer(p)], ["Schedule", fwSched(p) || "Always"], ["Logging", p.logging ? "On" : "Off"], ["Status", p.enabled === false ? "Paused" : "Active"], ["Order", esc(p.index ?? "–")]];
+    ["Protocol", fwProto(p) + (p.match_opposite_protocol ? " (inverted)" : "")], ["IP version", fwIpVer(p)], ["Schedule", fwSched(p) || "Always"], ["Logging", p.logging ? "On" : "Off"], ["Hits", fwHits(p) == null ? "–" : fwHits(p).toLocaleString(I18N.locale)], ["Last hit", fwLast(p) ? `${rel(fwLast(p))} <span class="muted">(${isoDateTime(fwLast(p))})</span>` : "Never"], ["Status", p.enabled === false ? "Paused" : "Active"], ["Order", esc(p.index ?? "–")]];
   return `<div class="fw-detail">${p.description ? `<p translate="no">${esc(p.description)}</p>` : ""}<div class="fw-sides">${side("Source", p.source)}<div class="fw-arrow" aria-hidden="true">→</div>${side("Destination", p.destination)}</div><dl class="kv fw-facts">${facts.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join("")}</dl>${p.predefined ? `<p class="hint">Built-in policy – UniFi creates it for the zones; it cannot be edited.</p>` : `<p class="hint">Read only – change this policy in UniFi Network › Settings › Policy Table.</p>`}</div>`;
 }
 function fwShowDevices(zid) {
@@ -2366,6 +2377,7 @@ function openFwFor(opts) {
 $("#fwView").addEventListener("click", e => {
   const dev = e.target.closest("[data-fwdev]"); if (dev) { const c = devByMac(dev.dataset.fwdev); if (c) openPanel(c); return; }
   const devs = e.target.closest("[data-fwdevs]"); if (devs) { fwShowDevices(devs.dataset.fwdevs); return; }
+  if (e.target.closest("[data-fwexport]")) { saveFile(`firewall-${isoDate(FW.data.fetched_at)}.json`, JSON.stringify(FW.data, null, 1), true); return; }
   if (e.target.closest("[data-fwall]")) { Object.assign(FW, { src: null, dst: null, zone: null }); renderFw(); return; }
   const b = e.target.closest("[data-fws],[data-fwd]");
   if (b) {
@@ -2388,7 +2400,7 @@ function fwInfoHtml(c) {
   const z = zoneOf(c), hits = fwDevicePolicies(c), zn = z ? (FW.data.policies || []).filter(p => !p.predefined && (p.source?.zone_id === z.id || p.destination?.zone_id === z.id)).length : 0;
   return `<div class="sec-title">Firewall</div><div class="card fw-card">
     <dl class="kv" style="margin:0"><dt>Zone</dt><dd>${z ? `<button type="button" class="link" data-fwzone="${esc(z.id)}" translate="no" title="Open the zone in the firewall view">${esc(z.name)}</button>` : `<span class="muted">unknown</span>`}</dd></dl>
-    ${hits.length ? `<div class="fw-hits">${hits.map(h => `<button type="button" class="fw-hit" data-fwpol="${esc(h.p.id)}" title="Show this policy in the firewall view">${fwActTag(h.p)}<span class="fw-hn"><b translate="no">${esc(h.p.name || "?")}</b>${h.p.enabled === false ? ' <span class="st err">Paused</span>' : ""}<span class="muted"><span>${h.side === "source" ? "as source" : "as destination"}</span> · <span translate="no">${esc(fwZoneName(h.p.source?.zone_id))} → ${esc(fwZoneName(h.p.destination?.zone_id))}</span> · <span>via</span> <span translate="no">${esc(h.via.join(", "))}</span></span></span></button>`).join("")}</div>`
+    ${hits.length ? `<div class="fw-hits">${hits.map(h => `<button type="button" class="fw-hit" data-fwpol="${esc(h.p.id)}" title="Show this policy in the firewall view">${fwActTag(h.p)}<span class="fw-hn"><b translate="no">${esc(h.p.name || "?")}</b>${h.p.enabled === false ? ' <span class="st err">Paused</span>' : ""}<span class="muted"><span>${h.side === "source" ? "as source" : "as destination"}</span> · <span translate="no">${esc(fwZoneName(h.p.source?.zone_id))} → ${esc(fwZoneName(h.p.destination?.zone_id))}</span> · <span>via</span> <span translate="no">${esc(h.via.join(", "))}</span>${fwHits(h.p) != null ? ` · ${fwHits(h.p).toLocaleString(I18N.locale)} <span>hits</span>` : ""}</span></span></button>`).join("")}</div>`
       : `<p class="hint" style="margin:8px 0 0">No policy names this device directly.</p>`}
     ${z ? `<p class="hint" style="margin:8px 0 0">${zn ? `<span>Zone rules apply:</span> ${zn} <span>${zn === 1 ? "custom policy from or to" : "custom policies from or to"}</span> <span translate="no">${esc(z.name)}</span>.` : `<span>Only the built-in zone defaults apply to</span> <span translate="no">${esc(z.name)}</span>.`}</p>` : ""}
   </div>`;
