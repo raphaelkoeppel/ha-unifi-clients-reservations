@@ -16,6 +16,9 @@ configuration:
   certificate_fingerprint:
     name: Certifikatets fingeravtryck (SHA-256)
     description: Lås controllerns självsignerade certifikat – apploggen visar vid start värdet att klistra in här. När det är satt accepteras anslutningen bara om certifikatet matchar (verify_ssl behövs då inte).
+  api_key:
+    name: UniFi API-nyckel (valfri)
+    description: Behövs för att ändra ordningen på brandväggsregler. Skapa den i UniFi Network › Inställningar › Control Plane › Integrationer.
   daily_version:
     name: Daglig automatisk version
     description: Sparar en version av tabellen per dag (visas som "Daglig" under Versioner).

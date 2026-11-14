@@ -16,6 +16,9 @@ configuration:
   certificate_fingerprint:
     name: Impronta del certificato (SHA-256)
     description: Fissa il certificato autofirmato del controller – il log dell'app mostra all'avvio il valore da incollare qui. Se impostato, la connessione viene accettata solo se il certificato corrisponde (verify_ssl non serve).
+  api_key:
+    name: Chiave API UniFi (facoltativa)
+    description: Serve per cambiare l'ordine delle regole firewall. Creala in UniFi Network › Impostazioni › Control Plane › Integrazioni.
   daily_version:
     name: Versione automatica giornaliera
     description: Salva una versione della tabella al giorno (mostrata come "Giornaliera" in Versioni).

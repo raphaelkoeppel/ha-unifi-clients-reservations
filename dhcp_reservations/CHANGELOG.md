@@ -1,5 +1,30 @@
 # Changelog
 
+## 1.32.0 – 2026-11-14
+
+**Firewall analysis and recommendations** (new tab *Analysis* next to *Matrix*, in the look of the IP plan's CleanUp Proposal):
+- **Device types** from the Home Assistant integration, hostname, name, vendor and open ports (ESPHome, Shelly, Tasmota, WLED, Zigbee coordinators, Hue, Cast, Sonos, TVs, printers, cameras, NAS …), with confidence and reasons; each can be set by hand.
+- **Zone roles** (Trusted, IoT, Cameras, Servers …) guessed from the zone names, editable under *Zone roles…*.
+- **Checks per device:** wrong zone for its type, no internet although it needs it, internet although it does not, Home Assistant cannot reach it, phones cannot reach it, mDNS needed.
+- **Consistency of similar devices:** devices of the same HA integration, vendor or type with a different zone, internet access, rules or HA access – e.g. one Shelly that is missing from the rule the other Shellys are in.
+- **Zone and VLAN structure:** empty or unused zones and networks, zones that allow each other everything (merge?), zones and VLANs that mix computers with IoT devices (split?), devices that share the same exceptions (own zone?), guest networks outside the Hotspot zone, flat networks.
+- **Recommendations** with *Create rule…* (opens the wizard pre-filled) and *Prepare move…* (sets the Virtual Network Override in the edit panel).
+- **Segmentation score** and **Tidiness score** (rule hygiene, like the IP plan's tidiness) per zone in the sidebar.
+- The sidebar filter *Firewall analysis* finds devices with findings in the client table.
+
+**Firewall rules:**
+- **Rule chain** of a zone pair: a swimlane from left to right (✓ allow, ✕ block, 🔒 built-in) that shows which rule decides first, rules that never apply, redundant rules and rules without effect.
+- **Change the order** with the ⠿ handle or ↑ ↓ and save it in UniFi (needs the new option `api_key`); a version is saved first.
+- **Add firewall rule** (header button on the Firewall page, and *Create firewall rule for this client…* in a client's settings): a guided wizard – allow or block, from, to, traffic, check. It shows what decides the traffic today, warns when the rule would change nothing or another rule wins, and refuses rules that would lock Home Assistant out of the UniFi console. A version is saved first.
+- Matrix cells show the ports custom rules open or close; risky Allow All pairs are marked.
+- *Changed since* a version marks new and changed rules; the version list shows the number of policies; *Compare* shows when a device changed its firewall zone.
+- If the zone-based firewall is switched off in UniFi, the page says so (with the number of classic rules) and how to switch it on.
+
+**Client panel:** coloured zone strips (*Reaches* / *Reachable from*), a table with what applies to the client zone by zone and which rule decides, open ports per zone, paused rules with what would change if they were active.
+
+**Relations** (fourth view): a graph of who talks to whom from UniFi's traffic flows (1 h – 7 days or from – to), one arrow per direction with the width of the data volume and the colour of the port. Filters: within a zone, within a VLAN, across VLANs, to the internet, same vendor, same HA integration, with Home Assistant, unexpected, suspicious, against the firewall rules, blocked by UniFi; Internet, Home Assistant, UniFi devices, NAS / server and printers can be hidden.
+- **Suspicious network traffic:** scans, many blocked attempts, remote-access ports from IoT or guest devices, connections from untrusted into trusted zones – optionally as a Home Assistant notification and the event `clients_reservations_suspicious_traffic` (checked every 10 minutes).
+
 ## 1.31.0 – 2026-11-13
 
 **Firewall (read only)** – the zone-based firewall of UniFi Network 9+ next to the clients and the IP plan:

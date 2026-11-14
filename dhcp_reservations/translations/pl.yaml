@@ -16,6 +16,9 @@ configuration:
   certificate_fingerprint:
     name: "Odcisk certyfikatu (SHA-256)"
     description: "Przypina certyfikat kontrolera z podpisem własnym – log aplikacji pokazuje przy starcie wartość do wklejenia tutaj. Gdy jest ustawiony, połączenie jest akceptowane tylko przy zgodnym certyfikacie (verify_ssl nie jest wtedy potrzebne)."
+  api_key:
+    name: Klucz API UniFi (opcjonalny)
+    description: Potrzebny do zmiany kolejności reguł zapory. Utwórz go w UniFi Network › Ustawienia › Control Plane › Integracje.
   daily_version:
     name: "Codzienna wersja automatyczna"
     description: "Zapisuje jedną wersję tabeli dziennie (widoczną jako \"Codzienna\" w Wersjach)."

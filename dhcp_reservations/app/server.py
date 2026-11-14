@@ -31,6 +31,7 @@ KNOWN_PATH = os.environ.get("KNOWN_PATH", "/data/known_devices.json")
 RULES_PATH = os.environ.get("RULES_PATH", "/data/rules.json")
 SCANS_PATH = os.environ.get("SCANS_PATH", "/data/portscans.json")
 VENDORS_PATH = os.environ.get("VENDORS_PATH", "/data/vendors.json")
+FW_SETTINGS_PATH = os.environ.get("FW_SETTINGS_PATH", "/data/fw_settings.json")
 VENDOR_API = os.environ.get("VENDOR_API", "https://api.macvendors.com/")
 KNOWN_LOCK = threading.Lock()
 VENDOR_LOCK = threading.Lock()
@@ -172,11 +173,15 @@ class Unifi:
         self.csrf = ""
         self.lock = threading.Lock()
         self.logged_in = False
+        self.api_key = str(opts.get("api_key") or "").strip()
+        self.int_site = None
 
-    def _raw(self, method, path, body=None, timeout=20):
+    def _raw(self, method, path, body=None, timeout=20, headers=None):
         data = json.dumps(body).encode() if body is not None else None
         req = urllib.request.Request(self.base + path, data=data, method=method)
         req.add_header("Accept", "application/json")
+        for k, v in (headers or {}).items():
+            req.add_header(k, v)
         if data is not None:
             req.add_header("Content-Type", "application/json")
         if self.csrf:
@@ -252,6 +257,29 @@ class Unifi:
         if hit.get("name") != self.site:
             log(f'Using site "{hit.get("name")}" ({hit.get("desc")})')
         self.site = hit.get("name")
+
+    def integration(self, method, path, body=None):
+        """Official Network Integration API (/proxy/network/integration/v1/sites/<uuid>…): with the API key from the
+        configuration, otherwise with the login session. Returns (status, payload)."""
+        hdr = {"X-API-KEY": self.api_key} if self.api_key else None
+        with self.lock:
+            if not self.logged_in:
+                self.login()
+            if not self.int_site:
+                st, res = self._raw("GET", "/proxy/network/integration/v1/sites?limit=200", headers=hdr)
+                if st in (401, 403):
+                    raise UnifiError("The UniFi Integration API refused access (HTTP %d)." % st, 400,
+                                     "Create an API key in UniFi Network › Settings › Control Plane › Integrations and enter it as "
+                                     "api_key. " + CONFIG_PATH_HINT)
+                data = res.get("data") if isinstance(res, dict) else None
+                self.int_site = next((x.get("id") for x in data or [] if isinstance(x, dict) and x.get("internalReference") == self.site), None)
+                if not self.int_site:
+                    raise UnifiError("Site not found in the UniFi Integration API.", 502)
+            st, res = self._raw(method, f"/proxy/network/integration/v1/sites/{self.int_site}{path}", body, headers=hdr)
+        if st in (401, 403):
+            raise UnifiError("The UniFi Integration API refused access (HTTP %d)." % st, 400,
+                             "Create an API key in UniFi Network › Settings › Control Plane › Integrations and enter it as api_key. " + CONFIG_PATH_HINT)
+        return st, res
 
     def call(self, method, path, body=None, v2=False, timeout=20):
         site = urllib.parse.quote(self.site, safe="")
@@ -839,22 +867,66 @@ def fw_zone(z):
             "default": bool(z.get("default_zone")), "network_ids": [str(x) for x in z.get("network_ids") or []]}
 
 
+FW_OFF_HINT = ("Switch it on in UniFi Network › Settings › Security › Firewall (“Upgrade to zone-based firewall”). "
+               "UniFi converts the classic rules; afterwards this page shows zones and policies.")
+
+
+def _legacy_rule_count(api):
+    try:
+        return len(api.call("GET", "/rest/firewallrule"))
+    except UnifiError:
+        return None
+
+
+def firewall_mode(api):
+    """'zone' | 'legacy' | '' (unknown). The web-UI paths answer [] whether the zone-based firewall is off or empty, so
+    the official Integration API decides: it answers 400 api.firewall.zone-based-firewall-not-configured on a site that
+    still uses the classic firewall. A recorded migration (site-feature-migration) means zone-based."""
+    try:
+        mig = api.call("GET", "/site-feature-migration", v2=True)
+        if isinstance(mig, list) and any(isinstance(m, dict) and m.get("feature") == "ZONE_BASED_FIREWALL" for m in mig):
+            return "zone"
+    except UnifiError:
+        pass
+    try:
+        st, res = api.integration("GET", "/firewall/zones")
+        code = " ".join(str((res or {}).get(k) or "") for k in ("code", "errorCode", "message")) if isinstance(res, dict) else ""
+        if st == 400 and "zone-based-firewall-not-configured" in code:
+            return "legacy"
+        if st == 200:
+            return "zone"
+    except (UnifiError, OSError, ValueError) as e:
+        log("Firewall mode via the Integration API not readable:", e)
+    return ""
+
+
+def _fw_off(api, reason):
+    n = _legacy_rule_count(api)
+    return {"available": False, "state": "not_enabled", "legacy_rules": n, "reason": reason, "hint": FW_OFF_HINT}
+
+
 def firewall_state(api):
     """Zones, policies, address/port groups and the names of all networks (WAN and VPN too).
-    {"available": False, "reason": …} when the console has no zone-based firewall or the account may not read it."""
+    {"available": False, "state": "not_enabled" | "unsupported" | "error", …} otherwise."""
     try:
         zones = api.call("GET", "/firewall/zone", v2=True)
     except UnifiError as e:
         log("Firewall zones not available:", e)
-        return {"available": False, "reason": str(e), "hint": FW_HINT}
+        if firewall_mode(api) == "legacy":
+            return _fw_off(api, "The zone-based firewall is not enabled in UniFi.")
+        old = "404" in str(e) or "NotFound" in str(e)
+        return {"available": False, "state": "unsupported" if old else "error", "reason": str(e), "hint": FW_HINT}
     zones = [fw_zone(z) for z in zones if isinstance(z, dict)] if isinstance(zones, list) else []
-    if not zones:
-        return {"available": False, "reason": "The controller has no firewall zones.", "hint": FW_HINT}
     try:
         pols = api.call("GET", "/firewall-policies", v2=True)
     except UnifiError as e:
         log("Firewall policies not available:", e)
-        return {"available": False, "reason": str(e), "hint": FW_HINT}
+        return {"available": False, "state": "error", "reason": str(e), "hint": FW_HINT}
+    # an active zone-based firewall always has zones and UniFi's built-in policies
+    if not zones or not isinstance(pols, list) or not pols:
+        if firewall_mode(api) != "zone":
+            return _fw_off(api, "The zone-based firewall is not enabled in UniFi.")
+        return {"available": False, "state": "error", "reason": "The controller returned no zones or policies.", "hint": FW_HINT}
     policies = sorted((fw_policy(p) for p in pols if isinstance(p, dict)) if isinstance(pols, list) else [],
                       key=lambda p: (p.get("index") if isinstance(p.get("index"), (int, float)) else 1e9, p.get("name") or ""))
     groups = []
@@ -872,8 +944,454 @@ def firewall_state(api):
                                   "vlan": n.get("vlan") if n.get("vlan_enabled") else None, "subnet": n.get("ip_subnet") or ""}
     except UnifiError as e:
         log("Networks for the firewall view not available:", e)
-    return {"available": True, "zones": zones, "policies": policies, "groups": groups, "networks": nets,
-            "fetched_at": int(time.time())}
+    host = re.sub(r"^https?://", "", api.base).split("/")[0].split(":")[0]
+    try:
+        ipaddress.ip_address(host)
+    except ValueError:
+        host = ""
+    return {"available": True, "state": "ok", "zones": zones, "policies": policies, "groups": groups, "networks": nets,
+            "controller_ip": host, "fetched_at": int(time.time())}
+
+
+# ---------------------------------------------------------------- firewall: order of the custom policies of one zone pair
+def _int_list(api, path):
+    out, off = [], 0
+    while True:
+        st, res = api.integration("GET", f"{path}{'&' if '?' in path else '?'}offset={off}&limit=200")
+        if st != 200:
+            msg = (res or {}).get("message") or (res or {}).get("code") or f"HTTP {st}" if isinstance(res, dict) else f"HTTP {st}"
+            raise UnifiError(f"UniFi Integration API: {msg}", 502)
+        data = res.get("data") if isinstance(res, dict) else res
+        out += data or []
+        if not data or len(data) < 200 or len(out) >= (res.get("totalCount") or 0 if isinstance(res, dict) else 0):
+            return out
+        off += 200
+
+
+def reorder_fw_policies(api, body, user=""):
+    """body: {source_zone, destination_zone (v2 ids), order: [v2 ids of the pair's custom policies, first = evaluated first]}.
+    The Integration API identifies zones and policies by other ids: they are matched by name."""
+    fw = firewall_state(api)
+    if not fw.get("available"):
+        raise UnifiError(fw.get("reason") or "The zone-based firewall is not available.", 400, fw.get("hint", ""))
+    zones = {z["id"]: z for z in fw["zones"]}
+    sz, dz = str(body.get("source_zone") or ""), str(body.get("destination_zone") or "")
+    if sz not in zones or dz not in zones:
+        raise UnifiError("Unknown zone.", 400)
+    custom = [p for p in fw["policies"] if not p.get("predefined") and p["source"].get("zone_id") == sz and p["destination"].get("zone_id") == dz]
+    order = [str(x) for x in body.get("order") or []]
+    if sorted(order) != sorted(p["id"] for p in custom):
+        raise UnifiError("The rules of this zone pair changed in the meantime – reload and try again.", 409)
+    names = [p.get("name") or "" for p in custom]
+    dup = sorted({n for n in names if names.count(n) > 1})
+    if dup:
+        raise UnifiError(f"Two rules of this zone pair have the same name ({', '.join(dup)}).", 400, "Rename one of them in UniFi – the order is matched by name.")
+    izones = {z.get("name"): z.get("id") for z in _int_list(api, "/firewall/zones")}
+    isz, idz = izones.get(zones[sz]["name"]), izones.get(zones[dz]["name"])
+    if not isz or not idz:
+        raise UnifiError("The zones could not be matched in the UniFi Integration API.", 502)
+    q = f"?sourceFirewallZoneId={isz}&destinationFirewallZoneId={idz}"
+    st, cur = api.integration("GET", "/firewall/policies/ordering" + q)
+    if st != 200:
+        raise UnifiError(f"Reading the order failed (HTTP {st}).", 502)
+    cur = (cur or {}).get("orderedFirewallPolicyIds", cur) or {}
+    before, after = list(cur.get("beforeSystemDefined") or []), list(cur.get("afterSystemDefined") or [])
+    ipol = {p.get("id"): p.get("name") for p in _int_list(api, "/firewall/policies") if isinstance(p, dict)}
+    uuid_of = {}
+    for uid in before + after:
+        uuid_of[ipol.get(uid)] = uid
+    by_id = {p["id"]: p for p in custom}
+    new = []
+    for vid in order:
+        uid = uuid_of.get(by_id[vid].get("name") or "")
+        if not uid:
+            raise UnifiError(f"Rule “{by_id[vid].get('name')}” not found in the UniFi Integration API.", 502)
+        new.append(uid)
+    if sorted(new) != sorted(before + after):
+        raise UnifiError("The rules of this zone pair do not match between the two UniFi APIs – reorder it in UniFi.", 409)
+    nb = len(before)  # keep how many custom rules run before UniFi's built-in ones
+    ver = create_version(api, "auto", f"Before reordering {zones[sz]['name']} → {zones[dz]['name']}", user)
+    st, res = api.integration("PUT", "/firewall/policies/ordering" + q,
+                              {"orderedFirewallPolicyIds": {"beforeSystemDefined": new[:nb], "afterSystemDefined": new[nb:]}})
+    if st not in (200, 204):
+        msg = (res or {}).get("message") or (res or {}).get("code") or "" if isinstance(res, dict) else ""
+        raise UnifiError(f"UniFi did not take the new order (HTTP {st}) {msg}".strip(), 502)
+    log("Firewall order changed:", zones[sz]["name"], "→", zones[dz]["name"], len(new), "rules")
+    return {"ok": True, "version": ver["id"]}
+
+
+# ---------------------------------------------------------------- relations: who talks to whom (UniFi traffic flows)
+FLOW_MAX = int(os.environ.get("FLOW_MAX", "5000"))
+
+
+def read_flows(api, frm, to, limit=None):
+    """All flows of a window (page by page, at most `limit`). Raises UnifiError when the console has no flows API."""
+    limit = limit or FLOW_MAX
+    flows, page, size = [], 0, 500
+    while len(flows) < limit:
+        try:
+            data = api.call("POST", "/traffic-flows", {"timestampFrom": frm, "timestampTo": to, "pageNumber": page, "pageSize": size}, v2=True)
+        except UnifiError:
+            if page == 0:
+                raise
+            break
+        data = [f for f in data if isinstance(f, dict)] if isinstance(data, list) else []
+        flows += data
+        if len(data) < size:
+            break
+        page += 1
+    return flows
+
+
+SUSP_PORTS = {22: "SSH", 23: "Telnet", 135: "RPC", 139: "NetBIOS", 445: "SMB", 3389: "RDP", 5900: "VNC"}
+_UNTRUSTED = {"iot", "media", "camera", "printer", "guest", "dmz"}
+_SENSITIVE = {"trusted", "server", "controller"}
+
+
+def _zone_role_guess(name):
+    n = str(name or "").lower()
+    for rx, role in ((r"^internal$", "trusted"), (r"^hotspot$", "guest"), (r"^dmz$", "dmz"), (r"^(external|gateway|vpn)$", "none"),
+                     (r"contr|ctrl|hub|smart ?home|automation|home ?assistant", "controller"), (r"cam|nvr|protect|video|surveil", "camera"),
+                     (r"media|\btv\b|entertain|stream", "media"), (r"print|drucker", "printer"), (r"iot|smart|things|sensor", "iot"),
+                     (r"guest|gast|visitor|hotspot", "guest"), (r"serv|nas|srv|lab|infra|storage", "server"),
+                     (r"trust|lan|home|main|corp|user|client|privat|famil|default|office", "trusted")):
+        if re.search(rx, n):
+            return role
+    return "none"
+
+
+def zone_roles_by_name(api):
+    """zone name -> role, from the analysis settings (by zone id) or guessed from the name."""
+    roles = load_fw_settings()["zone_roles"]
+    out = {}
+    try:
+        for z in api.call("GET", "/firewall/zone", v2=True):
+            if isinstance(z, dict) and z.get("name"):
+                out[z["name"]] = roles.get(z.get("_id")) or _zone_role_guess(z["name"])
+    except UnifiError:
+        pass
+    return out
+
+
+def suspicious_patterns(flows, roles):
+    """Patterns that hint at a scan or an attack from inside: one device knocking on many devices or ports, many blocked
+    attempts, remote-access ports from IoT / guest devices, connections from untrusted into trusted zones."""
+    role = lambda z: roles.get(z) or _zone_role_guess(z)
+    by_src = {}
+    for f in flows:
+        src, dst = f.get("source") or {}, f.get("destination") or {}
+        if (src.get("zone_name") or "").lower() == "external" or not src.get("ip"):
+            continue
+        key = normalize_mac(src.get("mac") or "") or src.get("ip")
+        b = by_src.setdefault(key, {"name": src.get("device_name") or src.get("ip"), "ip": src.get("ip"), "mac": normalize_mac(src.get("mac") or "") or "",
+                                    "zone": src.get("zone_name") or "", "hosts": set(), "ports": {}, "blocked": 0, "remote": {}, "lateral": {}})
+        internal = (dst.get("zone_name") or "").lower() != "external"
+        dip, port = dst.get("ip"), dst.get("port")
+        if internal and dip:
+            b["hosts"].add(dip)
+            if port not in (None, ""):
+                b["ports"].setdefault(dip, set()).add(port)
+        if str(f.get("action") or "").lower() == "blocked":
+            b["blocked"] += int(f.get("count") or 1)
+        rs, rd = role(src.get("zone_name")), role(dst.get("zone_name"))
+        if internal and rs in _UNTRUSTED:
+            try:
+                p = int(port)
+            except (TypeError, ValueError):
+                p = 0
+            if p in SUSP_PORTS:
+                b["remote"].setdefault(SUSP_PORTS[p], set()).add(dst.get("device_name") or dip or "?")
+            if rd in _SENSITIVE and str(f.get("action") or "").lower() != "blocked":
+                k = dst.get("device_name") or dip or "?"
+                b["lateral"][k] = b["lateral"].get(k, 0) + 1
+    out = []
+    for key, b in by_src.items():
+        who = {"src": key, "name": b["name"], "ip": b["ip"], "mac": b["mac"], "zone": b["zone"]}
+        if len(b["hosts"]) >= 20:
+            out.append({**who, "kind": "scan_hosts", "count": len(b["hosts"]), "text": f"contacted {len(b['hosts'])} devices in the network"})
+        for dip, ports in b["ports"].items():
+            if len(ports) >= 25:
+                out.append({**who, "kind": "scan_ports", "count": len(ports), "target": dip, "text": f"probed {len(ports)} ports on {dip}"})
+        if b["blocked"] >= 50:
+            out.append({**who, "kind": "blocked", "count": b["blocked"], "text": f"{b['blocked']} connection attempts blocked by the firewall"})
+        for svc, ts in b["remote"].items():
+            ts = sorted(ts)
+            out.append({**who, "kind": "remote", "count": len(ts), "target": svc,
+                        "text": f"remote-access attempt to {ts[0]} ({svc})" if len(ts) == 1 else
+                        f"remote-access attempts ({svc}) to {len(ts)} devices ({', '.join(ts[:3])}{' …' if len(ts) > 3 else ''})"})
+        if b["lateral"]:
+            out.append({**who, "kind": "lateral", "count": sum(b["lateral"].values()), "target": ", ".join(sorted(b["lateral"])[:5]),
+                        "text": f"opened connections from the {b['zone']} zone into a trusted zone ({', '.join(sorted(b['lateral'])[:3])})"})
+    return sorted(out, key=lambda x: ("scan_hosts", "scan_ports", "remote", "blocked", "lateral").index(x["kind"]))
+
+
+SUSP_PATH = os.environ.get("SUSP_PATH", "/data/suspicious_seen.json")
+SUSP_INTERVAL = int(os.environ.get("SUSP_INTERVAL", "600"))
+
+
+def check_suspicious(api):
+    """Background check (when subscribed): notify Home Assistant about new suspicious patterns of the last minutes."""
+    if not load_fw_settings()["alerts"]["suspicious"]:
+        return []
+    to = int(time.time() * 1000)
+    try:
+        flows = read_flows(api, to - (SUSP_INTERVAL + 300) * 1000, to, 5000)
+    except UnifiError as e:
+        log("Suspicious traffic check: flows not available:", e)
+        return []
+    pats = suspicious_patterns(flows, zone_roles_by_name(api))
+    seen = _read_json(SUSP_PATH, {})
+    now = time.time()
+    seen = {k: t for k, t in seen.items() if now - t < 6 * 3600}  # the same pattern is reported again after 6 hours
+    new = [p for p in pats if f"{p['kind']}|{p['src']}|{p.get('target', '')}" not in seen]
+    for p in new:
+        seen[f"{p['kind']}|{p['src']}|{p.get('target', '')}"] = now
+    _write_json(SUSP_PATH, seen)
+    if new:
+        log("Suspicious network traffic:", "; ".join(f"{p['name']} {p['text']}" for p in new))
+        try:
+            for p in new:
+                ha_call("/events/clients_reservations_suspicious_traffic", p)
+            ha_call("/services/persistent_notification/create", {
+                "title": "Suspicious network traffic",
+                "message": "\n".join(f"- **{p['name']}** ({p['ip']}, zone {p['zone'] or '?'}): {p['text']}" for p in new[:15])
+                + "\n\nOpen *IP Manager › Relations* and filter *Suspicious*.",
+                "notification_id": "clients_reservations_suspicious_" + str(int(now))})
+        except UnifiError as e:
+            log("Suspicious traffic notification failed:", e)
+    return new
+
+
+def suspicious_worker():
+    time.sleep(60)
+    while True:
+        try:
+            if API:
+                check_suspicious(API)
+        except Exception as e:  # noqa: BLE001
+            log("Suspicious traffic check failed:", e)
+        time.sleep(SUSP_INTERVAL)
+
+
+def traffic_relations(api, qs):
+    """Traffic flows of a time window, summed up per pair (initiator → target): bytes both ways, ports, domains,
+    what UniFi did (allowed / blocked). The console keeps about 7 days and caps a query at 10,000 flows."""
+    now = int(time.time() * 1000)
+    try:
+        to = int(qs.get("to") or now)
+        frm = int(qs.get("from") or to - 24 * 3600 * 1000)
+    except ValueError:
+        raise UnifiError("Invalid time range.", 400)
+    to = min(to, now)
+    frm = max(frm, to - 7 * 24 * 3600 * 1000)
+    if frm >= to:
+        raise UnifiError("The start must be before the end.", 400)
+    try:
+        flows = read_flows(api, frm, to)
+    except UnifiError as e:
+        return {"available": False, "reason": str(e),
+                "hint": "Traffic flows need UniFi Network 9 or later (Insights › Flows) and a gateway that records them."}
+    nodes, edges = {}, {}
+
+    def node(side):
+        mac = normalize_mac(side.get("mac") or "")
+        zone = side.get("zone_name") or ""
+        if mac:
+            nid = mac
+        elif zone.lower() == "external" or (side.get("region") and not side.get("network_name")):
+            nid = "internet"
+        else:
+            nid = "ip:" + str(side.get("ip") or "?")
+        n = nodes.setdefault(nid, {"name": "", "ip": "", "mac": mac or "", "zone": zone, "network": side.get("network_name") or ""})
+        if nid != "internet":
+            n["name"] = n["name"] or side.get("device_name") or side.get("client_name") or ""
+            n["ip"] = n["ip"] or side.get("ip") or ""
+        return nid
+    for f in flows:
+        src, dst = f.get("source") or {}, f.get("destination") or {}
+        a, b = node(src), node(dst)
+        if a == b:
+            continue
+        td = f.get("traffic_data") or {}
+        e = edges.setdefault(a + "|" + b, {"a": a, "b": b, "ab": 0, "ba": 0, "flows": 0, "blocked": 0, "ports": {}, "domains": {},
+                                         "first": 0, "last": 0, "policies": set(), "a_zone": src.get("zone_name") or "",
+                                         "b_zone": dst.get("zone_name") or "", "a_net": src.get("network_name") or "",
+                                         "b_net": dst.get("network_name") or "", "ips": set()})
+        n = int(f.get("count") or 1)
+        e["ab"] += int(td.get("bytes_tx") or 0)
+        e["ba"] += int(td.get("bytes_rx") or 0)
+        e["flows"] += n
+        if str(f.get("action") or "").lower() == "blocked":
+            e["blocked"] += n
+        proto, port = str(f.get("protocol") or "").upper(), dst.get("port")
+        k = f"{proto}/{port}" if port not in (None, "") else proto
+        pr = e["ports"].setdefault(k, {"proto": proto, "port": port, "service": f.get("service") or "", "bytes": 0, "flows": 0, "blocked": 0})
+        pr["bytes"] += int(td.get("bytes_total") or 0)
+        pr["flows"] += n
+        if str(f.get("action") or "").lower() == "blocked":
+            pr["blocked"] += n
+        for d in (dst.get("domains") or [])[:3]:
+            e["domains"][d] = e["domains"].get(d, 0) + int(td.get("bytes_total") or 0)
+        if b == "internet" and dst.get("ip") and len(e["ips"]) < 50:
+            e["ips"].add(dst.get("ip"))
+        t0, t1 = f.get("flow_start_time") or 0, f.get("flow_end_time") or f.get("time") or 0
+        e["first"] = min(e["first"] or t0, t0) if t0 else e["first"]
+        e["last"] = max(e["last"], t1)
+        for pol in f.get("policies") or []:
+            if isinstance(pol, dict):
+                e["policies"].add(f"{pol.get('type') or ''}:{pol.get('internal_type') or ''}")
+    out = []
+    for e in edges.values():
+        e["policies"] = sorted(e["policies"])
+        e["ips"] = sorted(e["ips"])
+        e["domains"] = [d for d, _ in sorted(e["domains"].items(), key=lambda x: -x[1])[:8]]
+        e["ports"] = sorted(e["ports"].values(), key=lambda x: -x["bytes"])[:20]
+        out.append(e)
+    out.sort(key=lambda e: -(e["ab"] + e["ba"]))
+    log("Relations:", len(flows), "flows,", len(out), "pairs")
+    return {"available": True, "from": frm, "to": to, "flows": len(flows), "truncated": len(flows) >= FLOW_MAX,
+            "nodes": nodes, "edges": out[:1500], "suspicious": suspicious_patterns(flows, zone_roles_by_name(api)),
+            "alerts": load_fw_settings()["alerts"]}
+
+
+# ---------------------------------------------------------------- firewall: create one policy
+FW_PROTOCOLS = ("all", "tcp", "udp", "tcp_udp")
+_PORT_RE = re.compile(r"^\d{1,5}(-\d{1,5})?(,\d{1,5}(-\d{1,5})?)*$")
+_DOMAIN_RE = re.compile(r"^(\*\.)?[a-z0-9]([a-z0-9-]{0,62}[a-z0-9])?(\.[a-z0-9]([a-z0-9-]{0,62}[a-z0-9])?)+$")
+
+
+def _fw_ip_ok(v):
+    try:
+        if "-" in v:
+            a, b = (ipaddress.ip_address(x.strip()) for x in v.split("-", 1))
+            return a.version == b.version and int(a) <= int(b)
+        ipaddress.ip_network(v, strict=False)
+        return True
+    except ValueError:
+        return False
+
+
+def _fw_new_endpoint(e, side, zones):
+    e = e or {}
+    zid = str(e.get("zone_id") or "")
+    if zid not in zones:
+        raise UnifiError(f"Unknown {side} zone.", 400)
+    target = str(e.get("target") or "ANY").upper()
+    out = {"zone_id": zid, "matching_target": "ANY", "port_matching_type": "ANY", "match_opposite_ports": False}
+    if target == "CLIENT":
+        macs = [m for m in (normalize_mac(x) for x in e.get("macs") or []) if m]
+        if not macs:
+            raise UnifiError(f"Pick at least one device as {side}.", 400)
+        out.update(matching_target="CLIENT", client_macs=macs[:200])
+    elif target == "IP":
+        ips = [str(x).strip() for x in e.get("ips") or [] if str(x).strip()]
+        bad = [x for x in ips if not _fw_ip_ok(x)]
+        if not ips or bad:
+            raise UnifiError(f"Invalid {side} IP: {', '.join(bad) or 'none given'}", 400)
+        out.update(matching_target="IP", matching_target_type="SPECIFIC", ips=ips[:200], match_opposite_ips=False)
+        if side == "source":
+            out["match_mac"] = False
+    elif target == "WEB":
+        if side != "destination" or zones[zid].get("key") != "external":
+            raise UnifiError("Domains can only be the destination in the External zone.", 400)
+        doms = [str(x).strip().lower() for x in e.get("domains") or [] if str(x).strip()]
+        bad = [x for x in doms if not _DOMAIN_RE.match(x)]
+        if not doms or bad:
+            raise UnifiError(f"Invalid domain: {', '.join(bad) or 'none given'}", 400)
+        out.update(matching_target="WEB", web_domains=doms[:100])
+    elif target != "ANY":
+        raise UnifiError(f"Unsupported {side} type.", 400)
+    port = str(e.get("port") or "").replace(" ", "")
+    if port:
+        if not _PORT_RE.match(port) or any(int(x) > 65535 for x in re.split(r"[-,]", port)):
+            raise UnifiError(f"Invalid {side} port “{port}”.", 400)
+        out.update(port_matching_type="SPECIFIC", port=port)
+    return out
+
+
+def _fw_side_hits(ep, zone_id_of_ip, ip, mac):
+    """Does this endpoint cover the host with this ip / mac?"""
+    if ep["zone_id"] != zone_id_of_ip:
+        return False
+    t = ep["matching_target"]
+    if t == "ANY":
+        return True
+    if t == "CLIENT":
+        return bool(mac) and mac in ep.get("client_macs", [])
+    if t == "IP":
+        try:
+            a = ipaddress.ip_address(ip)
+        except ValueError:
+            return False
+        for x in ep.get("ips", []):
+            if "-" in x:
+                lo, hi = (ipaddress.ip_address(y.strip()) for y in x.split("-", 1))
+                if int(lo) <= int(a) <= int(hi):
+                    return True
+            elif a in ipaddress.ip_network(x, strict=False):
+                return True
+    return False
+
+
+def create_fw_policy(api, body, user=""):
+    fw = firewall_state(api)
+    if not fw.get("available"):
+        raise UnifiError(fw.get("reason") or "The zone-based firewall is not available.", 400, fw.get("hint", ""))
+    zones = {z["id"]: z for z in fw["zones"]}
+    name = str(body.get("name") or "").strip()[:128]
+    if not name:
+        raise UnifiError("Give the rule a name.", 400)
+    action = str(body.get("action") or "").upper()
+    if action not in ("ALLOW", "BLOCK", "REJECT"):
+        raise UnifiError("Unknown action.", 400)
+    proto = str(body.get("protocol") or "all").lower()
+    if proto not in FW_PROTOCOLS:
+        raise UnifiError("Unknown protocol.", 400)
+    ipv = str(body.get("ip_version") or "BOTH").upper()
+    if ipv not in ("BOTH", "IPV4", "IPV6"):
+        raise UnifiError("Unknown IP version.", 400)
+    src = _fw_new_endpoint(body.get("source"), "source", zones)
+    dst = _fw_new_endpoint(body.get("destination"), "destination", zones)
+    if proto == "all" and (src["port_matching_type"] != "ANY" or dst["port_matching_type"] != "ANY"):
+        raise UnifiError("Ports need the protocol TCP, UDP or TCP/UDP.", 400)
+    # never cut Home Assistant off from the UniFi console: it would lock this app out
+    if action != "ALLOW":
+        nets = []
+        for n in api.call("GET", "/rest/networkconf"):
+            if n.get("ip_subnet"):
+                try:
+                    nets.append((ipaddress.ip_interface(n["ip_subnet"]).network, n.get("_id")))
+                except ValueError:
+                    pass
+        zone_of_net = {nid: z["id"] for z in fw["zones"] for nid in z["network_ids"]}
+        gw_zone = next((z["id"] for z in fw["zones"] if z["key"] == "gateway"), "")
+
+        def zone_of_ip(ip):
+            try:
+                a = ipaddress.ip_address(ip)
+            except ValueError:
+                return ""
+            return next((zone_of_net.get(nid, "") for net, nid in nets if a in net), "")
+        h = ha_host()
+        ctl = fw.get("controller_ip") or ""
+        ctl_zone = zone_of_ip(ctl) if ctl and not any(ipaddress.ip_address(ctl) == n.network_address + 1 for n, _ in nets if ctl) else gw_zone
+        for ip in h.get("ips") or []:
+            mac = (h.get("macs") or [""])[0]
+            if _fw_side_hits(src, zone_of_ip(ip), ip, mac) and dst["zone_id"] in (gw_zone, ctl_zone) and \
+                    (dst["matching_target"] == "ANY" or (ctl and _fw_side_hits(dst, dst["zone_id"], ctl, ""))):
+                raise UnifiError("This rule would block Home Assistant from the UniFi console – the app would lock itself out.", 400,
+                                 "Narrow the source or the destination, or create the rule in UniFi if you really want it.")
+    pol = {"name": name, "description": str(body.get("description") or "").strip()[:255], "enabled": body.get("enabled", True) is not False,
+           "action": action, "ip_version": ipv, "protocol": proto, "connection_state_type": "ALL", "connection_states": [],
+           "create_allow_respond": bool(body.get("allow_return")) and action == "ALLOW", "logging": bool(body.get("logging")),
+           "match_ip_sec": False, "match_opposite_protocol": False, "icmp_typename": "ANY", "icmp_v6_typename": "ANY",
+           "schedule": {"mode": "ALWAYS", "repeat_on_days": [], "time_all_day": False},
+           "source": src, "destination": dst}
+    ver = create_version(api, "auto", "Before firewall rule: " + name, user)
+    res = api.call("POST", "/firewall-policies", pol, v2=True)
+    created = res[0] if isinstance(res, list) and res else res if isinstance(res, dict) else {}
+    log("Firewall policy created:", name, action, created.get("_id", "?"))
+    return {"policy": fw_policy(created) if isinstance(created, dict) and created else None, "version": ver["id"]}
 
 
 def firewall_for_version(api):
@@ -889,6 +1407,41 @@ def firewall_for_version(api):
     pols = [{k: v for k, v in p.items() if k not in ("hits", "last_hit")} for p in fw["policies"] if not p.get("predefined")]
     return {"zones": fw["zones"], "policies": pols,
             "groups": fw.get("groups") or [], "networks": fw.get("networks") or {}}
+
+
+FW_ROLES = ("trusted", "server", "controller", "iot", "media", "camera", "printer", "guest", "dmz", "none")
+
+
+def load_fw_settings():
+    """Settings of the firewall analysis: the role of each zone (empty = guessed from its name) and
+    profiles the user set for single devices."""
+    d = _read_json(FW_SETTINGS_PATH, {})
+    d = d if isinstance(d, dict) else {}
+    return {"zone_roles": d.get("zone_roles") if isinstance(d.get("zone_roles"), dict) else {},
+            "overrides": d.get("overrides") if isinstance(d.get("overrides"), dict) else {},
+            "alerts": {"suspicious": bool((d.get("alerts") or {}).get("suspicious"))}}
+
+
+def save_fw_settings(body):
+    cur = load_fw_settings()
+    if "zone_roles" in body:
+        roles = {}
+        for k, v in (body.get("zone_roles") or {}).items():
+            if re.fullmatch(r"[A-Za-z0-9_-]{1,40}", str(k)) and v in FW_ROLES:
+                roles[str(k)] = v
+        cur["zone_roles"] = dict(list(roles.items())[:100])
+    if "overrides" in body:
+        ov = {}
+        for k, v in (body.get("overrides") or {}).items():
+            mac = normalize_mac(k)
+            if mac and re.fullmatch(r"[a-z_]{1,30}", str(v or "")):
+                ov[mac] = str(v)
+        cur["overrides"] = dict(list(ov.items())[:2000])
+    if "alerts" in body:
+        cur["alerts"] = {"suspicious": bool((body.get("alerts") or {}).get("suspicious"))}
+    _write_json(FW_SETTINGS_PATH, cur)
+    log("Firewall analysis settings saved:", len(cur["zone_roles"]), "zone roles,", len(cur["overrides"]), "device profiles")
+    return cur
 
 
 # ---------------------------------------------------------------- versions
@@ -1541,6 +2094,17 @@ class Handler(BaseHTTPRequestHandler):
                 return self._send(200, build_snapshot(API))
             if method == "GET" and path.endswith("/api/firewall"):
                 return self._send(200, firewall_state(API))
+            if method == "GET" and path.endswith("/api/relations"):
+                qs = dict(urllib.parse.parse_qsl(urllib.parse.urlsplit(self.path).query))
+                return self._send(200, traffic_relations(API, qs))
+            if method == "POST" and path.endswith("/api/fw_order"):
+                return self._send(200, reorder_fw_policies(API, self._json_body(), self._user()))
+            if method == "POST" and path.endswith("/api/fw_policy"):
+                return self._send(200, create_fw_policy(API, self._json_body(), self._user()))
+            if method == "GET" and path.endswith("/api/fw_settings"):
+                return self._send(200, load_fw_settings())
+            if method == "POST" and path.endswith("/api/fw_settings"):
+                return self._send(200, save_fw_settings(self._json_body()))
             if method == "POST" and path.endswith("/api/client"):
                 return self._send(200, save_client(API, self._json_body()))
             if method == "POST" and path.endswith("/api/unreserve"):
@@ -1644,6 +2208,7 @@ def main():
             log("Controller certificate is not verified. To pin it, set certificate_fingerprint to:", _fmt_fp(fp))
     threading.Thread(target=daily_worker, daemon=True).start()
     threading.Thread(target=watch_worker, daemon=True).start()
+    threading.Thread(target=suspicious_worker, daemon=True).start()
     BoundedServer(("0.0.0.0", PORT), Handler).serve_forever()
 
 

@@ -78,6 +78,17 @@ versions you can compare and restore.
 
 Nothing is written to the firewall – policies are changed in UniFi.
 
+### Firewall analysis & relations
+
+| | |
+|---|---|
+| **Analysis** | Device types (HA integration, hostname, vendor, open ports), zone roles, checks per device, **consistency of similar devices** (e.g. the one Shelly that is missing from the rule all other Shellys are in), zone and VLAN structure (merge, split, own zone), recommendations, segmentation and tidiness score per zone. |
+| **Rule chain** | The rules of a zone pair from left to right – what decides first, what never applies, what has no effect. Change the order with ⠿ or ↑ ↓ and save it in UniFi. |
+| **Rule wizard** | Create a firewall rule step by step – for any devices or right from a client's settings; recommendations fill it in. |
+| **Client view** | Coloured zone strips, what applies to the client zone by zone and which rule decides, ports, paused rules and what they would change. |
+| **Relations** | Graph of who talks to whom (UniFi traffic flows): arrow width = data, colour = port, filters for zones, VLANs, internet, vendors, HA integrations, unexpected, suspicious and rule-breaking traffic. |
+| **Suspicious traffic alerts** | Scans, many blocked attempts, remote access from IoT devices – as a Home Assistant notification and event. |
+
 ### Versions & history
 
 | | |
@@ -161,6 +172,7 @@ Nothing is written to the firewall – policies are changed in UniFi.
 - A UniFi OS console running UniFi Network (UDM / UDM Pro / UDR / UCG / UX / Cloud Key Gen2+, or a self-hosted UniFi OS Server).
 - A **local** UniFi account (not a Ubiquiti cloud account, no 2FA) with permission to edit clients.
 - For the firewall page: UniFi Network **9.0 or later** with the zone-based firewall, and an account that may view the firewall settings. Everything else works without it.
+- To change the order of firewall rules: a UniFi API key (option `api_key`). Relations need a gateway that records traffic flows (Insights › Flows).
 
 ## Installation
 

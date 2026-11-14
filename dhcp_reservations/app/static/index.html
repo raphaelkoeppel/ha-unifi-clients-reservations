@@ -352,6 +352,175 @@ dialog#dlgRules::backdrop{background:rgba(8,10,14,.55)}
 body:not(.plan-mode) .plan-only{display:none!important}
 body.fw-mode #lnkCols,body.fw-mode #lnkClear,body.fw-mode .topbar>.viewsel,body.fw-mode #count,body.fw-mode #btnInline,body.fw-mode #facets,body.fw-mode .side-head .search{display:none}
 body.fw-mode .topbar{border-bottom:2px solid var(--accent)}
+body:not(.fw-mode) .fw-only{display:none!important}
+body.rel-mode #lnkCols,body.rel-mode #lnkClear,body.rel-mode .topbar>.viewsel,body.rel-mode #count,body.rel-mode #btnInline,body.rel-mode #facets,body.rel-mode .side-head .search,body.rel-mode #btnNew{display:none}
+body.rel-mode .topbar{border-bottom:2px solid var(--accent)}
+#relSide{padding-top:4px;margin-bottom:6px}
+#relSide .plan-hint{margin:10px 2px 4px;font-size:12px}
+.rel-sc .l1{font-size:13px}
+.rel-sc .l1 b{font-weight:500}
+.rel-ctrl{padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--card);margin:2px 0 10px}
+.rel-ctrl .sp{flex:1}
+.rel-ctrl input[type=datetime-local]{width:auto}
+.rel-box{border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:6px 8px 8px;margin:10px 0 14px}
+.rel-svg{display:block}
+.rel-e{opacity:.82;cursor:pointer;transition:opacity .15s}
+.rel-e:hover,.rel-e.sel{opacity:1;filter:drop-shadow(0 0 3px color-mix(in srgb,var(--fg) 40%,transparent))}
+.rel-e.bad{stroke-dasharray:none;animation:relpulse 1.6s ease-in-out infinite}
+.rel-e.blk{stroke-dasharray:5 4}
+.rel-e.unexp{filter:drop-shadow(0 0 3px var(--warn));animation:relpulse 2.2s ease-in-out infinite}
+.rel-susp{margin:0 0 10px}
+.rel-susp .fa-h .sp{flex:1}
+.rel-susp .fa-h .opt{font-weight:400;font-size:12.5px;padding:0}
+.rel-legend i.unexp{background:var(--warn);box-shadow:0 0 4px var(--warn)}
+@keyframes relpulse{50%{opacity:.45}}
+.rel-n{cursor:pointer}
+.rel-n circle{stroke:var(--bg);stroke-width:2}
+.rel-n:hover circle{stroke:var(--accent);stroke-width:3}
+.rel-l{font-size:11px;text-anchor:middle;fill:var(--fg);paint-order:stroke;stroke:var(--panel);stroke-width:3px}
+.rel-ic{font-size:13px;text-anchor:middle;fill:#fff;font-weight:700}
+.rel-legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:11.5px;color:var(--muted);padding:4px 4px 0}
+.rel-legend span{display:inline-flex;align-items:center;gap:5px}
+.rel-legend i{display:inline-block;width:16px;height:4px;border-radius:2px}
+.rel-legend i.dash{background:repeating-linear-gradient(90deg,var(--muted) 0 4px,transparent 4px 7px)}
+.imp-table.rel-table{max-height:none}
+.rel-table td{white-space:normal!important;font-size:12.5px}
+.rel-table td .muted{font-size:11.5px}
+.rel-table tr{cursor:pointer}
+.rel-table tr.sel td{background:var(--sel)}
+.rel-port{display:inline-block;font-size:11px;padding:0 6px;border-radius:4px;border-left:3px solid var(--pc);background:var(--chip);margin:1px 2px 1px 0;white-space:nowrap}
+@container main (max-width:1060px){body.rel-mode .view-switch button svg + *,body.fw-mode .view-switch button svg + *{display:none}}
+body.fw-mode #btnNew{display:none}
+.fw-chain{border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:10px 12px 12px;margin:-4px 0 14px}
+.fw-chain-h{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;margin-bottom:8px}
+.fw-chain-h .hint{flex-basis:100%}
+.fw-lane{display:flex;align-items:stretch;gap:0;overflow-x:auto;padding:4px 2px 8px}
+.lb{flex:none;width:150px;display:grid;gap:3px;text-align:left;font:inherit;font-size:12px;padding:7px 9px;border-radius:7px;border:1px solid var(--line-strong);background:var(--card);color:var(--fg);cursor:pointer;position:relative}
+.lb.allow{border-color:color-mix(in srgb,var(--ok) 55%,transparent);background:color-mix(in srgb,var(--ok) 10%,var(--card))}
+.lb.block{border-color:color-mix(in srgb,var(--bad) 55%,transparent);background:color-mix(in srgb,var(--bad) 10%,var(--card))}
+.lb.ret{border-color:color-mix(in srgb,var(--accent) 50%,transparent);background:color-mix(in srgb,var(--accent) 9%,var(--card))}
+.lb.off{border-style:dashed;opacity:.7}
+.lb.pre{background:var(--chip);border-style:solid}
+.lb.dead{opacity:.45;background-image:repeating-linear-gradient(135deg,transparent 0 6px,color-mix(in srgb,var(--muted) 18%,transparent) 6px 8px)}
+.lb.odd{box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--warn) 60%,transparent)}
+.lb.sel{outline:2px solid var(--fg);outline-offset:1px}
+.lb:hover{outline:2px solid var(--accent);outline-offset:1px}
+.lb-top{display:flex;align-items:center;gap:6px}
+.lb-id{font:600 11px/1 var(--mono);padding:3px 5px;border-radius:4px;background:var(--chip);color:var(--muted)}
+.lb-ic{display:inline-grid;place-items:center;width:18px;height:18px;border-radius:50%;font-size:11px;font-weight:700;font-style:normal;color:#fff;background:var(--muted)}
+.lb.allow .lb-ic,.lb-ic.allow,.or-row.allow .lb-ic{background:var(--ok)}.lb.block .lb-ic,.lb-ic.block,.or-row.block .lb-ic{background:var(--bad)}.lb.ret .lb-ic,.lb-ic.ret,.or-row.ret .lb-ic{background:var(--accent)}
+.lb-w{color:var(--warn);margin-left:auto}
+.lb-n{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lb-s,.lb-h{color:var(--muted);font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lb-arr{flex:none;align-self:center;color:var(--muted);padding:0 4px}
+.fw-legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:11.5px;color:var(--muted);margin:2px 0 6px}
+.fw-legend span{display:inline-flex;align-items:center;gap:5px}
+.lb-dead{display:inline-block;width:16px;height:12px;border-radius:3px;border:1px solid var(--line-strong);background-image:repeating-linear-gradient(135deg,transparent 0 3px,color-mix(in srgb,var(--muted) 40%,transparent) 3px 5px)}
+.fw-order{margin-top:6px}
+.fw-order>summary{cursor:pointer;font-size:12.5px;color:var(--accent);padding:4px 0}
+.or-list{display:grid;gap:4px;margin-top:6px}
+.or-row{display:grid;grid-template-columns:auto auto auto auto minmax(0,1fr) auto;align-items:center;gap:8px;padding:6px 8px;border:1px solid var(--line);border-radius:7px;background:var(--card)}
+.or-row.dragging{opacity:.4}
+.or-row.drop-before{box-shadow:0 -3px 0 var(--accent)}.or-row.drop-after{box-shadow:0 3px 0 var(--accent)}
+.or-grip{cursor:grab;color:var(--muted);font-size:16px;line-height:1;user-select:none}
+.or-mv{display:inline-flex;gap:2px}
+.icon-sm{font:inherit;font-size:12px;width:24px;height:24px;border:1px solid var(--line-strong);border-radius:5px;background:var(--bg);color:var(--fg);cursor:pointer}
+.icon-sm:disabled{opacity:.35;cursor:default}
+.or-n{display:grid;min-width:0}
+.or-n b,.or-n .muted{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.or-n .muted{font-size:11.5px}
+.or-f{display:flex;flex-wrap:wrap;gap:3px;justify-content:flex-end}
+.or-pre{font-size:12px;color:var(--muted);padding:4px 8px;border:1px dashed var(--line-strong);border-radius:7px}
+.or-foot{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:8px}
+.or-foot .sp{flex:1}
+@media (max-width:700px){.or-row{grid-template-columns:auto auto auto minmax(0,1fr)}.or-row .lb-ic,.or-row .or-f{display:none}}
+.fw-strips{display:grid;gap:6px;margin-top:10px}
+.fw-strip{display:flex;flex-wrap:wrap;align-items:center;gap:4px}
+.fw-strip-l{font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);width:100%}
+.fw-strip .fwc{font:inherit;font-size:12px;padding:3px 8px;border-radius:5px;border:1px solid var(--line-strong);cursor:pointer;color:var(--fg)}
+.fw-strip .fwc.part,.fwc.part{background:color-mix(in srgb,var(--warn) 16%,var(--card));border-color:color-mix(in srgb,var(--warn) 45%,transparent)}
+.fw-strip .fwc:hover{outline:2px solid var(--accent);outline-offset:-1px}
+.fw-strip-i{font-weight:700;margin-left:2px}
+.fw-strip-p{font-size:11px;color:var(--muted)}
+.fwc-p{display:block;font-size:10.5px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:150px;margin-inline:auto}
+.fwc-p.ok{color:var(--ok)}.fwc-p.no{color:var(--bad)}
+.fw-ports{font-size:11.5px;margin-top:2px}.fw-ports.ok{color:var(--ok)}.fw-ports.no{color:var(--bad)}
+.fwc.risky{box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--warn) 70%,transparent)}
+.fw-risk{color:var(--warn)}
+.fw-since{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--muted)}
+.fw-since select{max-width:220px}
+.fw-off{background:var(--warn-bg);border-color:color-mix(in srgb,var(--warn) 40%,transparent)}
+.fa-role{font-size:10.5px;font-weight:500;color:var(--muted);border:1px solid var(--line-strong);border-radius:4px;padding:0 5px;white-space:nowrap}
+.fa-ctrl{padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--card);margin:2px 0 12px}
+.fa-ctrl .sp{flex:1}
+.fa-sec{margin:0 0 14px}
+.fa-sec>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px;padding:6px 0;user-select:none}
+.fa-sec>summary::-webkit-details-marker{display:none}
+.fa-sec>summary .sec-title{margin:0}
+.fa-sec>summary svg{margin-left:auto;color:var(--muted);transition:transform .15s}
+.fa-sec:not([open])>summary svg{transform:rotate(180deg)}
+.fa-n{font-size:11px;background:var(--chip);color:var(--muted);border-radius:999px;padding:0 7px;line-height:18px}
+.fa-card{display:grid;grid-template-columns:14px 1fr;gap:4px 10px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--card);margin-bottom:8px}
+.fa-dot{width:9px;height:9px;border-radius:50%;margin-top:5px;background:var(--info)}
+.fa-card.warn .fa-dot{background:var(--warn)}.fa-card.bad .fa-dot{background:var(--bad)}
+.fa-card.warn{border-color:color-mix(in srgb,var(--warn) 35%,var(--line))}.fa-card.bad{border-color:color-mix(in srgb,var(--bad) 45%,var(--line))}
+.fa-h{font-weight:600;display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.fa-h .muted{font-weight:400}
+.fa-d{font-size:12.5px;color:var(--muted);margin-top:2px}
+.fa-devs{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.chip{font:inherit;font-size:12px;border:1px solid var(--line-strong);background:var(--bg);color:var(--fg);border-radius:999px;padding:1px 9px;cursor:pointer}
+.chip:hover{border-color:var(--accent);color:var(--accent)}
+.fa-act{margin-top:8px;display:flex;gap:6px;flex-wrap:wrap}
+.fa-kind{font-size:11px;font-weight:600;padding:1px 7px;border-radius:4px;background:var(--chip);color:var(--muted)}
+.fa-kind.allow{background:color-mix(in srgb,var(--ok) 16%,transparent);color:var(--ok)}
+.fa-kind.block{background:var(--bad-bg);color:var(--bad)}
+.fa-kind.move{background:var(--sel);color:var(--accent)}
+.fa-kind.mx{background:var(--warn-bg);color:var(--warn)}
+.fa-grp{border:1px solid var(--line);border-radius:8px;background:var(--card);padding:10px 12px;margin-bottom:10px}
+.fa-gh{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:8px}
+.fa-grp .imp-table{max-height:none}
+.fa-grp tr.fa-out td:first-child{box-shadow:inset 3px 0 0 var(--cfl)}
+.fa-odd{color:var(--cfl);font-weight:600;background:color-mix(in srgb,var(--cfl) 10%,transparent)}
+.fa-filter{margin:0 0 8px}
+.fa-sec .imp-table{max-height:none}
+.fa-f{display:block}
+.fa-f.warn{color:var(--warn)}.fa-f.info{color:var(--muted)}.fa-f.bad{color:var(--bad)}
+.fa-why{font-size:11.5px;margin-top:2px;max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#faBody select{max-width:230px}
+.fw-lvl{font-weight:600;white-space:nowrap}
+.fw-lvl.allow{color:var(--ok)}.fw-lvl.block{color:var(--bad)}.fw-lvl.part{color:var(--warn)}.fw-lvl.ret{color:var(--accent)}.fw-lvl.none{color:var(--muted)}
+.sec-sub{font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin:14px 0 6px}
+.imp-table.fw-eff{max-height:none}
+.fw-eff td{white-space:normal!important;font-size:12.5px}
+.fw-eff tr.own td{background:var(--sel)}
+.fw-why{font-size:11.5px;margin-top:2px}
+.fw-by{font-size:11.5px}
+.fw-finds{display:grid;gap:3px;margin-top:10px;font-size:12.5px}
+.fw-hit.paused{border-style:dashed}
+.fw-hit .fw-lvl{font-size:12px}
+dialog#dlgFwRoles,dialog#dlgFwWiz{border:1px solid var(--line-strong);border-radius:10px;padding:0;background:var(--panel);color:var(--fg);width:min(720px,calc(100vw - 32px));max-height:calc(100vh - 48px)}
+dialog#dlgFwRoles::backdrop,dialog#dlgFwWiz::backdrop{background:rgba(8,10,14,.55)}
+#fwRoleRows .rule-row{grid-template-columns:minmax(120px,200px) 1fr}
+.wz-steps{display:flex;gap:4px;padding:10px 16px 0;flex-wrap:wrap}
+.wz-st{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line-strong);background:var(--bg);color:var(--muted);border-radius:999px;padding:4px 12px 4px 4px;font:inherit;font-size:12.5px;cursor:pointer}
+.wz-st b{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--chip);font-size:11px}
+.wz-st.on{border-color:var(--accent);color:var(--fg)}.wz-st.on b{background:var(--accent);color:#fff}
+.wz-st.done b{background:color-mix(in srgb,var(--accent) 25%,transparent);color:var(--accent)}
+.wz-st:disabled{cursor:default;opacity:.6}
+.wz-q{font-weight:600;font-size:15px;margin:4px 0 10px}
+.wz-big{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px}
+.wz-card{display:grid;gap:6px;padding:12px;border:1px solid var(--line-strong);border-radius:8px;background:var(--card);cursor:pointer;font-size:12.5px;color:var(--muted)}
+.wz-card b{font-size:15px}
+.wz-card.on,.wz-opt.on{border-color:var(--accent);background:var(--sel);color:var(--fg)}
+.wz-card input,.wz-opt input{position:absolute;opacity:0;pointer-events:none}
+.wz-opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:6px;margin-bottom:10px}
+.wz-opt{display:flex;align-items:center;gap:8px;padding:9px 12px;border:1px solid var(--line-strong);border-radius:8px;background:var(--card);cursor:pointer;font-size:13px}
+.wz-sub{display:flex;flex-direction:column;gap:4px;font-size:12.5px;color:var(--muted);margin:6px 0}
+.wz-sub input,.wz-sub select{color:var(--fg)}
+.wz-row{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:flex-end;margin-top:8px}
+.wz-devs{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:0 12px;max-height:240px;overflow:auto;border:1px solid var(--line);border-radius:8px;padding:4px 10px;margin:6px 0}
+.wz-sum{padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--card);margin:10px 0;display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+#wzBody .field{margin-bottom:8px}
 #fwSide{padding-top:4px;margin-bottom:6px}
 #fwSide .plan-hint{margin:10px 2px 4px;font-size:12px}
 #fwZones .pn .l2{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
@@ -382,7 +551,7 @@ body.fw-mode .topbar{border-bottom:2px solid var(--accent)}
 .fw-bar .sp{flex:1}
 .fw-search{max-width:280px;flex:1 1 200px}
 .fw-sel{font-size:12.5px;margin:0 0 8px;display:flex;flex-wrap:wrap;align-items:center;gap:4px 6px}
-.fw-table{max-height:none}
+.imp-table.fw-table{max-height:none}
 .fw-table td{white-space:nowrap}
 .fw-row{cursor:pointer!important}
 .fw-row:hover td{background:var(--hover)}
@@ -756,6 +925,7 @@ window.I18N = (() => {
     <div class="side-scroll">
       <details id="planNets" open hidden><summary>Networks<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 15 6-6 6 6"/></svg></summary><nav class="plan-nets" id="planStats" aria-label="Networks"></nav><p class="hint plan-hint">Click an address to open the device, or a free one to reserve it. Devices outside the filters below are greyed out.</p></details>
       <details id="fwSide" open hidden><summary>Zones<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 15 6-6 6 6"/></svg></summary><nav class="plan-nets" id="fwZones" aria-label="Zones"></nav><p class="hint plan-hint">Click a zone to see its policies in both directions. The firewall is shown read only – change it in UniFi.</p></details>
+      <details id="relSide" open hidden><summary>Show<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 15 6-6 6 6"/></svg></summary><nav class="plan-nets" id="relScopes" aria-label="Relations filter"></nav><p class="hint plan-hint">Built from UniFi's traffic flows (Insights › Flows). Click a device to open it, an arrow or a row to highlight the relation.</p></details>
       <div id="facets"></div>
     </div>
     <div class="side-foot"><div class="side-links"><button class="link" type="button" id="lnkClear" disabled>Clear filters</button><button class="link" type="button" id="lnkCols">Customize columns</button></div><div class="foot-row"><span id="appVer" title="IP Manager for UniFi – app version"></span><span class="sp"></span><span class="lang-wrap"><button type="button" class="theme-btn lang-btn" id="btnLang" aria-haspopup="menu" aria-expanded="false" title="Language"></button><div class="lang-menu" id="langMenu" role="menu" hidden></div></span><button type="button" class="theme-btn" id="btnTheme"></button></div></div>
@@ -764,13 +934,14 @@ window.I18N = (() => {
   <main>
     <div class="topbar">
       <button class="btn menu-btn" id="btnMenu" type="button" title="Show filters" aria-label="Show filters"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="6" rx="1.5"/><rect x="3" y="14" width="18" height="6" rx="1.5"/><path d="M7 7h.01M7 17h.01"/></svg></button>
-      <div class="seg view-switch" role="group" aria-label="View"><button type="button" data-vw="clients" aria-pressed="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1" fill="currentColor"/><circle cx="4.5" cy="12" r="1" fill="currentColor"/><circle cx="4.5" cy="18" r="1" fill="currentColor"/></svg><span>Clients</span></button><button type="button" data-vw="plan" aria-pressed="false"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span>IP Plan</span></button><button type="button" data-vw="fw" aria-pressed="false"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 4 6v6c0 4.5 3.4 8.3 8 9 4.6-.7 8-4.5 8-9V6z"/><path d="M4 12h16M12 3v18"/></svg><span>Firewall</span></button></div>
+      <div class="seg view-switch" role="group" aria-label="View"><button type="button" data-vw="clients" aria-pressed="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1" fill="currentColor"/><circle cx="4.5" cy="12" r="1" fill="currentColor"/><circle cx="4.5" cy="18" r="1" fill="currentColor"/></svg><span>Clients</span></button><button type="button" data-vw="plan" aria-pressed="false"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span>IP Plan</span></button><button type="button" data-vw="fw" aria-pressed="false"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 4 6v6c0 4.5 3.4 8.3 8 9 4.6-.7 8-4.5 8-9V6z"/><path d="M4 12h16M12 3v18"/></svg><span>Firewall</span></button><button type="button" data-vw="rel" aria-pressed="false"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="5" cy="6" r="2.5"/><circle cx="19" cy="6" r="2.5"/><circle cx="12" cy="18" r="2.5"/><path d="M7.5 6h9M6.3 8.2l4.4 7.6M17.7 8.2l-4.4 7.6"/></svg><span>Relations</span></button></div>
       <div class="viewsel">
         <button class="btn view-btn" id="btnView" type="button" aria-haspopup="menu" aria-expanded="false"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><span id="viewName">All</span><span class="mod" id="viewMod" hidden title="Unsaved changes">•</span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg></button>
         <div class="menu" id="viewMenu" role="menu" hidden></div>
       </div>
       <span id="count"></span>
       <div class="cl-tabs plan-tabs plan-only" role="tablist"><button type="button" role="tab" data-pt="cur" aria-selected="true">Current</button><button type="button" role="tab" data-pt="clean" aria-selected="false"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-right:6px"><path d="M14 3 9.5 11.5"/><path d="M5 13.5h9l1.5 7.5H3.5z"/><path d="M8 17v4M11 17v4"/><path d="M18 3v3M16.5 4.5h3M20 9v2M19 10h2"/></svg>CleanUp Proposal</button></div>
+      <div class="cl-tabs plan-tabs fw-only" role="tablist"><button type="button" role="tab" data-ft="mx" aria-selected="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="vertical-align:-2px;margin-right:6px"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg>Matrix</button><button type="button" role="tab" data-ft="an" aria-selected="false"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="vertical-align:-2px;margin-right:6px"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5M8 11h6M11 8v6"/></svg>Analysis</button></div>
       <span class="sp"></span>
       <span class="plan-icons-slot plan-only"></span>
       <div class="grp">
@@ -790,6 +961,7 @@ window.I18N = (() => {
           </div>
         </div>
         <button class="btn primary icon-btn" id="btnNew" type="button" title="Add reservation"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg><span class="lbl">Add reservation</span></button>
+        <button class="btn primary icon-btn fw-only" id="btnNewRule" type="button" title="Create a firewall rule in UniFi (guided)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg><span class="lbl">Add firewall rule</span></button>
       </div>
     </div>
     <div id="banner" class="banner" hidden></div>
@@ -844,18 +1016,45 @@ window.I18N = (() => {
         <div id="fwBody" hidden>
           <div class="plan-head"><h3>Zone Matrix</h3><span class="hint">Click a zone pair to filter the policies below. Read only – policies are changed in UniFi.</span><span class="sp"></span><span id="fwSum" class="sumrow" style="margin:0"></span></div>
           <div class="fw-mx-box" id="fwMatrix"></div>
+          <div class="fw-chain" id="fwChain" hidden></div>
           <div class="fw-bar">
             <label class="opt"><input type="checkbox" id="fwV4"><span>IPv4</span></label>
             <label class="opt"><input type="checkbox" id="fwV6"><span>IPv6</span></label>
             <label class="opt"><input type="checkbox" id="fwBuiltin"><span>Built-in</span></label>
             <label class="opt"><input type="checkbox" id="fwCustom"><span>Custom</span></label>
             <label class="opt"><input type="checkbox" id="fwPaused"><span>Paused</span></label>
+            <label class="fw-since" title="Mark rules that are new or changed since a saved version">Changed since <select id="fwSince"><option value="">–</option></select></label>
             <span class="sp"></span>
             <div class="search fw-search"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input type="search" id="fwQ" placeholder="Search policies" aria-label="Search policies"></div>
           </div>
           <div class="fw-sel" id="fwSel"></div>
           <div class="imp-table fw-table"><table><thead><tr><th data-sk="name">Name</th><th data-sk="act">Action</th><th data-sk="ver">IP Version</th><th data-sk="proto">Protocol</th><th data-sk="sz">Src. Zone</th><th data-sk="src">Src.</th><th data-sk="sp">Src. Port</th><th data-sk="dz">Dst. Zone</th><th data-sk="dst">Dst.</th><th data-sk="dp">Dst. Port</th><th data-sk="hits" title="How often UniFi matched this policy (counted also without logging)">Hits</th><th data-sk="lh">Last Hit</th><th data-sk="idx" title="Order in which UniFi evaluates the policies">ID</th></tr></thead><tbody id="fwRows"></tbody></table></div>
         </div>
+        <div id="fwAn" hidden>
+          <div class="plan-head"><h3>Analysis</h3><span class="hint">Checks zones, VLANs, rules and devices – read only. Recommendations can be turned into rules with the guided wizard.</span></div>
+          <div class="cl-ctrl fa-ctrl" id="faCtrl"></div>
+          <div id="faBody"></div>
+        </div>
+      </div>
+    </section>
+    <section class="plan-view rel-view" id="relView" hidden aria-label="Relations">
+      <div class="plan-scroll">
+        <div class="plan-head"><h3>Relations</h3><span class="hint">Who talks to whom – one arrow per direction, the width is the data volume, the colour the port.</span></div>
+        <div class="cl-ctrl rel-ctrl">
+          <span class="seg" role="group" aria-label="Time range"><button type="button" data-relp="1h">1 h</button><button type="button" data-relp="6h">6 h</button><button type="button" data-relp="24h">24 h</button><button type="button" data-relp="7d">7 days</button><button type="button" data-relp="custom">From – to</button></span>
+          <span id="relCustom" hidden><label>From <input type="datetime-local" id="relFrom"></label> <label>to <input type="datetime-local" id="relTo"></label> <button class="btn primary" type="button" id="relLoad">Show</button></span>
+          <label class="opt" title="Untick to see only the communication inside your network"><input type="checkbox" id="relInet"><span>Internet traffic</span></label>
+          <label class="opt" title="Home Assistant talks to almost every device – untick to hide it"><input type="checkbox" id="relHa"><span>Home Assistant traffic</span></label>
+          <label class="opt" title="Access points, switches and the gateway"><input type="checkbox" id="relUnifi"><span>UniFi devices</span></label>
+          <label class="opt" title="Devices recognised as NAS or server"><input type="checkbox" id="relNas"><span>NAS / server</span></label>
+          <label class="opt" title="Devices recognised as printers"><input type="checkbox" id="relPrinter"><span>Printers</span></label>
+          <span class="sp"></span>
+          <div class="search fw-search"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input type="search" id="relQ" placeholder="Search devices, ports, domains" aria-label="Search relations"></div>
+        </div>
+        <div id="relMsg"></div>
+        <div id="relSusp"></div>
+        <div class="rel-box"><div id="relGraph"></div><div class="rel-legend" id="relLegend"></div></div>
+        <div class="imp-table rel-table"><table><thead><tr><th>From (starts)</th><th>To</th><th title="Data from the starting device">→</th><th title="Data back">←</th><th>Ports</th><th>Flows</th><th>Notes</th></tr></thead><tbody id="relRows"></tbody></table></div>
       </div>
     </section>
   </main>
@@ -906,6 +1105,7 @@ window.I18N = (() => {
         <label class="switch" for="fDnsOn"><span>Local DNS record</span><input type="checkbox" id="fDnsOn" form="formEdit"></label>
         <div class="field" id="dnsField"><label for="fDns">Hostname</label><input id="fDns" autocomplete="off" placeholder="device.home" form="formEdit"></div>
       </div>
+      <div class="card" id="fwRuleCard" hidden><div class="sec-title">Firewall</div><p class="hint" style="margin:6px 0 10px">Allow or block something for this client only – step by step.</p><button class="btn" type="button" id="btnFwRule" style="width:100%">Create firewall rule for this client…</button></div>
       <div class="err" id="editErr" hidden></div>
       <div class="actions"><button class="btn primary" type="submit" form="formEdit" id="btnSave">Apply</button></div>
       <div class="card danger-zone" id="dangerZone">
@@ -1029,7 +1229,7 @@ window.I18N = (() => {
           <span class="hint" id="verDaily"></span>
         </div>
         <div class="imp-help">A version freezes the table: names, notes, fixed IPs, AP locks, DNS records and – for information – current IP, network and first/last seen. A version is also saved automatically before every bulk action (CSV import, replace subnet, names from HA, restore). Automatic versions (daily, before bulk actions) are kept <b id="verKeep">30</b> days; daily versions and the retention are set in the app configuration; manual and pinned versions and the baseline are kept until you delete them.</div>
-        <div class="imp-table"><table><thead><tr><th style="width:34px"></th><th>Saved</th><th>Name</th><th>Type</th><th>By</th><th>Devices</th><th>Fixed IPs</th><th></th></tr></thead><tbody id="verRows"></tbody></table></div>
+        <div class="imp-table"><table><thead><tr><th style="width:34px"></th><th>Saved</th><th>Name</th><th>Type</th><th>By</th><th>Devices</th><th>Fixed IPs</th><th title="Custom firewall policies in the version">Policies</th><th></th></tr></thead><tbody id="verRows"></tbody></table></div>
       </div>
       <div class="imp-foot"><span class="hint">Tick two versions to compare them with each other.</span><span class="sp"></span><button class="btn" type="button" id="verCmp2" disabled>Select two versions to compare</button><button class="btn" type="button" id="verClose2">Close</button></div>
     </div>
@@ -1056,6 +1256,24 @@ window.I18N = (() => {
       </div>
       <div class="imp-foot"><span class="sp"></span><button class="btn primary" type="button" id="rstPreview">Preview restore</button></div>
     </div>
+  </div>
+</dialog>
+<dialog id="dlgFwRoles" aria-labelledby="fwRolesTitle">
+  <div class="imp">
+    <div class="imp-head"><h2 id="fwRolesTitle">Zone roles</h2><button class="x link" type="button" id="fwRolesClose" aria-label="Close" style="color:var(--muted)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+    <div class="imp-body">
+      <div class="imp-help"><p style="margin:0">Say what each zone is meant for. The analysis expects e.g. ESPHome devices in the <i>IoT</i> zone and computers in the <i>Trusted</i> zone, and checks the zone pairs against it. <i>Auto</i> guesses the role from the zone's name.</p></div>
+      <div id="fwRoleRows"></div>
+    </div>
+    <div class="imp-foot"><span class="sp"></span><button class="btn" type="button" id="fwRolesCancel">Cancel</button><button class="btn primary" type="button" id="fwRolesSave">Save roles</button></div>
+  </div>
+</dialog>
+<dialog id="dlgFwWiz" aria-labelledby="wzTitle">
+  <div class="imp">
+    <div class="imp-head"><h2 id="wzTitle">New firewall rule</h2><button class="x link" type="button" id="wzClose" aria-label="Close" style="color:var(--muted)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+    <div class="wz-steps" id="wzSteps"></div>
+    <div class="imp-body" id="wzBody"></div>
+    <div class="imp-foot"><span class="hint vnote">A version is saved before the rule is created.</span><span class="sp"></span><button class="btn" type="button" id="wzCancel">Cancel</button><button class="btn" type="button" id="wzBack">Back</button><button class="btn primary" type="button" id="wzNext">Next</button></div>
   </div>
 </dialog>
 <dialog id="dlgRules" aria-labelledby="rulesTitle">
@@ -1194,6 +1412,7 @@ const FACETS = [
   { id: "ssid", title: "WiFi Broadcasts", get: c => c.essid, opts: () => uniq(state.clients.map(c => c.essid)).map(v => [v, v]) },
   { id: "vlan", title: "VLANs", get: c => c.network_id, opts: () => state.networks.map(n => [n.id, n.name + (n.vlan ? ` (${n.vlan})` : "")]) },
   { id: "zone", title: "Firewall zones", ready: () => FW.ok !== undefined, get: c => zoneOf(c)?.id || "", opts: () => fwZones().map(z => [z.id, z.name]) },
+  { id: "fwa", title: "Firewall analysis", ready: () => !!FW.data, multi: c => c.mac ? fwDevCodes(c) : [], opts: () => FW.data ? [["find", "With findings"], ["zone", "Wrong zone"], ["grp", "Unlike similar devices"], ["access", "Access problems"], ["unk", "Device type not recognised"]] : [] },
 ];
 const uniq = a => [...new Set(a.filter(Boolean))].sort((x, y) => x.localeCompare(y, "de"));
 const facetVals = (f, c) => f.multi ? f.multi(c) : [f.get(c)];
@@ -1379,7 +1598,7 @@ function renderTable() {
   $("#count").textContent = list.length === state.clients.length ? `${list.length} Devices` : `${list.length} of ${state.clients.length} Devices`;
   $("#stand").textContent = state.fetchedAt ? "Updated " + new Date(state.fetchedAt * 1000).toLocaleTimeString(I18N.locale, { hour: "2-digit", minute: "2-digit" }) : "";
 }
-function renderAll() { renderFacets(); renderTable(); if (isPlan() && !CL.running) renderPlan(); if (isFw()) renderFw(); }
+function renderAll() { renderFacets(); renderTable(); if (isPlan() && !CL.running) renderPlan(); if (isFw()) renderFw(); if (isRel()) renderRel(); }
 function persist() { store.set("view2", { sort: state.sort, colFilters: state.colFilters, facets: state.facets, hiddenCols: state.hiddenCols, colOrder: state.colOrder }); if (typeof renderViewBtn === "function") renderViewBtn(); }
 
 // ---------- customize columns ----------
@@ -1524,12 +1743,13 @@ const PLAN = { sel: null, tab: "cur" }; // tab: cur = current plan, clean = Clea
 const isPlan = () => document.body.classList.contains("plan-mode");
 function setView(v) {
   if (CL.running) return;
-  if (!["clients", "plan", "fw"].includes(v)) v = "clients";
-  const plan = v === "plan", fw = v === "fw";
-  document.body.classList.toggle("plan-mode", plan); document.body.classList.toggle("fw-mode", fw); store.set("view", v);
+  if (!["clients", "plan", "fw", "rel"].includes(v)) v = "clients";
+  const plan = v === "plan", fw = v === "fw", rel = v === "rel";
+  document.body.classList.toggle("plan-mode", plan); document.body.classList.toggle("fw-mode", fw); document.body.classList.toggle("rel-mode", rel); store.set("view", v);
+  $("#relSide").hidden = !rel; $("#relView").hidden = !rel;
   for (const b of document.querySelectorAll("[data-vw]")) b.setAttribute("aria-pressed", String(b.dataset.vw === v));
-  $("#planNets").hidden = !plan; $("#fwSide").hidden = !fw; $(".tablewrap").hidden = plan || fw; $("#planView").hidden = !plan; $("#fwView").hidden = !fw;
-  if (plan) { closeCols(); openPlan(); } else if (fw) { closeCols(); PLAN.tab = "cur"; renderFw(); } else { PLAN.tab = "cur"; renderTable(); }
+  $("#planNets").hidden = !plan; $("#fwSide").hidden = !fw; $(".tablewrap").hidden = plan || fw || rel; $("#planView").hidden = !plan; $("#fwView").hidden = !fw;
+  if (rel) { closeCols(); PLAN.tab = "cur"; openRel(); } else if (plan) { closeCols(); openPlan(); } else if (fw) { closeCols(); PLAN.tab = "cur"; renderFw(); } else { PLAN.tab = "cur"; renderTable(); }
 }
 document.querySelectorAll("[data-vw]").forEach(b => b.addEventListener("click", () => setView(b.dataset.vw)));
 function openPlan() { if (PLAN.sel !== ALL_NETS && (!PLAN.sel || !net(PLAN.sel))) PLAN.sel = state.networks.find(n => subnetRange(n.subnet))?.id || null; PLAN.tab = "cur"; renderPlan(); }
@@ -2147,7 +2367,7 @@ async function load() {
 // ---------- firewall (zone-based, read only) ----------
 // Zones group networks; policies allow or block traffic from a source zone to a destination zone.
 // Everything here only reads – policies are changed in UniFi.
-const FW = { data: null, ok: undefined, err: null, src: null, dst: null, zone: null, open: null, q: "",
+const FW = { data: null, ok: undefined, err: null, src: null, dst: null, zone: null, open: null, q: "", tab: store.get("fwTab", "mx"), since: "", sinceMap: null,
   show: Object.assign({ v4: true, v6: true, builtin: true, custom: true, paused: true }, store.get("fwShow", {})) };
 const FW_KEY_ORDER = ["internal", "external", "gateway", "vpn", "hotspot", "dmz"];
 const FW_ACTION = { ALLOW: ["Allow", "allow"], BLOCK: ["Block", "block"], REJECT: ["Reject", "block"] };
@@ -2156,7 +2376,7 @@ const isFw = () => document.body.classList.contains("fw-mode");
 async function loadFw() {
   try {
     const d = await api("api/firewall");
-    FW.data = d.available ? d : null; FW.ok = !!d.available; FW.err = d.available ? null : { msg: d.reason || "", hint: d.hint || "" };
+    FW.data = d.available ? d : null; FW.ok = !!d.available; FW.err = d.available ? null : { msg: d.reason || "", hint: d.hint || "", state: d.state || "", legacy: d.legacy_rules };
   } catch (e) { FW.data = null; FW.ok = false; FW.err = { msg: e.message, hint: e.hint || "" }; }
   fwIndex(FW, FW.data);
 }
@@ -2309,45 +2529,62 @@ function fwVisible() {
 function renderFwSide() {
   if (!FW.data) { $("#fwZones").innerHTML = ""; return; }
   const per = {}; for (const c of state.clients) { const z = zoneOf(c); if (z) { const o = per[z.id] ||= { n: 0, on: 0 }; o.n++; if (c.online) o.on++; } }
-  $("#fwZones").innerHTML = fwZones().map(z => {
+  const A = fwAnalysis(), nAll = Object.values(per).reduce((a, o) => a + o.n, 0);
+  $("#fwZones").innerHTML = `<button type="button" class="pn pn-all ${!FW.zone ? "on" : ""}" data-fwz="" aria-pressed="${!FW.zone}"><span class="l1"><b>All zones</b><span class="muted">(${fwZones().length})</span><span class="sp"></span>${fwTidyBadge(fwTidyAll(), "Tidiness ")}</span><span class="l2">${fwScoreBadge(A?.all, "Segmentation ")}</span><span class="l3">${nAll} <span>devices</span> · ${FW.data.policies.filter(p => !p.predefined).length} <span>custom policies</span></span></button>` + fwZones().map(z => {
     const nets = z.network_ids.map(id => fwNetName(id)).filter(Boolean), cnt = (FW.data.policies || []).filter(p => !p.predefined && (p.source?.zone_id === z.id || p.destination?.zone_id === z.id)).length, o = per[z.id];
     return `<button type="button" class="pn ${FW.zone === z.id ? "on" : ""}" data-fwz="${esc(z.id)}" aria-pressed="${FW.zone === z.id}">
-      <span class="l1"><b translate="no">${esc(z.name)}</b><span class="sp"></span>${cnt ? `<span class="muted" title="Custom policies from or to this zone">${cnt} <span>${cnt === 1 ? "policy" : "policies"}</span></span>` : ""}</span>
+      <span class="l1"><b translate="no">${esc(z.name)}</b>${fwZoneRole(z) !== "none" && FW_ROLE_SHORT[fwZoneRole(z)].toLowerCase() !== z.name.toLowerCase() ? `<span class="fa-role" title="Role of the zone (Analysis › Zone roles)">${esc(FW_ROLE_SHORT[fwZoneRole(z)])}</span>` : ""}<span class="sp"></span>${fwTidyBadge(fwTidy(z.id), "Tidiness ")}</span>
       <span class="l2" translate="no" title="${esc(nets.join("\n"))}">${nets.length ? esc(nets.join(", ")) : `<span class="muted">–</span>`}</span>
-      ${o ? `<span class="l3">${o.n} <span>${o.n === 1 ? "device" : "devices"}</span> · ${o.on} <span>online</span></span>` : ""}</button>`;
+      <span class="l3">${o ? fwScoreBadge(A?.score[z.id], "Segm. ") + " " : ""}${o ? `${o.n} <span>${o.n === 1 ? "device" : "devices"}</span> · ${o.on} <span>online</span>` : `<span>no devices</span>`}${cnt ? ` · <span title="Custom policies from or to this zone">${cnt} <span>${cnt === 1 ? "policy" : "policies"}</span></span>` : ""}</span></button>`;
   }).join("");
 }
 function renderFw() {
   renderFwSide();
   const msg = $("#fwMsg");
+  for (const t of document.querySelectorAll("[data-ft]")) { t.setAttribute("aria-selected", String(t.dataset.ft === FW.tab)); t.disabled = !FW.data; }
   if (!FW.data) {
-    $("#fwBody").hidden = true;
-    msg.innerHTML = FW.ok === undefined ? `<p class="muted"><span class="spin"></span> Loading the firewall from the controller …</p>` :
-      `<div class="banner fw-ban"><b>Firewall not available:</b> ${esc(FW.err?.msg || "")}${FW.err?.hint ? `<div class="banner-hint"><b>Hint:</b> ${esc(FW.err.hint)}</div>` : ""}</div>`;
+    $("#fwBody").hidden = true; $("#fwAn").hidden = true;
+    const off = FW.err?.state === "not_enabled";
+    msg.innerHTML = FW.ok === undefined ? `<p class="muted"><span class="spin"></span> Loading the firewall from the controller …</p>` : off
+      ? `<div class="banner fw-ban fw-off"><b>The zone-based firewall is not enabled in UniFi.</b> <span>This UniFi feature is switched off – the console still uses the classic firewall rules</span>${FW.err.legacy != null ? ` (${FW.err.legacy} <span>${FW.err.legacy === 1 ? "rule" : "rules"}</span>)` : ""}.<div class="banner-hint"><b>Hint:</b> ${esc(FW.err.hint)}</div></div>`
+      : `<div class="banner fw-ban"><b>Firewall not available:</b> ${esc(FW.err?.msg || "")}${FW.err?.hint ? `<div class="banner-hint"><b>Hint:</b> ${esc(FW.err.hint)}</div>` : ""}</div>`;
     return;
   }
-  msg.innerHTML = ""; $("#fwBody").hidden = false;
+  msg.innerHTML = "";
+  $("#fwBody").hidden = FW.tab === "an"; $("#fwAn").hidden = FW.tab !== "an";
+  if (FW.tab === "an") { renderFa(); return; }
+  renderChain();
   const zs = fwZones(), all = FW.data.policies.length, nCustom = FW.data.policies.filter(p => !p.predefined).length;
   const head = `<tr><th class="fw-corner"><button type="button" class="fwc all ${!FW.src && !FW.dst && !FW.zone ? "on" : ""}" data-fwall title="Show all policies">All policies <span>(${all})</span></button></th>${zs.map(z => `<th scope="col"><button type="button" class="fwh ${FW.dst === z.id && !FW.src ? "on" : ""}" data-fwd="${esc(z.id)}" title="Policies to ${esc(z.name)}" translate="no">${esc(z.name)}</button></th>`).join("")}</tr>`;
   const body = zs.map(s => `<tr><th scope="row"><button type="button" class="fwh ${FW.src === s.id && !FW.dst ? "on" : ""}" data-fws="${esc(s.id)}" title="Policies from ${esc(s.name)}" translate="no">${esc(s.name)}</button></th>${zs.map(d => {
     const r = fwPair(s.id, d.id), on = FW.src === s.id && FW.dst === d.id, dim = (FW.src || FW.dst) && !on && !(FW.src === s.id && !FW.dst) && !(FW.dst === d.id && !FW.src);
-    const tip = `${s.name} → ${d.name}: ${FW_DEF[r.def]}${r.custom.length ? ` · ${r.custom.length} custom` : ""}${r.all.length - r.custom.length ? ` · ${r.all.length - r.custom.length} built-in` : ""}`;
-    return `<td><button type="button" class="fwc ${r.def}${on ? " on" : ""}${dim ? " dim" : ""}" data-fws="${esc(s.id)}" data-fwd="${esc(d.id)}" title="${esc(tip)}">${FW_DEF[r.def]}${r.custom.length ? ` <span class="n">(${r.custom.length})</span>` : ""}</button></td>`;
+    const risk = fwAnalysis()?.mxRisk[s.id + ">" + d.id];
+    const tip = `${s.name} → ${d.name}: ${FW_DEF[r.def]}${r.custom.length ? ` · ${r.custom.length} custom` : ""}${r.all.length - r.custom.length ? ` · ${r.all.length - r.custom.length} built-in` : ""}${risk ? " · ⚠ " + risk.replace(/<[^>]+>/g, "") : ""}`;
+    const live = r.custom.filter(p => p.enabled !== false && fwCst(p) === "ALL"), opens = r.def !== "allow" ? live.filter(fwIsAllow) : [], closes = r.def === "allow" ? live.filter(p => !fwIsAllow(p)) : [];
+    const ports = opens.length ? `<span class="fwc-p ok" title="${esc("Opened by custom rules:\n" + opens.map(p => `${p.name}: ${fwPortLabel(p)}`).join("\n"))}">✓ ${esc(fwPortsSum(opens, 2))}</span>` : closes.length ? `<span class="fwc-p no" title="${esc("Closed by custom rules:\n" + closes.map(p => `${p.name}: ${fwPortLabel(p)}`).join("\n"))}">✕ ${esc(fwPortsSum(closes, 2))}</span>` : "";
+    return `<td><button type="button" class="fwc ${r.def}${on ? " on" : ""}${dim ? " dim" : ""}${risk ? " risky" : ""}" data-fws="${esc(s.id)}" data-fwd="${esc(d.id)}" title="${esc(tip)}">${risk ? `<span class="fw-risk" aria-label="Risky">⚠</span> ` : ""}${FW_DEF[r.def]}${r.custom.length ? ` <span class="n">(${r.custom.length})</span>` : ""}${ports}</button></td>`;
   }).join("")}</tr>`).join("");
   $("#fwMatrix").innerHTML = `<div class="fw-axis-d">Destination</div><div class="fw-mx-row"><div class="fw-axis-s"><span>Source</span></div><table class="fw-mx"><thead>${head}</thead><tbody>${body}</tbody></table></div>`;
   $("#fwSum").innerHTML = `<span class="pill">Zones <b>${zs.length}</b></span><span class="pill">Policies <b>${all}</b></span><span class="pill">Custom <b>${nCustom}</b></span><span class="pill" title="Read from UniFi">Updated <b>${new Date(FW.data.fetched_at * 1000).toLocaleTimeString(I18N.locale, { hour: "2-digit", minute: "2-digit" })}</b></span><button type="button" class="link" data-fwexport title="Download zones, policies and groups as the app read them from UniFi">Export JSON</button>`;
   for (const [k, id] of [["v4", "#fwV4"], ["v6", "#fwV6"], ["builtin", "#fwBuiltin"], ["custom", "#fwCustom"], ["paused", "#fwPaused"]]) $(id).checked = !!FW.show[k];
+  const vs = (VER.list || []).filter(m => m.policies != null);
+  $("#fwSince").innerHTML = `<option value="">–</option>` + vs.map(m => `<option value="${esc(m.id)}" ${FW.since === m.id ? "selected" : ""}>${isoDateTime(m.created)}${m.label ? " · " + esc(m.label) : ""}</option>`).join("");
+  $("#fwSince").closest("label").hidden = !vs.length;
   // what the list is filtered by
   const zl = id => `<b translate="no">${esc(fwZoneName(id))}</b>`;
   const sel = FW.src && FW.dst ? `<span>From</span> ${zl(FW.src)} <span>to</span> ${zl(FW.dst)}` : FW.src ? `<span>From</span> ${zl(FW.src)}` : FW.dst ? `<span>To</span> ${zl(FW.dst)}` : FW.zone ? `<span>From or to</span> ${zl(FW.zone)}` : "";
   const zid = FW.zone || (FW.src && !FW.dst ? FW.src : !FW.src && FW.dst ? FW.dst : ""), zDevs = zid ? state.clients.filter(c => zoneOf(c)?.id === zid).length : 0;
-  const list = tsorted("fwRows", fwVisible(), { name: p => (p.name || "").toLowerCase(), act: p => p.action, ver: p => fwIpVer(p), proto: p => fwProto(p), sz: p => fwZoneName(p.source?.zone_id), src: p => fwEpText(p.source).txt, sp: p => fwPortText(p.source), dz: p => fwZoneName(p.destination?.zone_id), dst: p => fwEpText(p.destination).txt, dp: p => fwPortText(p.destination), hits: p => fwHits(p) ?? -1, lh: p => fwLast(p) || -1, idx: p => p.index ?? 1e9 });
-  $("#fwSel").innerHTML = `<span class="muted">${list.length} <span>${list.length === 1 ? "policy" : "policies"}</span></span>${sel ? ` · ${sel} <button type="button" class="link" data-fwall>Show all</button>` : ""}${zid && zDevs ? ` · <button type="button" class="link" data-fwdevs="${esc(zid)}">Show ${zDevs} ${zDevs === 1 ? "device" : "devices"} in ${esc(fwZoneName(zid))} ›</button>` : ""}`;
+  const pairOn = FW.src && FW.dst, chainF = pairOn ? fwChainFlags(FW.src, FW.dst, FW.ord?.key === FW.src + ">" + FW.dst ? FW.ord.ids : null) : null;
+  const vis = fwVisible(), list0 = chainF && !TSORT.fwRows ? [...vis].sort((a, b) => (chainF.get(a.id)?.pos ?? 1e9) - (chainF.get(b.id)?.pos ?? 1e9)) : vis;
+  const list = tsorted("fwRows", list0, { name: p => (p.name || "").toLowerCase(), act: p => p.action, ver: p => fwIpVer(p), proto: p => fwProto(p), sz: p => fwZoneName(p.source?.zone_id), src: p => fwEpText(p.source).txt, sp: p => fwPortText(p.source), dz: p => fwZoneName(p.destination?.zone_id), dst: p => fwEpText(p.destination).txt, dp: p => fwPortText(p.destination), hits: p => fwHits(p) ?? -1, lh: p => fwLast(p) || -1, idx: p => chainF ? chainF.get(p.id)?.pos ?? 1e9 : p.index ?? 1e9 });
+  const gone = FW.sinceGone || [];
+  $("#fwSel").innerHTML = `<span class="muted">${list.length} <span>${list.length === 1 ? "policy" : "policies"}</span></span>${FW.since && FW.sinceMap ? ` · <span>Since the version:</span> ${[...FW.sinceMap.values()].filter(v => v === "new").length} <span>new</span>, ${[...FW.sinceMap.values()].filter(v => v === "changed").length} <span>changed</span>, ${gone.length} <span>removed</span>${gone.length ? ` <span class="muted" translate="no" title="${esc(gone.join("\n"))}">(${esc(gone.slice(0, 3).join(", "))}${gone.length > 3 ? " …" : ""})</span>` : ""}` : ""}${sel ? ` · ${sel} <button type="button" class="link" data-fwall>Show all</button>` : ""}${zid && zDevs ? ` · <button type="button" class="link" data-fwdevs="${esc(zid)}">Show ${zDevs} ${zDevs === 1 ? "device" : "devices"} in ${esc(fwZoneName(zid))} ›</button>` : ""}`;
   const ep = (e, p) => { const t = fwEpText(e), mine = !(t.txt === "Any" || /^\d+ /.test(t.txt)); return `<span${mine ? ' translate="no"' : ""} title="${esc(t.items.join("\n"))}">${esc(t.txt)}</span>${t.items.length > 1 || (t.items.length === 1 && t.items[0] !== t.txt) ? ` <span class="fw-i" aria-hidden="true">ⓘ</span>` : ""}`; };
   const zc = id => `<span class="zchip" translate="no">${esc(fwZoneName(id))}</span>`;
   $("#fwRows").innerHTML = list.map(p => {
-    const tags = [p.predefined ? `<span class="st same">Built-in</span>` : "", p.enabled === false ? `<span class="st err">Paused</span>` : "", fwSched(p) ? `<span class="st new" title="Schedule">${esc(fwSched(p))}</span>` : ""].join("");
-    const row = `<tr class="fw-row ${p.enabled === false ? "off" : ""} ${FW.open === p.id ? "open" : ""}" data-fwp="${esc(p.id)}"><td><span class="fw-nm"><b translate="no">${esc(p.name || "(no name)")}</b>${tags}</span></td><td>${fwActTag(p)}</td><td>${fwIpVer(p)}</td><td>${fwProto(p)}</td><td>${zc(p.source?.zone_id)}</td><td>${ep(p.source)}</td><td>${fwPortHtml(p.source)}</td><td>${zc(p.destination?.zone_id)}</td><td>${ep(p.destination)}</td><td>${fwPortHtml(p.destination)}</td><td>${fwHitsHtml(p)}</td><td>${fwLast(p) ? `<span class="muted" title="${isoDateTime(fwLast(p))}">${rel(fwLast(p))}</span>` : `<span class="muted">-</span>`}</td><td class="mono muted">${esc(p.index ?? "")}</td></tr>`;
+    const chg = FW.sinceMap?.get(p.id), cf = chainF?.get(p.id);
+    const tags = [chg ? `<span class="st ${chg === "new" ? "new" : "chg"}" title="Since the chosen version">${chg === "new" ? "New" : "Changed"}</span>` : "", p.predefined ? `<span class="st same">Built-in</span>` : "", p.enabled === false ? `<span class="st err">Paused</span>` : "", fwSched(p) ? `<span class="st new" title="Schedule">${esc(fwSched(p))}</span>` : "", ...(cf?.f || []).filter(x => x[0] !== "paused").map(x => `<span class="tag ${x[2] === "bad" ? "bad" : x[2] === "warn" ? "warn" : "info"}" title="${esc(x[1])}">${esc(x[1].split(" – ")[0])}</span>`)].join("");
+    const row = `<tr class="fw-row ${p.enabled === false ? "off" : ""} ${FW.open === p.id ? "open" : ""}" data-fwp="${esc(p.id)}"><td><span class="fw-nm"><b translate="no">${esc(p.name || "(no name)")}</b>${tags}</span></td><td>${fwActTag(p)}</td><td>${fwIpVer(p)}</td><td>${fwProto(p)}</td><td>${zc(p.source?.zone_id)}</td><td>${ep(p.source)}</td><td>${fwPortHtml(p.source)}</td><td>${zc(p.destination?.zone_id)}</td><td>${ep(p.destination)}</td><td>${fwPortHtml(p.destination)}</td><td>${fwHitsHtml(p)}</td><td>${fwLast(p) ? `<span class="muted" title="${isoDateTime(fwLast(p))}">${rel(fwLast(p))}</span>` : `<span class="muted">-</span>`}</td><td class="mono muted">${cf?.num ? `<span class="lb-id" title="Position in the chain of this zone pair (UniFi ID ${esc(p.index ?? "")})">#${cf.num}</span>` : cf ? "🔒" : esc(p.index ?? "")}</td></tr>`;
     return row + (FW.open === p.id ? `<tr class="fw-det"><td colspan="13">${fwDetailHtml(p)}</td></tr>` : "");
   }).join("") || `<tr><td colspan="13" class="muted">No policy matches.</td></tr>`;
 }
@@ -2388,25 +2625,50 @@ $("#fwView").addEventListener("click", e => {
 });
 $("#fwZones").addEventListener("click", e => {
   const b = e.target.closest("[data-fwz]"); if (!b) return;
-  Object.assign(FW, { src: null, dst: null, zone: FW.zone === b.dataset.fwz ? null : b.dataset.fwz }); $("#side").classList.remove("open"); renderFw();
+  Object.assign(FW, { src: null, dst: null, zone: !b.dataset.fwz || FW.zone === b.dataset.fwz ? null : b.dataset.fwz }); $("#side").classList.remove("open"); renderFw();
 });
 for (const [k, id] of [["v4", "#fwV4"], ["v6", "#fwV6"], ["builtin", "#fwBuiltin"], ["custom", "#fwCustom"], ["paused", "#fwPaused"]])
   $(id).addEventListener("change", e => { FW.show[k] = e.target.checked; store.set("fwShow", FW.show); renderFw(); });
 $("#fwQ").addEventListener("input", e => { FW.q = e.target.value; renderFw(); });
+$("#fwSince").addEventListener("change", async e => {
+  FW.since = e.target.value; FW.sinceMap = null; FW.sinceGone = [];
+  if (FW.since) try {
+    const V = await baseVersion(FW.since), rows = diffFirewall(V, currentAsVersion()) || [];
+    FW.sinceMap = new Map(rows.filter(r => r.what === "policy" && r.kind !== "removed").map(r => [r.p.id, r.kind]));
+    FW.sinceGone = rows.filter(r => r.what === "policy" && r.kind === "removed").map(r => r.name);
+  } catch (err) { toast(err.message); }
+  renderFw();
+});
+document.querySelectorAll("[data-ft]").forEach(t => t.addEventListener("click", () => { FW.tab = t.dataset.ft; store.set("fwTab", FW.tab); renderFw(); $("#fwView .plan-scroll").scrollTop = 0; }));
 bindSort("fwRows", () => renderFw());
-// detail panel: zone and the policies that name this device
+// detail panel: zone, device type, what applies zone by zone (and which rule decides), paused rules, rules that name the device
 function fwInfoHtml(c) {
-  if (!FW.data || !c || c.conn === "teleport" && !c.mac) return "";
-  const z = zoneOf(c), hits = fwDevicePolicies(c), zn = z ? (FW.data.policies || []).filter(p => !p.predefined && (p.source?.zone_id === z.id || p.destination?.zone_id === z.id)).length : 0;
+  if (!FW.data || !c?.mac) return "";
+  const z = zoneOf(c), hits = fwDevicePolicies(c), d = fwAnalysis()?.byMac.get(c.mac), cl = d?.cl || fwClassify(c);
+  const polBtn = p => p ? `<button type="button" class="link fw-by" data-fwpol="${esc(p.id)}" translate="no" title="${p.predefined ? "Built-in zone default" : "Custom rule"} – show it">${esc(p.name || "?")}</button>` : "";
+  const portLine = r => { const a = r.extra.filter(x => x.allow).map(x => x.p), b = r.extra.filter(x => !x.allow).map(x => x.p); return (a.length && r.lvl !== "full" ? `<div class="fw-ports ok" translate="no">✓ ${esc(fwPortsSum(a, 4))}</div>` : "") + (b.length ? `<div class="fw-ports no" translate="no">✕ ${esc(fwPortsSum(b, 4))}</div>` : ""); };
+  const cell = r => !r ? `<span class="muted">–</span>` : `${fwLvlTag(r.lvl)}${portLine(r)}<div class="fw-why">${r.by ? polBtn(r.by) : r.ret ? polBtn(r.ret) : ""}${r.extra.length ? ` <span class="muted" title="${esc(r.extra.map(x => (x.allow ? "Allow: " : "Block: ") + x.p.name).join("\n"))}">+${r.extra.length} <span>${r.extra.length === 1 ? "rule before it" : "rules before it"}</span></span>` : ""}</div>`;
+  const eff = z ? fwEffective(c) : [];
+  const LC = { full: "allow", partial: "part", ret: "ret", none: "block", "": "none" };
+  const strip = (dir, label) => `<div class="fw-strip"><span class="fw-strip-l">${label}</span>${eff.filter(x => dir === "out" ? x.out : x.inc).map(x => { const r = dir === "out" ? x.out : x.inc; return `<button type="button" class="fwc ${LC[r.lvl]}" data-fwpair="${esc(dir === "out" ? z.id : x.z.id)}|${esc(dir === "out" ? x.z.id : z.id)}" title="${esc(`${dir === "out" ? `${devName(c)} → ${x.z.name}` : `${x.z.name} → ${devName(c)}`}: ${FW_LVL[r.lvl][0]}${r.by ? ` (${r.by.name})` : ""}`)}"><span translate="no">${esc(x.z.name)}</span> <span class="fw-strip-i">${{ full: "✓", partial: "◐", ret: "↩", none: "✕", "": "?" }[r.lvl]}</span>${r.lvl === "partial" ? ` <span class="fw-strip-p" translate="no">${esc(fwPortsSum(r.extra.filter(y => y.allow).map(y => y.p), 2))}</span>` : ""}</button>`; }).join("")}</div>`;
+  const paused = fwPausedEffects(c), changing = paused.filter(x => x.now.lvl !== x.then.lvl), still = paused.filter(x => x.now.lvl === x.then.lvl && x.named);
   return `<div class="sec-title">Firewall</div><div class="card fw-card">
-    <dl class="kv" style="margin:0"><dt>Zone</dt><dd>${z ? `<button type="button" class="link" data-fwzone="${esc(z.id)}" translate="no" title="Open the zone in the firewall view">${esc(z.name)}</button>` : `<span class="muted">unknown</span>`}</dd></dl>
-    ${hits.length ? `<div class="fw-hits">${hits.map(h => `<button type="button" class="fw-hit" data-fwpol="${esc(h.p.id)}" title="Show this policy in the firewall view">${fwActTag(h.p)}<span class="fw-hn"><b translate="no">${esc(h.p.name || "?")}</b>${h.p.enabled === false ? ' <span class="st err">Paused</span>' : ""}<span class="muted"><span>${h.side === "source" ? "as source" : "as destination"}</span> · <span translate="no">${esc(fwZoneName(h.p.source?.zone_id))} → ${esc(fwZoneName(h.p.destination?.zone_id))}</span> · <span>via</span> <span translate="no">${esc(h.via.join(", "))}</span>${fwHits(h.p) != null ? ` · ${fwHits(h.p).toLocaleString(I18N.locale)} <span>hits</span>` : ""}</span></span></button>`).join("")}</div>`
-      : `<p class="hint" style="margin:8px 0 0">No policy names this device directly.</p>`}
-    ${z ? `<p class="hint" style="margin:8px 0 0">${zn ? `<span>Zone rules apply:</span> ${zn} <span>${zn === 1 ? "custom policy from or to" : "custom policies from or to"}</span> <span translate="no">${esc(z.name)}</span>.` : `<span>Only the built-in zone defaults apply to</span> <span translate="no">${esc(z.name)}</span>.`}</p>` : ""}
+    <dl class="kv" style="margin:0"><dt>Zone</dt><dd>${z ? `<button type="button" class="link" data-fwzone="${esc(z.id)}" translate="no" title="Open the zone in the firewall view">${esc(z.name)}</button>` : `<span class="muted">unknown</span>`}</dd>
+    <dt>Device type</dt><dd>${cl ? `<span title="${esc(cl.why.join("\n"))}">${esc(cl.p.name)}</span> <span class="muted">(${cl.set ? "set by you" : fwConfTxt(cl.conf)})</span>` : `<span class="muted">not recognised</span>`}</dd></dl>
+    ${eff.length ? `<div class="fw-strips">${strip("out", "Reaches")}${strip("in", "Reachable from")}</div>` : ""}
+    ${d?.f.length ? `<div class="fw-finds">${d.f.map(f => `<span class="fa-f ${f.sev}">${f.html}</span>`).join("")}</div>` : ""}
+    ${eff.length ? `<div class="sec-sub">What applies to this client</div><div class="imp-table fw-eff"><table><thead><tr><th>Zone</th><th>Client → zone</th><th>Zone → client</th></tr></thead><tbody>${eff.map(x => `<tr${x.z.id === z.id ? ' class="own"' : ""}><td><span class="zchip" translate="no">${esc(x.z.name)}</span>${x.z.id === z.id ? ` <span class="muted">(own)</span>` : ""}</td><td>${cell(x.out)}</td><td>${cell(x.inc)}</td></tr>`).join("")}</tbody></table></div><p class="hint" style="margin:6px 0 0">The first matching rule decides (UniFi's order). The zone defaults are the built-in rules at the end.</p>` : ""}
+    ${changing.length || still.length ? `<div class="sec-sub">Paused rules</div><div class="fw-hits">${[...changing, ...still].map(x => `<button type="button" class="fw-hit paused" data-fwpol="${esc(x.p.id)}">${fwActTag(x.p)}<span class="fw-hn"><b translate="no">${esc(x.p.name || "?")}</b> <span class="st err">Paused</span><span class="muted"><span>${x.dir === "out" ? "Client →" : "→ client from"}</span> <span translate="no">${esc(x.z?.name || "?")}</span>: ${x.now.lvl !== x.then.lvl ? `<span>now</span> ${fwLvlTag(x.now.lvl)}, <span>if active</span> ${fwLvlTag(x.then.lvl)}` : `<span>if active: no change – another rule decides first</span>`}</span></span></button>`).join("")}</div>` : ""}
+    ${hits.length ? `<div class="sec-sub">Rules that name this client</div><div class="fw-hits">${hits.map(h => `<button type="button" class="fw-hit${h.p.enabled === false ? " paused" : ""}" data-fwpol="${esc(h.p.id)}" title="Show this policy in the firewall view">${fwActTag(h.p)}<span class="fw-hn"><b translate="no">${esc(h.p.name || "?")}</b>${h.p.enabled === false ? ' <span class="st err">Paused</span>' : ""}<span class="muted"><span>${h.side === "source" ? "as source" : "as destination"}</span> · <span translate="no">${esc(fwZoneName(h.p.source?.zone_id))} → ${esc(fwZoneName(h.p.destination?.zone_id))}</span> · <span>via</span> <span translate="no">${esc(h.via.join(", "))}</span>${fwHits(h.p) != null ? ` · ${fwHits(h.p).toLocaleString(I18N.locale)} <span>hits</span>` : ""}</span></span></button>`).join("")}</div>`
+      : `<p class="hint" style="margin:8px 0 0">No rule names this client directly – only the zone rules apply.</p>`}
+    <button class="btn" type="button" data-fwwiz="${esc(c.mac)}" style="width:100%;margin-top:10px">${ICON_SHIELD}<span>Create firewall rule for this client…</span></button>
   </div>`;
 }
+const ICON_SHIELD = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-right:6px"><path d="M12 3 4 6v6c0 4.5 3.4 8.3 8 9 4.6-.7 8-4.5 8-9V6z"/><path d="M12 8v8M8 12h8"/></svg>';
 document.addEventListener("click", e => {
+  const w = e.target.closest("[data-fwwiz]"); if (w) { const c = devByMac(w.dataset.fwwiz); if (c) openWiz(c); return; }
   const z = e.target.closest("[data-fwzone]"); if (z) { openFwFor({ zone: z.dataset.fwzone }); return; }
+  const pr = e.target.closest("[data-fwpair]"); if (pr) { const [s2, d2] = pr.dataset.fwpair.split("|"); openFwFor({ src: s2, dst: d2 }); return; }
   const p = e.target.closest("[data-fwpol]"); if (p) { const pol = FW.data?.policies.find(x => x.id === p.dataset.fwpol); if (pol) openFwFor({ src: pol.source?.zone_id || null, dst: pol.destination?.zone_id || null, open: pol.id }); }
 });
 // versions: what a version keeps of the firewall, and the differences between two
@@ -2450,6 +2712,907 @@ function fwCmpRowHtml(r) {
   return `<tr><td>${fwCmpTag(r)}</td><td><b translate="no">${esc(r.name || "(no name)")}</b><div class="muted" style="font-size:11.5px">${r.what === "zone" ? "Firewall zone" : `<span translate="no">${esc(r.sub)}</span>`}</div></td><td><div class="chg-list">${det}</div></td><td></td></tr>`;
 }
 
+// ---------- firewall analysis (reads only): what applies to a device, device profiles, consistency, zone + VLAN structure ----------
+const FW_ROLES = [["trusted", "Trusted (computers, phones)"], ["server", "Servers / NAS"], ["controller", "Smart home controller"], ["iot", "IoT"], ["media", "Media (TV, speakers)"], ["camera", "Cameras"], ["printer", "Printers"], ["guest", "Guests"], ["dmz", "DMZ (reachable from the internet)"], ["none", "No role"]];
+const FW_ROLE_NAME = Object.fromEntries(FW_ROLES);
+const FW_ROLE_SHORT = { trusted: "Trusted", server: "Servers", controller: "Controller", iot: "IoT", media: "Media", camera: "Cameras", printer: "Printers", guest: "Guests", dmz: "DMZ", none: "" };
+const FW_UNTRUSTED = new Set(["iot", "media", "camera", "printer", "guest", "dmz"]), FW_SENSITIVE = new Set(["trusted", "server", "controller"]);
+const FW_FALLBACK = { controller: ["server", "trusted"], server: ["trusted"], camera: ["iot"], media: ["iot"], printer: ["iot"] };
+// device profiles – a: role, net: internet need (none | cloud | full | optional), ha: Home Assistant talks to the device ("in") or the
+// device to Home Assistant ("out"), lan: devices of the trusted zone must reach it, disc: needs mDNS / SSDP, ports: for the special rules
+const FW_PROFILES = [
+  { id: "ha_host", name: "Home Assistant host", a: "controller", net: "full", lan: true },
+  { id: "esphome", name: "ESPHome", a: "iot", net: "none", ha: "in", proto: "tcp", port: "6053", m: { ha: ["esphome"], host: /^esp|esphome/i, port: [6053], chip: true } },
+  { id: "shelly", name: "Shelly", a: "iot", net: "optional", ha: "in", proto: "tcp", port: "80", domains: ["shelly.cloud"], m: { ha: ["shelly"], host: /^shelly/i, vendor: /shelly|allterco/i, chip: true } },
+  { id: "tasmota", name: "Tasmota", a: "iot", net: "none", ha: "out", proto: "tcp", port: "1883", m: { ha: ["tasmota"], host: /tasmota/i, chip: true } },
+  { id: "wled", name: "WLED", a: "iot", net: "none", ha: "in", proto: "tcp", port: "80", m: { ha: ["wled"], host: /wled/i, chip: true } },
+  { id: "zigbee", name: "Zigbee / Z-Wave / Thread coordinator", a: "iot", net: "none", ha: "in", proto: "tcp", port: "6638", m: { ha: ["zha", "zwave_js", "otbr", "thread"], host: /slzb|tubeszb|zigstar|smlight|zigbee|zwave/i } },
+  { id: "tuya", name: "Tuya / Smart Life", a: "iot", net: "cloud", m: { ha: ["tuya", "localtuya"], vendor: /tuya/i } },
+  { id: "hue", name: "Philips Hue bridge", a: "iot", net: "optional", ha: "in", proto: "tcp", port: "80,443", disc: true, m: { ha: ["hue"], vendor: /signify|philips lighting/i } },
+  { id: "cast", name: "Google Cast / Nest", a: "media", net: "full", ha: "in", proto: "tcp", port: "8008-8009", lan: true, disc: true, m: { ha: ["cast"], vendor: /google/i, port: [8009] } },
+  { id: "sonos", name: "Sonos", a: "media", net: "full", ha: "in", proto: "tcp", port: "1400", lan: true, disc: true, m: { ha: ["sonos"], vendor: /sonos/i, port: [1400] } },
+  { id: "airplay", name: "Apple TV / HomePod", a: "media", net: "full", ha: "in", proto: "tcp", port: "7000", lan: true, disc: true, m: { ha: ["apple_tv"], host: /apple-?tv|homepod/i, port: [7000] } },
+  { id: "tv", name: "Smart TV", a: "media", net: "full", ha: "in", lan: true, disc: true, m: { ha: ["samsungtv", "webostv", "androidtv", "androidtv_remote", "philips_js", "braviatv", "vizio", "panasonic_viera"], host: /tv|bravia|webos|tizen/i } },
+  { id: "console", name: "Game console", a: "media", net: "full", lan: true, m: { host: /xbox|playstation|^ps[345]|nintendo/i, vendor: /nintendo|sony interactive/i } },
+  { id: "speaker", name: "Voice assistant", a: "media", net: "cloud", m: { host: /echo|alexa/i, vendor: /amazon/i } },
+  { id: "printer", name: "Printer", a: "printer", net: "none", ha: "in", proto: "tcp", port: "631", lan: true, disc: true, m: { ha: ["ipp", "brother", "epson"], host: /print|^brn|^brw|^epson|^hp[0-9a-f]{6}|canon/i, vendor: /brother|seiko epson|canon|kyocera|xerox|lexmark/i, port: [9100, 631] } },
+  { id: "camera", name: "IP camera", a: "camera", net: "none", ha: "in", proto: "tcp", port: "554", m: { ha: ["reolink", "onvif", "amcrest", "hikvision", "foscam", "axis", "dahua", "doorbird"], vendor: /hikvision|dahua|reolink|axis comm|amcrest|foscam/i, host: /cam|reolink|doorbell|ipc|hikvision/i, port: [554] } },
+  { id: "nas", name: "NAS / server", a: "server", net: "full", ha: "in", lan: true, m: { ha: ["synology_dsm", "qnap", "truenas", "proxmoxve", "unraid"], vendor: /synology|qnap|asustor|western digital/i, host: /nas|server|syno|proxmox|truenas|unraid/i, port: [5000, 5001, 445] } },
+  { id: "computer", name: "Computer / phone", a: "trusted", net: "full", m: { ha: ["mobile_app"], host: /iphone|ipad|macbook|imac|mac-?mini|android|pixel|galaxy|laptop|desktop|notebook|-pc$|^pc-|windows|surface/i, vendor: /apple|microsoft|dell|lenovo|hewlett|intel corporate|asustek|framework/i, random: true } },
+  { id: "esp_generic", name: "Smart home device (ESP chip)", a: "iot", net: "optional", m: { vendor: /espressif/i } },
+];
+const FW_PROFILE = Object.fromEntries(FW_PROFILES.map(p => [p.id, p]));
+const FWS = { zone_roles: {}, overrides: {}, alerts: { suspicious: false }, rev: 0 };
+async function loadFwSettings() { try { Object.assign(FWS, await api("api/fw_settings")); FWS.rev++; } catch {} }
+async function saveFwSettings(part) { Object.assign(FWS, await api("api/fw_settings", part)); FWS.rev++; }
+function fwRoleGuess(z) {
+  const k = z.key, n = String(z.name || "").toLowerCase();
+  if (k === "internal") return "trusted"; if (k === "hotspot") return "guest"; if (k === "dmz") return "dmz"; if (["external", "gateway", "vpn"].includes(k)) return "none";
+  return fwNameRole(n) || "none";
+}
+function fwNameRole(n) {
+  n = String(n || "").toLowerCase();
+  if (/contr|ctrl|hub|smart ?home|automation|home ?assistant/.test(n)) return "controller";
+  if (/cam|nvr|protect|video|surveil|überwach/.test(n)) return "camera";
+  if (/media|\btv\b|entertain|stream/.test(n)) return "media";
+  if (/print|drucker/.test(n)) return "printer";
+  if (/iot|smart|things|sensor/.test(n)) return "iot";
+  if (/guest|gast|visitor|hotspot/.test(n)) return "guest";
+  if (/dmz|expos|public/.test(n)) return "dmz";
+  if (/serv|nas|srv|lab|infra|storage/.test(n)) return "server";
+  if (/trust|lan|home|main|corp|user|client|privat|family|famil|default|office|büro/.test(n)) return "trusted";
+  return "";
+}
+const fwZoneRole = z => z ? (FWS.zone_roles[z.id] || fwRoleGuess(z)) : "none";
+function fwRoleZones(role) {
+  for (const r of [role, ...(FW_FALLBACK[role] || [])]) { const zs = (FW.data?.zones || []).filter(z => fwZoneRole(z) === r); if (zs.length) return zs; }
+  return [];
+}
+const fwZoneByKey = k => FW.data?.zones.find(z => z.key === k) || null;
+const haHostDev = () => state.clients.find(c => c.mac && isHaHost(c)) || null;
+// ---- which policy decides traffic between two zones, for one device or any device of a zone
+const fwPortAny = e => String(e?.port_matching_type || "ANY").toUpperCase() === "ANY";
+function fwSideMatch(e, dev) {
+  const t = fwTarget(e);
+  if (t === "ANY") return "all";
+  if (!dev) return "some";
+  let hit;
+  if (["CLIENT", "MAC", "DEVICE"].includes(t)) hit = fwMacs(e).includes(dev.mac);
+  else if (t === "IP") {
+    const ips = [dev.use_fixedip ? dev.fixed_ip : "", dev.ip].filter(Boolean);
+    hit = fwIpEntries(e).some(r => ips.some(ip => ipEntryHas(r.entry, ip)));
+    const bm = fwBoundMac(e); if (bm && bm !== dev.mac) hit = false;
+    if (e.match_opposite_ips) hit = !hit;
+  } else if (t === "NETWORK") { hit = fwNets(e).includes(dev.network_id); if (e.match_opposite_networks) hit = !hit; }
+  else return "some"; // domains, regions, IPv6 IDs: only part of the traffic
+  return hit ? "all" : false;
+}
+// lvl: full | partial (only some traffic allowed) | ret (replies only) | none | "" (unknown); by = deciding policy; extra = narrower policies before it
+function fwDecide(sz, dz, src, dst, also) {
+  const r = { lvl: "", by: null, extra: [], ret: null };
+  if (!sz || !dz || !FW.data) return r;
+  const ps = (FW.byPair[sz + ">" + dz] || []).filter(p => p.enabled !== false || p === also).sort((a, b) => (a.index ?? 0) - (b.index ?? 0));
+  for (const p of ps) {
+    const ms = fwSideMatch(p.source, src), md = fwSideMatch(p.destination, dst); if (!ms || !md) continue;
+    const allow = String(p.action || "").toUpperCase() === "ALLOW";
+    if (fwCst(p) !== "ALL") { if (allow && fwCst(p) === "RESPOND_ONLY" && !r.ret) r.ret = p; continue; }
+    if (ms === "all" && md === "all" && fwPortAny(p.source) && fwPortAny(p.destination) && fwProto(p) === "All" && !fwSched(p)) {
+      r.by = p; r.lvl = allow ? "full" : r.extra.some(x => x.allow) ? "partial" : r.ret ? "ret" : "none"; return r;
+    }
+    r.extra.push({ p, allow });
+  }
+  r.lvl = r.extra.some(x => x.allow) ? "partial" : r.ret ? "ret" : "";
+  return r;
+}
+const FW_LVL = { full: ["Allowed", "allow"], partial: ["Partly allowed", "part"], ret: ["Replies only", "ret"], none: ["Blocked", "block"], "": ["Unknown", "none"] };
+const fwLvlTag = (lvl, extra) => `<span class="fw-lvl ${FW_LVL[lvl][1]}">${FW_LVL[lvl][0]}${extra ? ` <span>${extra}</span>` : ""}</span>`;
+const fwInternet = c => fwDecide(zoneOf(c)?.id, fwZoneByKey("external")?.id, c, null);
+// every zone: what the device may open (outgoing) and what may reach it (incoming), with the deciding policy
+function fwEffective(c) {
+  const z = zoneOf(c); if (!z) return [];
+  return fwZones().filter(d => d.key !== "vpn" || (FW.byPair[z.id + ">" + d.id] || []).length).map(d => ({ z: d, out: fwDecide(z.id, d.id, c, null), inc: d.key === "external" || d.key === "gateway" ? null : fwDecide(d.id, z.id, null, c) }));
+}
+// paused policies that concern the device: what would change if one of them were active
+function fwPausedEffects(c) {
+  const z = zoneOf(c), out = [];
+  if (!z || !FW.data) return out;
+  for (const p of FW.data.policies) {
+    if (p.enabled !== false || p.predefined) continue;
+    const s = p.source?.zone_id, d = p.destination?.zone_id;
+    for (const [dir, sz, dz, src, dst] of [["out", z.id, d, c, null], ["in", s, z.id, null, c]]) {
+      if ((dir === "out" ? s : d) !== z.id) continue;
+      const side = dir === "out" ? p.source : p.destination; if (fwTarget(side) !== "ANY" && !fwSideMatch(side, c)) continue;
+      const now = fwDecide(sz, dz, src, dst), then = fwDecide(sz, dz, src, dst, p);
+      out.push({ p, dir, z: FW.zoneById[dir === "out" ? dz : sz], now, then, named: fwTarget(side) !== "ANY" });
+    }
+  }
+  return out;
+}
+// what a device may do, zone by zone (outgoing and incoming levels) – compared with the zone default it shows its own exceptions
+const FW_NODEV = { mac: "-", ip: "", network_id: "-" };
+function fwSigOf(z, dev) {
+  return fwZones().filter(d => d.id !== z.id && d.key !== "gateway").map(d => [d, fwDecide(z.id, d.id, dev, null).lvl, d.key === "external" ? null : fwDecide(d.id, z.id, null, dev).lvl]);
+}
+// ---- device profiles
+function fwClassify(c) {
+  if (!c?.mac || c.is_device) return null;
+  const ov = FWS.overrides[c.mac];
+  if (ov && FW_PROFILE[ov]) return { p: FW_PROFILE[ov], conf: 1, why: ["Set by you"], set: true };
+  if (isHaHost(c)) return { p: FW_PROFILE.ha_host, conf: 1, why: ["Runs Home Assistant"] };
+  const doms = c.mac ? [...new Set(haOf(c).flatMap(d => haDoms(c, d)))] : [];
+  const open = (state.scans?.[c.mac]?.open || []).map(o => o.port), vendor = c.oui || "";
+  let best = null;
+  for (const p of FW_PROFILES) {
+    const m = p.m; if (!m) continue;
+    const why = []; let miss = 1;
+    const hit = (w, t) => { miss *= 1 - w; why.push(t); };
+    const d = (m.ha || []).find(x => doms.includes(x)); if (d) hit(0.9, `Home Assistant integration ${HA_DOM_NAMES[d] || d}`);
+    const pt = (m.port || []).find(x => open.includes(x)); if (pt) hit(0.6, `Port ${pt} open`);
+    if (m.host && c.hostname && m.host.test(c.hostname)) hit(0.6, `Hostname “${c.hostname}”`);
+    if (m.host && c.name && m.host.test(c.name)) hit(0.45, `Name “${c.name}”`);
+    if (m.chip && /espressif/i.test(vendor) && why.length) hit(0.25, "ESP chip (Espressif)");
+    if (m.vendor && m.vendor.test(vendor)) hit(0.35, `Vendor ${vendor}`);
+    if (m.random && isRandomMac(c.mac)) hit(0.3, "Private (random) MAC");
+    const conf = 1 - miss; if (conf > (best?.conf || 0)) best = { p, conf, why };
+  }
+  return best && best.conf >= 0.3 ? best : null;
+}
+const fwConfTxt = x => x >= 0.85 ? "high" : x >= 0.55 ? "medium" : "low";
+// ---- the analysis, cached until data or settings change
+const FA = { key: "", res: null, filter: "find", sec: store.get("faSec", {}) };
+function fwAnalysis() {
+  if (!FW.data) return null;
+  const key = [FW.data.fetched_at, state.fetchedAt, state.clients.length, FWS.rev, Object.keys(state.scans || {}).length, state.haOk, !!haHostDev()].join("|");
+  if (FA.key === key && FA.res) return FA.res;
+  const res = fwAnalyze(); FA.key = key; FA.res = res; return res;
+}
+const nmTag = c => `<b translate="no">${esc(devName(c))}</b>`;
+const zTag = z => `<span class="zchip" translate="no">${esc(z?.name || "?")}</span>`;
+function fwAnalyze() {
+  const ext = fwZoneByKey("external"), ha = haHostDev(), haZ = ha && zoneOf(ha), trustedZs = fwRoleZones("trusted");
+  const devs = state.clients.filter(c => c.mac && !c.is_device && zoneOf(c)).map(c => {
+    const z = zoneOf(c), cl = fwClassify(c), role = fwZoneRole(z);
+    const d = { c, z, role, cl, f: [], rec: [], pols: fwDevicePolicies(c).filter(h => !h.via.every(v => v === fwNetName(c.network_id))).map(h => h.p.name || "?") };
+    d.inet = ext ? fwInternet(c) : { lvl: "" };
+    d.ha = ha && ha !== c && haZ ? fwDecide(haZ.id, z.id, ha, c) : null;
+    const add = (sev, code, html, extra) => d.f.push({ sev, code, html, ...extra });
+    if (cl && cl.conf >= 0.55 && role !== "guest" && role !== "dmz") {
+      const p = cl.p, want = fwRoleZones(p.a);
+      d.want = want;
+      if (want.length && !want.some(w => w.id === z.id)) add(cl.conf >= 0.85 ? "warn" : "info", "zone", `<span>Expected in</span> ${want.map(zTag).join(" ")} <span>(${esc(p.name)})</span>`, { to: want[0] });
+      if (ext && (p.net === "cloud" || p.net === "full") && d.inet.lvl === "none" || (p.net === "full" && d.inet.lvl === "ret")) add("warn", "inet", `<span>No internet access – ${esc(p.name)} needs it</span>`);
+      if (ext && p.net === "none" && d.inet.lvl === "full") add("info", "inetopen", `<span>Full internet access – ${esc(p.name)} does not need it</span>`);
+      if (p.ha === "in" && d.ha && ["none", "ret"].includes(d.ha.lvl) && haOf(c).length) add("warn", "ha", `<span>Home Assistant cannot reach it</span> <span class="muted">(${esc(fwZoneName(haZ.id))} → ${esc(z.name)}${p.port ? ` · ${esc(p.proto.toUpperCase())} ${esc(p.port)}` : ""})</span>`);
+      if (p.ha === "out" && ha && haZ) { const o = fwDecide(z.id, haZ.id, c, ha); if (["none", "ret"].includes(o.lvl)) add("warn", "haout", `<span>Cannot reach Home Assistant</span> <span class="muted">(MQTT ${esc(p.port)})</span>`); }
+      if (p.lan && trustedZs.length && !trustedZs.some(t => t.id === z.id)) {
+        const t = trustedZs[0], l = fwDecide(t.id, z.id, null, c);
+        if (["none", "ret"].includes(l.lvl)) add("warn", "lan", `<span>Not reachable from</span> ${zTag(t)}`, { from: t });
+        if (p.disc) add("info", "mdns", `<span>Needs mDNS between</span> ${zTag(t)} <span>and</span> ${zTag(z)} <span>(UniFi › Settings › Networks › Multicast DNS)</span>`);
+      }
+    }
+    return d;
+  });
+  const byMac = new Map(devs.map(d => [d.c.mac, d]));
+  // ---- consistency: devices of the same Home Assistant integration, vendor or profile with different zone, internet, rules or HA access
+  const CHIP = /^(espressif|realtek|murata|azurewave|hon hai|liteon|lite-on|texas instruments|silicon lab|raspberry|intel|universal global|apple|samsung|google|amazon|sony|lg |microsoft|xiaomi|huawei|tp-link|ubiquiti|private|shenzhen|hangzhou|cloud network)/i;
+  const gmap = new Map();
+  const put = (key, kind, label, d) => { let g = gmap.get(key); if (!g) gmap.set(key, g = { key, kind, label, devs: [] }); g.devs.push(d); };
+  for (const d of devs) {
+    for (const x of new Set(haOf(d.c).flatMap(h => haDoms(d.c, h)))) put("ha:" + x, "integration", HA_DOM_NAMES[x] || x, d);
+    if (d.cl && d.cl.conf >= 0.55 && !["computer", "esp_generic", "ha_host"].includes(d.cl.p.id)) put("p:" + d.cl.p.id, "profile", d.cl.p.name, d);
+    const v = String(d.c.oui || "").trim(); if (v && !CHIP.test(v) && !d.c.oui_src) put("v:" + v.split(/[ ,.]/)[0].toLowerCase(), "vendor", v.split(/[,(]/)[0].trim(), d);
+  }
+  const seen = new Set(), groups = [];
+  for (const g of [...gmap.values()].sort((a, b) => ({ integration: 0, profile: 1, vendor: 2 })[a.kind] - ({ integration: 0, profile: 1, vendor: 2 })[b.kind])) {
+    if (g.devs.length < 2) continue;
+    const sig = g.devs.map(d => d.c.mac).sort().join(); if (seen.has(sig)) continue; seen.add(sig);
+    const asp = [["zone", "Zone", d => d.z.name], ["inet", "Internet", d => FW_LVL[d.inet.lvl][0]], ["pols", "Own rules", d => [...new Set(d.pols)].sort().join(", ") || "–"]];
+    if (ha) asp.push(["ha", "Home Assistant → device", d => d.ha ? FW_LVL[d.ha.lvl][0] : "–"]);
+    g.asp = []; g.out = new Set();
+    for (const [k, label, get] of asp) {
+      if (k === "pols") { // rule by rule: what most of the group has, and what only a few have
+        const n = g.devs.length, pc = new Map(); for (const d of g.devs) for (const x of new Set(d.pols)) pc.set(x, (pc.get(x) || 0) + 1);
+        const most = [...pc.entries()].filter(([, m]) => m * 2 > n).map(([x]) => x), few = new Set([...pc.entries()].filter(([, m]) => m * 2 < n).map(([x]) => x));
+        if (![...pc.values()].some(m => m < n)) continue;
+        const odd = d => { const mine = new Set(d.pols); return { miss: most.filter(x => !mine.has(x)), extra: [...mine].filter(x => few.has(x)) }; };
+        g.asp.push({ k, label, maj: most.sort().join(", ") || "–", get, odd: d => { const o = odd(d); return o.miss.length > 0 || o.extra.length > 0; } });
+        for (const d of g.devs) {
+          const o = odd(d); if (!o.miss.length && !o.extra.length) continue;
+          g.out.add(d.c.mac);
+          for (const x of o.miss) d.f.push({ sev: "warn", code: "grp", html: `<span>Not in policy</span> <b translate="no">${esc(x)}</b> – <span>like</span> ${pc.get(x)} <span>of</span> ${n} <b translate="no">${esc(g.label)}</b> <span>devices</span>`, pol: x, g });
+          for (const x of o.extra) d.f.push({ sev: "info", code: "grp", html: `<span>One of only</span> ${pc.get(x)} <span>of</span> ${n} <b translate="no">${esc(g.label)}</b> <span>devices in policy</span> <b translate="no">${esc(x)}</b>`, g });
+        }
+        continue;
+      }
+      const cnt = new Map(); for (const d of g.devs) cnt.set(get(d), (cnt.get(get(d)) || 0) + 1);
+      if (cnt.size < 2) continue;
+      const [maj, n] = [...cnt.entries()].sort((a, b) => b[1] - a[1])[0];
+      const split = n * 2 <= g.devs.length;
+      g.asp.push({ k, label, maj: split ? null : maj, vals: cnt, get });
+      if (split) continue;
+      for (const d of g.devs) if (get(d) !== maj) {
+        if (k === "zone" && d.want?.some(w => w.id === d.z.id)) continue;
+        g.out.add(d.c.mac);
+        const others = `<span>like</span> ${n} <span>of</span> ${g.devs.length} <b translate="no">${esc(g.label)}</b> <span>devices</span>`;
+        if (k === "pols") {
+          const mine = new Set(d.pols), common = g.devs.filter(x => x !== d).flatMap(x => x.pols), cc = new Map(); for (const p of common) cc.set(p, (cc.get(p) || 0) + 1);
+          const missing = [...cc.entries()].filter(([p, m]) => m * 2 > g.devs.length - 1 && !mine.has(p)).map(([p]) => p);
+          const extra = [...mine].filter(p => (cc.get(p) || 0) * 2 <= g.devs.length - 1);
+          for (const p of missing) d.f.push({ sev: "warn", code: "grp", html: `<span>Not in policy</span> <b translate="no">${esc(p)}</b> – ${others}`, pol: p, g });
+          for (const p of extra) d.f.push({ sev: "info", code: "grp", html: `<span>Only device of its group in policy</span> <b translate="no">${esc(p)}</b> <span>(group</span> <b translate="no">${esc(g.label)}</b><span>)</span>`, g });
+        } else d.f.push({ sev: "warn", code: "grp", html: `${esc(label)}: <b translate="no">${esc(get(d))}</b> – <span>the others:</span> <b translate="no">${esc(maj)}</b> (${others})`, asp: k, g, to: k === "zone" ? g.devs.find(x => x.z.name === maj)?.z : null });
+      }
+    }
+    if (g.asp.length) groups.push(g);
+  }
+  // ---- matrix and policies
+  const zs = fwZones(), mx = [], mxRisk = {};
+  for (const s of zs) for (const t of zs) {
+    if (s.id === t.id) continue;
+    const rs = fwZoneRole(s), rt = fwZoneRole(t), def = fwPair(s.id, t.id).def;
+    if (def !== "allow") continue;
+    let txt = "";
+    if (s.key === "external") txt = "The internet may open connections into this zone";
+    else if (FW_UNTRUSTED.has(rs) && FW_SENSITIVE.has(rt)) txt = `${FW_ROLE_NAME[rs]} <span>devices may open connections to</span> ${FW_ROLE_NAME[rt]}`;
+    if (txt) { mx.push({ s, t, sev: s.key === "external" || rs === "guest" || rs === "dmz" ? "bad" : "warn", txt }); mxRisk[s.id + ">" + t.id] = txt; }
+  }
+  const knownIps = new Set(state.clients.flatMap(c => [c.use_fixedip ? c.fixed_ip : "", c.ip]).filter(Boolean));
+  const hitsKnown = FW.data.policies.some(p => typeof p.hits === "number");
+  const pol = [];
+  const custom = FW.data.policies.filter(p => !p.predefined);
+  const sigOf = p => JSON.stringify([p.source?.zone_id, p.destination?.zone_id, p.action, fwProto(p), fwEpText(p.source).items.concat(fwEpText(p.source).txt), fwEpText(p.destination).items.concat(fwEpText(p.destination).txt), fwPortText(p.source), fwPortText(p.destination), fwCst(p)]);
+  const chains = new Map();
+  const sigs = new Map(); for (const p of custom) { const k = sigOf(p); sigs.set(k, [...(sigs.get(k) || []), p]); }
+  for (const p of custom) {
+    const add = (sev, txt) => pol.push({ p, sev, txt });
+    const a = String(p.action || "").toUpperCase(), n = String(p.name || "");
+    if ((/^(allow|permit|erlaub)/i.test(n) && a !== "ALLOW") || (/^(block|deny|drop|reject|sperr|verbiet)/i.test(n) && a === "ALLOW")) add("warn", `<span>The name says</span> “${esc(n.split(/[\s_]/)[0])}”, <span>the action is</span> ${FW_ACTION[a]?.[0] || a}`);
+    if (p.enabled === false) add("info", "<span>Paused</span>");
+    if (hitsKnown && p.enabled !== false && !p.hits && !p.last_hit) add("info", "<span>Never matched</span>");
+    for (const side of ["source", "destination"]) {
+      for (const m of fwMacs(p[side])) if (!devByMac(m)) add("warn", `<span>Unknown device</span> <span class="mono" translate="no">${esc(m)}</span>`);
+      const z = FW.zoneById[p[side]?.zone_id];
+      if (z && z.key !== "external") for (const r of fwIpEntries(p[side])) if (!/[/-]/.test(r.entry) && ipNum(r.entry) >= 0 && !knownIps.has(r.entry)) add("info", `<span>No device uses</span> <span class="mono" translate="no">${esc(r.entry)}</span>`);
+    }
+    const k = p.source?.zone_id + ">" + p.destination?.zone_id; if (!chains.has(k)) chains.set(k, fwChainFlags(p.source?.zone_id, p.destination?.zone_id));
+    for (const x of chains.get(k).get(p.id)?.f || []) if (["dead", "redund", "dflt"].includes(x[0])) add(x[2] === "bad" ? "bad" : "warn", `<span translate="no">${esc(x[1])}</span>`);
+    const twins = sigs.get(sigOf(p)); if (twins.length > 1 && twins[0] !== p) add("info", `<span>Same as</span> <b translate="no">${esc(twins[0].name)}</b>`);
+  }
+  // ---- zone structure
+  const zst = [], perZone = new Map();
+  for (const d of devs) perZone.set(d.z.id, [...(perZone.get(d.z.id) || []), d]);
+  const BUILT = new Set(["internal", "external", "gateway", "vpn", "hotspot", "dmz"]);
+  for (const z of zs) {
+    const ds = perZone.get(z.id) || [], role = fwZoneRole(z), add = (sev, kind, txt, extra) => zst.push({ z, sev, kind, txt, ...extra });
+    if (!BUILT.has(z.key) && !z.network_ids.length) add("warn", "empty", "<span>No network belongs to this zone – remove it, or assign the networks it was made for.</span>");
+    else if (!BUILT.has(z.key) && !ds.length) add("info", "unused", "<span>No device is in this zone – merge it into another zone or remove it.</span>");
+    const roles = new Map(); for (const d of ds) if (d.cl && d.cl.conf >= 0.55 && d.cl.p.a !== "controller") roles.set(d.cl.p.a, [...(roles.get(d.cl.p.a) || []), d]);
+    const untr = [...roles.entries()].filter(([r]) => FW_UNTRUSTED.has(r)), sens = [...roles.entries()].filter(([r]) => FW_SENSITIVE.has(r));
+    const nUntr = untr.reduce((a, [, l]) => a + l.length, 0);
+    if (FW_SENSITIVE.has(role) && nUntr >= 2) {
+      const iz = fwRoleZones("iot")[0];
+      add("warn", "split", `<span>Split:</span> ${nUntr} <span>IoT, media or camera devices share this zone with computers and servers.</span> ${iz ? `<span>Move them to</span> ${zTag(iz)}.` : "<span>Create an IoT zone and move them there.</span>"}`, { devs: untr.flatMap(([, l]) => l) });
+    } else if (FW_UNTRUSTED.has(role) && role !== "guest" && role !== "dmz" && sens.reduce((a, [, l]) => a + l.length, 0) >= 1) add("warn", "split", `<span>Computers or servers are in this</span> ${FW_ROLE_NAME[role]} <span>zone – they get its restricted rules.</span>`, { devs: sens.flatMap(([, l]) => l) });
+    if (["iot", "media", "camera"].includes(role)) {
+      const need = ds.filter(d => d.cl && ["cloud", "full"].includes(d.cl.p.net)), local = ds.filter(d => d.cl && d.cl.p.net === "none");
+      const exc = FW.data.policies.filter(p => !p.predefined && p.source?.zone_id === z.id && p.destination?.zone_id === ext?.id && ["CLIENT", "IP"].includes(fwTarget(p.source))).length;
+      if (need.length >= 2 && local.length >= 2) add("info", "split", `<span>Split:</span> ${need.length} <span>devices need the internet,</span> ${local.length} <span>do not.</span> ${exc ? `${exc} <span>device rules to External already handle this.</span> ` : ""}<span>A zone for local-only devices (no internet) and one for cloud devices would replace per-device exceptions.</span>`);
+    }
+  }
+  // merge: two zones that allow each other everything and have the same rules to all other zones
+  const row = z => zs.filter(x => x.id !== z.id).map(x => x.id + ":" + fwPair(z.id, x.id).def + "/" + fwPair(x.id, z.id).def);
+  for (let i = 0; i < zs.length; i++) for (let j = i + 1; j < zs.length; j++) {
+    const a = zs[i], b = zs[j]; if (["external", "gateway", "vpn"].includes(a.key) || ["external", "gateway", "vpn"].includes(b.key)) continue;
+    if (fwPair(a.id, b.id).def !== "allow" || fwPair(b.id, a.id).def !== "allow") continue;
+    const ra = row(a).filter(x => !x.startsWith(b.id)).map(x => x.split(":")[1]), rb = row(b).filter(x => !x.startsWith(a.id)).map(x => x.split(":")[1]);
+    const same = ra.join() === rb.join();
+    zst.push({ z: a, z2: b, sev: same ? "info" : "warn", kind: "merge", txt: same ? `<span>Merge?</span> ${zTag(a)} <span>and</span> ${zTag(b)} <span>allow each other everything and have the same rules to all other zones – one zone would do.</span>` : `${zTag(a)} <span>and</span> ${zTag(b)} <span>allow each other everything – the separation protects nothing between them.</span>` });
+  }
+  if (!fwRoleZones("iot").length) {
+    const iotIn = devs.filter(d => d.cl && d.cl.conf >= 0.55 && ["iot", "media", "camera"].includes(d.cl.p.a));
+    if (iotIn.length >= 3) zst.push({ z: null, sev: "warn", kind: "create", txt: `<span>Create an IoT zone:</span> ${iotIn.length} <span>IoT, media or camera devices have no zone of their own.</span>`, devs: iotIn });
+  }
+  // ---- the sum of single rules: devices that share the same exceptions to their zone's defaults
+  const clusters = new Map();
+  for (const d of devs) {
+    const def = fwSigOf(d.z, FW_NODEV), mine = fwSigOf(d.z, d.c);
+    const diff = mine.map((m, i) => [m[0], m[1] !== def[i][1] ? m[1] : null, m[2] !== def[i][2] ? m[2] : null]).filter(x => x[1] || x[2]);
+    if (!diff.length) continue;
+    d.exc = diff;
+    const key = d.z.id + "|" + diff.map(x => `${x[0].id}:${x[1] || ""}/${x[2] || ""}`).join(";");
+    clusters.set(key, [...(clusters.get(key) || []), d]);
+  }
+  for (const [, ds] of clusters) {
+    if (ds.length < 3) continue;
+    const z = ds[0].z, diff = ds[0].exc, rules = [...new Set(ds.flatMap(d => d.pols))];
+    const match = zs.find(o => o.id !== z.id && !["external", "gateway", "vpn"].includes(o.key) && fwSigOf(o, FW_NODEV).filter(x => x[0].id !== z.id).map(x => x[1] + "/" + x[2]).join() === fwSigOf(z, ds[0].c).filter(x => x[0].id !== o.id).map(x => x[1] + "/" + x[2]).join());
+    const what = diff.map(x => [x[1] ? `${esc(x[0].name)}: ${FW_LVL[x[1]][0]}` : "", x[2] ? `${esc(x[0].name)} →: ${FW_LVL[x[2]][0]}` : ""].filter(Boolean).join(", ")).join(", ");
+    zst.push({ z, sev: "info", kind: match ? "movegroup" : "own", devs: ds, txt: match
+      ? `${ds.length} <span>devices in</span> ${zTag(z)} <span>have exceptions that make them behave like zone</span> ${zTag(match)} <span>(</span><span translate="no">${what}</span><span>) – move them there and drop</span> ${rules.length} <span>device rules.</span>`
+      : `<span>Own zone?</span> ${ds.length} <span>devices in</span> ${zTag(z)} <span>share the same exceptions</span> <span>(</span><span translate="no">${what}</span><span>) through</span> ${rules.length} <span>device rules – a zone with these rules as its default would replace them.</span>`, to: match || null, rules });
+  }
+  // ---- VLAN / network structure
+  const nst = [], perNet = new Map();
+  for (const c of state.clients) if (c.mac && !c.is_device) { const id = c.network_id || c._resNet; if (id) perNet.set(id, [...(perNet.get(id) || []), c]); }
+  const zoneOfNetId = id => FW.zoneOfNet[id] || null;
+  const total = state.clients.filter(c => c.mac && !c.is_device).length;
+  for (const n of state.networks) {
+    const cs = perNet.get(n.id) || [], z = zoneOfNetId(n.id), add = (sev, kind, txt, extra) => nst.push({ n, sev, kind, txt, ...extra });
+    const nrole = fwNameRole(n.name) || (z ? fwZoneRole(z) : "");
+    if (!z && n.purpose !== "remote-user-vpn") add("warn", "nozone", "<span>Not in any firewall zone.</span>");
+    if (n.purpose === "guest" && z && fwZoneRole(z) !== "guest") add("warn", "guest", `<span>Guest network in zone</span> ${zTag(z)} <span>– put it into the Hotspot zone so guests are isolated.</span>`);
+    if (!cs.length && n.purpose !== "guest" && n.purpose !== "remote-user-vpn") add("info", "empty", "<span>No device has used this network – remove it, or merge it with another one.</span>");
+    const cls = cs.map(c => byMac.get(c.mac)).filter(d => d?.cl && d.cl.conf >= 0.55 && d.cl.p.a !== "controller");
+    const un = cls.filter(d => FW_UNTRUSTED.has(d.cl.p.a)), se = cls.filter(d => FW_SENSITIVE.has(d.cl.p.a));
+    if (un.length >= 2 && se.length >= 2) add("warn", "split", `<span>Split:</span> ${un.length} <span>IoT, media or camera devices and</span> ${se.length} <span>computers or servers share this VLAN – the firewall cannot separate devices in one network.</span>`, { devs: un });
+    if (cs.length >= 15 && total && cs.length / total >= 0.7 && un.length >= 3) add("warn", "flat", `<span>Flat network:</span> ${Math.round(cs.length / total * 100)} % <span>of all devices are in this VLAN.</span>`);
+    n._role = nrole;
+  }
+  for (let i = 0; i < state.networks.length; i++) for (let j = i + 1; j < state.networks.length; j++) {
+    const a = state.networks[i], b = state.networks[j], za = zoneOfNetId(a.id), zb = zoneOfNetId(b.id);
+    if (!za || za !== zb || a.purpose === "remote-user-vpn" || b.purpose === "remote-user-vpn") continue;
+    const na = (perNet.get(a.id) || []).length, nb = (perNet.get(b.id) || []).length;
+    if (a._role && b._role && a._role !== b._role) nst.push({ n: a, n2: b, sev: "info", kind: "zone", txt: `<b translate="no">${esc(a.name)}</b> <span>and</span> <b translate="no">${esc(b.name)}</b> <span>look like different purposes but share zone</span> ${zTag(za)} <span>and so all firewall rules – give one of them its own zone if it needs other rules.</span>` });
+    else if (na + nb <= 10) nst.push({ n: a, n2: b, sev: "info", kind: "merge", txt: `<span>Merge?</span> <b translate="no">${esc(a.name)}</b> <span>and</span> <b translate="no">${esc(b.name)}</b> <span>are in the same zone with</span> ${na + nb} <span>devices together – one VLAN would be simpler, unless you separate them on purpose.</span>` });
+  }
+  // ---- recommendations: special rules, moves, policy changes
+  const recs = [], rk = new Map();
+  const rule = (key, r, d) => { let x = rk.get(key); if (!x) { rk.set(key, x = { ...r, devs: [] }); recs.push(x); } if (d && !x.devs.includes(d)) x.devs.push(d); };
+  for (const d of devs) for (const f of d.f) {
+    const p = d.cl?.p, moving = d.f.some(x => x.code === "zone");
+    if (moving && ["inet", "inetopen", "ha", "haout", "lan"].includes(f.code)) continue;
+    if (f.code === "inet") rule(`inet|${d.z.id}|${p.id}`, { kind: "allow", title: `Allow ${p.name} in ${d.z.name} to reach the internet`, why: p.net === "cloud" ? "They only work through the vendor's cloud." : "They need the internet for their function and updates.",
+      tpl: { name: `Allow ${p.name} internet`, action: "ALLOW", src: { zone: d.z.id, target: "CLIENT" }, dst: { zone: ext.id, target: p.domains ? "WEB" : "ANY", domains: p.domains || [] }, protocol: "all" } }, d);
+    if (f.code === "inetopen") rule(`block|${d.z.id}|${p.id}`, { kind: "block", title: `Block the internet for ${p.name} in ${d.z.name}`, why: "They work locally; without internet they cannot phone home or be reached from outside.",
+      tpl: { name: `Block ${p.name} internet`, action: "BLOCK", src: { zone: d.z.id, target: "CLIENT" }, dst: { zone: ext.id, target: "ANY" }, protocol: "all" } }, d);
+    if (f.code === "ha") rule(`ha|${d.z.id}|${p.id}`, { kind: "allow", title: `Allow Home Assistant to reach ${p.name} in ${d.z.name}`, why: `The ${p.name} integration connects to the devices${p.port ? ` (${p.proto.toUpperCase()} ${p.port})` : ""}.`,
+      tpl: { name: `Allow HA to ${p.name}`, action: "ALLOW", src: { zone: haZ.id, target: "CLIENT", macs: [ha.mac] }, dst: { zone: d.z.id, target: "CLIENT" }, protocol: p.port ? p.proto : "all", port: p.port || "", allow_return: true } }, d);
+    if (f.code === "haout") rule(`haout|${d.z.id}|${p.id}`, { kind: "allow", title: `Allow ${p.name} in ${d.z.name} to reach Home Assistant`, why: `The devices send their data to Home Assistant (MQTT, ${p.proto.toUpperCase()} ${p.port}).`,
+      tpl: { name: `Allow ${p.name} to HA`, action: "ALLOW", src: { zone: d.z.id, target: "CLIENT" }, dst: { zone: haZ.id, target: "CLIENT", macs: [ha.mac] }, protocol: p.proto, port: p.port, allow_return: true } }, d);
+    if (f.code === "lan") rule(`lan|${f.from.id}|${d.z.id}|${p.id}`, { kind: "allow", title: `Allow ${f.from.name} to reach ${p.name} in ${d.z.name}`, why: "Phones and computers use them directly (casting, printing, file shares).",
+      tpl: { name: `Allow ${f.from.name} to ${p.name}`, action: "ALLOW", src: { zone: f.from.id, target: "ANY" }, dst: { zone: d.z.id, target: "CLIENT" }, protocol: p.port ? p.proto : "all", port: p.port || "", allow_return: true } }, d);
+    if (f.code === "zone" || (f.code === "grp" && f.asp === "zone" && f.to)) rule(`move|${d.c.mac}`, { kind: "move", title: `Move ${devName(d.c)} to ${f.to.name}`, why: f.code === "zone" ? `${p.name} devices belong in ${f.to.name}.` : `The other ${f.g.label} devices are in ${f.to.name}.`, to: f.to }, d);
+    if (f.code === "grp" && f.pol) rule(`pol|${f.pol}|${d.c.mac}`, { kind: "policy", title: `Add ${devName(d.c)} to policy ${f.pol}`, why: `The other ${f.g.label} devices are in it – or remove them all if the rule is not needed.`, pol: f.pol }, d);
+  }
+  for (const x of zst) if (x.kind === "movegroup") for (const d of x.devs) rule(`move|${d.c.mac}`, { kind: "move", title: `Move ${devName(d.c)} to ${x.to.name}`, why: `Its exceptions give it the rules of ${x.to.name} anyway.`, to: x.to }, d);
+  for (const m of mx) rule(`mx|${m.s.id}|${m.t.id}`, { kind: "matrix", title: `${m.s.name} → ${m.t.name}: Allow All`, why: "Set the zone pair to Allow Return (or Block) in UniFi and allow only what is needed with single rules.", s: m.s, t: m.t, sev: m.sev });
+  for (const r of recs) if (r.tpl && r.tpl.src.target === "CLIENT" && !r.tpl.src.macs) r.tpl.src.macs = r.devs.map(d => d.c.mac);
+  for (const r of recs) if (r.tpl && r.tpl.dst.target === "CLIENT" && !r.tpl.dst.macs) r.tpl.dst.macs = r.devs.map(d => d.c.mac);
+  // ---- score per zone: placement 40, access 30, consistency 15, exposure 15
+  const score = {};
+  for (const z of zs) {
+    const ds = perZone.get(z.id) || [], risky = mx.filter(m => m.s.id === z.id).length;
+    if (!ds.length) { score[z.id] = { score: Math.max(0, 100 - risky * 20), n: 0 }; continue; }
+    const ok = k => ds.filter(d => !d.f.some(f => k.includes(f.code) && f.sev !== "info")).length / ds.length;
+    score[z.id] = { score: Math.round(40 * ok(["zone"]) + 30 * ok(["inet", "ha", "haout", "lan"]) + 15 * ok(["grp"]) + 15 * Math.max(0, 1 - risky * 0.5)), n: ds.length };
+  }
+  const tot = Object.values(score).reduce((a, s) => a + s.n, 0);
+  const all = { score: tot ? Math.round(Object.values(score).reduce((a, s) => a + s.score * s.n, 0) / tot) : 100, n: tot };
+  return { devs, byMac, groups, mx, mxRisk, pol, zst, nst, recs, score, all };
+}
+const fwScoreBadge = (s, prefix = "") => s ? `<span class="tidy ${s.score >= 80 ? "good" : s.score >= 50 ? "mid" : "bad"}" title="Segmentation score: devices in the right zone (40), access as their type needs (30), same rules as similar devices (15), no risky Allow All from the zone (15)">${prefix}${s.score}</span>` : "";
+const fwDevCodes = c => { const d = fwAnalysis()?.byMac.get(c.mac); if (!d) return []; const k = d.f.filter(f => f.sev !== "info").map(f => f.code); return [k.length ? "find" : "", k.includes("zone") ? "zone" : "", k.includes("grp") ? "grp" : "", k.some(x => ["inet", "ha", "haout", "lan"].includes(x)) ? "access" : "", d.cl ? "" : "unk"].filter(Boolean); };
+
+// ---------- firewall: Analysis tab (look of the IP plan's CleanUp Proposal) ----------
+const faOpen = id => FA.sec[id] !== false;
+const faSec = (id, title, count, body) => body ? `<details class="fa-sec" data-fasec="${id}" ${faOpen(id) ? "open" : ""}><summary><span class="sec-title">${title}</span>${count != null ? ` <span class="fa-n">${count}</span>` : ""}<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 15 6-6 6 6"/></svg></summary>${body}</details>` : "";
+const faCard = (sev, head, body, extra = "") => `<div class="fa-card ${sev}"><span class="fa-dot" aria-hidden="true"></span><div class="fa-c"><div class="fa-h">${head}</div>${body ? `<div class="fa-d">${body}</div>` : ""}${extra}</div></div>`;
+const faDevChips = ds => ds?.length ? `<div class="fa-devs">${ds.slice(0, 24).map(d => `<button type="button" class="chip" data-fwdev="${esc(d.c.mac)}" translate="no">${esc(devName(d.c))}</button>`).join("")}${ds.length > 24 ? ` <span class="muted">+${ds.length - 24}</span>` : ""}</div>` : "";
+const FA_KIND = { allow: ["Allow rule", "allow"], block: ["Block rule", "block"], move: ["Move device", "move"], policy: ["Change rule", "pol"], matrix: ["Zone pair", "mx"] };
+function renderFa() {
+  const A = fwAnalysis(); if (!A) return;
+  const zf = FW.zone, inZ = d => !zf || d.z.id === zf;
+  const devs = A.devs.filter(inZ), warn = devs.filter(d => d.f.some(f => f.sev !== "info"));
+  const recs = A.recs.filter(r => !zf || r.devs.some(inZ) || r.s?.id === zf || r.t?.id === zf);
+  const sc = zf ? A.score[zf] : A.all;
+  $("#faCtrl").innerHTML = `<span class="pill">${zf ? `<span translate="no">${esc(fwZoneName(zf))}</span> · ` : ""}<span>Segmentation</span> ${fwScoreBadge(sc)}</span><span class="pill"><span>Tidiness</span> ${fwTidyBadge(zf ? fwTidy(zf) : fwTidyAll())}</span><span class="pill">Devices <b>${devs.length}</b></span><span class="pill">Recognised <b>${devs.filter(d => d.cl).length}</b></span><span class="pill">With findings <b${warn.length ? ' style="color:var(--warn)"' : ""}>${warn.length}</b></span><span class="pill">Recommendations <b>${recs.length}</b></span>${zf ? `<button type="button" class="link" data-fwall>All zones</button>` : ""}<span class="sp"></span><button class="btn" type="button" id="faRoles" title="Which kind of devices each zone is meant for – the analysis compares devices with it">Zone roles…</button>`;
+  // structure: zones and VLANs
+  const zst = A.zst.filter(x => !zf || x.z?.id === zf || x.z2?.id === zf || !x.z);
+  const zHtml = zst.map(x => faCard(x.sev, `${x.z ? `${zTag(x.z)} <span class="muted">${esc(FW_ROLE_NAME[fwZoneRole(x.z)] || "")}</span>` : `<span>All zones</span>`}`, x.txt, faDevChips(x.devs))).join("");
+  const nZ = zf ? (FW.zoneById[zf]?.network_ids || []) : null;
+  const nst = A.nst.filter(x => !nZ || nZ.includes(x.n.id) || (x.n2 && nZ.includes(x.n2.id)));
+  const nHtml = nst.map(x => faCard(x.sev, `<b translate="no">${esc(x.n.name)}</b>${x.n.vlan ? ` <span class="muted">VLAN ${x.n.vlan}</span>` : ""} <span class="mono muted">${esc(x.n.subnet || "")}</span>`, x.txt, faDevChips(x.devs))).join("");
+  // recommendations
+  const rHtml = recs.map((r, i) => {
+    const k = FA_KIND[r.kind], btn = r.tpl ? `<button class="btn sm primary" type="button" data-farule="${A.recs.indexOf(r)}">Create rule…</button>` : r.kind === "move" && r.devs[0] ? `<button class="btn sm" type="button" data-famove="${esc(r.devs[0].c.mac)}" data-fato="${esc(r.to.id)}">Prepare move…</button>` : r.pol ? `<button class="btn sm" type="button" data-fapol="${esc(r.pol)}">Show rule</button>` : r.s ? `<button class="btn sm" type="button" data-fapair="${esc(r.s.id)}|${esc(r.t.id)}">Show zone pair</button>` : "";
+    return faCard(r.sev || (r.kind === "matrix" ? "warn" : "info"), `<span class="fa-kind ${k[1]}">${k[0]}</span> <span>${esc(r.title)}</span>`, `<span>${esc(r.why)}</span>`, faDevChips(r.kind === "move" ? [] : r.devs) + (btn ? `<div class="fa-act">${btn}</div>` : ""));
+  }).join("");
+  // consistency groups
+  const groups = A.groups.filter(g => !zf || g.devs.some(inZ));
+  const gHtml = groups.map(g => {
+    const cols = g.asp.map(a => a.k);
+    return `<div class="fa-grp"><div class="fa-gh"><b translate="no">${esc(g.label)}</b> <span class="muted">${g.kind === "integration" ? "Home Assistant integration" : g.kind === "vendor" ? "Vendor" : "Device type"} · ${g.devs.length} <span>devices</span></span>${g.out.size ? ` <span class="tag warn">${g.out.size} <span>${g.out.size === 1 ? "differs" : "differ"}</span></span>` : ` <span class="tag info">No majority</span>`}</div>
+      <div class="imp-table"><table><thead><tr><th>Device</th>${g.asp.map(a => `<th>${esc(a.label)}</th>`).join("")}</tr></thead><tbody>${g.devs.map(d => `<tr class="${g.out.has(d.c.mac) ? "fa-out" : ""}"><td><button type="button" class="link" data-fwdev="${esc(d.c.mac)}" translate="no">${esc(devName(d.c))}</button></td>${g.asp.map(a => { const v = a.get(d), odd = a.odd ? a.odd(d) : a.maj != null && v !== a.maj; return `<td class="${odd ? "fa-odd" : ""}" translate="no">${esc(v)}</td>`; }).join("")}</tr>`).join("")}</tbody></table></div></div>`;
+    void cols;
+  }).join("");
+  // device table
+  const F = FA.filter, list = devs.filter(d => F === "all" || (F === "find" ? d.f.length : F === "unk" ? !d.cl : true));
+  const rows = faSorted(list, { dev: d => devName(d.c).toLowerCase(), zone: d => d.z.name, prof: d => d.cl ? d.cl.p.name : "~", inet: d => d.inet.lvl, ha: d => d.ha?.lvl || "~", find: d => -d.f.filter(f => f.sev !== "info").length });
+  const profSel = d => `<select data-faprof="${esc(d.c.mac)}" aria-label="Device type of ${esc(devName(d.c))}"><option value="">${d.cl && !d.cl.set ? `Auto: ${esc(d.cl.p.name)} (${fwConfTxt(d.cl.conf)})` : "Auto"}</option>${FW_PROFILES.filter(p => p.m).map(p => `<option value="${p.id}" ${d.cl?.set && d.cl.p.id === p.id ? "selected" : ""}>${esc(p.name)}</option>`).join("")}</select>`;
+  $("#faBody").innerHTML =
+    faSec("zones", "Zone structure", zst.length, zHtml || (zf ? "" : `<p class="hint">The zones look sensible.</p>`)) +
+    faSec("vlans", "VLAN structure", nst.length, nHtml || `<p class="hint">The networks look sensible.</p>`) +
+    faSec("recs", "Recommendations", recs.length, rHtml || `<p class="hint">No recommendation – the rules fit the devices.</p>`) +
+    faSec("groups", "Consistency of similar devices", groups.length, gHtml ? `<p class="hint">Devices of the same Home Assistant integration, vendor or type usually need the same rules. Rows in pink differ from the majority of their group.</p>${gHtml}` : `<p class="hint">Similar devices have the same rules.</p>`) +
+    faSec("devs", "Devices", list.length, `<div class="sumrow fa-filter">${[["find", "With findings"], ["all", "All"], ["unk", "Not recognised"]].map(([k, l]) => `<button type="button" class="pill" data-faf="${k}" aria-pressed="${F === k}">${l}</button>`).join("")}</div>
+      <div class="imp-table"><table><thead><tr>${[["dev", "Device"], ["zone", "Zone"], ["prof", "Device type"], ["inet", "Internet"], ...(haHostDev() ? [["ha", "Home Assistant → device"]] : []), ["find", "Findings"]].map(([k, l]) => `<th data-fask="${k}" class="${FA.sort?.k === k ? (FA.sort.d > 0 ? "sa" : "sd") : ""}">${l}</th>`).join("")}</tr></thead><tbody id="faRows">${rows.map(d => `<tr><td><button type="button" class="link" data-fwdev="${esc(d.c.mac)}" translate="no">${esc(devName(d.c))}</button><div class="muted" style="font-size:11.5px" translate="no">${esc(d.c.oui || "")}</div></td><td>${zTag(d.z)}</td><td>${profSel(d)}${d.cl ? `<div class="muted fa-why" title="${esc(d.cl.why.join("\n"))}">${esc(d.cl.why[0])}${d.cl.why.length > 1 ? " …" : ""}</div>` : ""}</td><td>${fwLvlTag(d.inet.lvl)}</td>${haHostDev() ? `<td>${d.ha ? fwLvlTag(d.ha.lvl) : `<span class="muted">-</span>`}</td>` : ""}<td><div class="chg-list">${d.f.map(f => `<span class="fa-f ${f.sev}">${f.html}</span>`).join("") || `<span class="muted">–</span>`}</div></td></tr>`).join("") || `<tr><td colspan="6" class="muted">No device in this view.</td></tr>`}</tbody></table></div>`) +
+    faSec("pols", "Matrix and rules", A.mx.length + A.pol.length, [...A.mx.filter(m => !zf || m.s.id === zf || m.t.id === zf).map(m => faCard(m.sev, `${zTag(m.s)} → ${zTag(m.t)} <span class="fw-act allow">Allow All</span>`, m.txt, `<div class="fa-act"><button class="btn sm" type="button" data-fapair="${esc(m.s.id)}|${esc(m.t.id)}">Show zone pair</button></div>`)),
+      ...A.pol.filter(x => !zf || x.p.source?.zone_id === zf || x.p.destination?.zone_id === zf).map(x => faCard(x.sev, `<b translate="no">${esc(x.p.name || "?")}</b> <span class="muted" translate="no">${esc(fwZoneName(x.p.source?.zone_id))} → ${esc(fwZoneName(x.p.destination?.zone_id))} · ID ${esc(x.p.index ?? "")}</span>`, x.txt, `<div class="fa-act"><button class="btn sm" type="button" data-fapolid="${esc(x.p.id)}">Show rule</button></div>`))].join("") || `<p class="hint">No finding in the matrix and the rules.</p>`);
+}
+$("#fwView").addEventListener("change", async e => {
+  const s = e.target.closest("[data-faprof]"); if (!s) return;
+  const ov = { ...FWS.overrides }; if (s.value) ov[s.dataset.faprof] = s.value; else delete ov[s.dataset.faprof];
+  try { await saveFwSettings({ overrides: ov }); renderFw(); renderFacets(); } catch (err) { toast(err.message); }
+});
+$("#fwView").addEventListener("toggle", e => { const d = e.target.closest?.("[data-fasec]"); if (d) { FA.sec[d.dataset.fasec] = d.open; store.set("faSec", FA.sec); } }, true);
+$("#fwView").addEventListener("click", e => {
+  const f = e.target.closest("[data-faf]"); if (f) { FA.filter = f.dataset.faf; renderFw(); return; }
+  const th = e.target.closest("th[data-fask]"); if (th) { const k = th.dataset.fask; FA.sort = FA.sort?.k === k ? { k, d: -FA.sort.d } : { k, d: 1 }; renderFw(); return; }
+  if (e.target.closest("#faRoles")) { openFwRoles(); return; }
+  const r = e.target.closest("[data-farule]"); if (r) { const rec = fwAnalysis().recs[+r.dataset.farule]; if (rec?.tpl) openWiz(null, rec.tpl); return; }
+  const m = e.target.closest("[data-famove]"); if (m) { prepareMove(devByMac(m.dataset.famove), FW.zoneById[m.dataset.fato]); return; }
+  const p = e.target.closest("[data-fapol]"); if (p) { const pol = FW.data.policies.find(x => x.name === p.dataset.fapol); if (pol) openFwFor({ src: pol.source?.zone_id, dst: pol.destination?.zone_id, open: pol.id }); return; }
+  const pi = e.target.closest("[data-fapolid]"); if (pi) { const pol = FW.data.policies.find(x => x.id === pi.dataset.fapolid); if (pol) openFwFor({ src: pol.source?.zone_id, dst: pol.destination?.zone_id, open: pol.id }); return; }
+  const pr = e.target.closest("[data-fapair]"); if (pr) { const [s, d] = pr.dataset.fapair.split("|"); openFwFor({ src: s, dst: d }); }
+});
+function faSorted(list, getters) { const s = FA.sort; if (!s || !getters[s.k]) return list; return [...list].sort((a, b) => tcmp(getters[s.k](a), getters[s.k](b)) * s.d); }
+// moving a device to a zone = its Virtual Network Override to a network of that zone; prepared in the edit panel, applied by the user
+function prepareMove(c, z) {
+  if (!c || !z) return;
+  const n = state.networks.find(x => z.network_ids.includes(x.id) && x.subnet);
+  if (!n) { toast(`${z.name} has no network with a subnet – assign one in UniFi first.`); return; }
+  openPanel(c, "edit"); $("#fVnoOn").checked = true; syncToggles(); $("#fVno").value = n.id; followVno(); updateHint();
+  toast(`Prepared: ${devName(c)} → ${n.name} (${z.name}). Check the fixed IP and click Apply.`);
+}
+// zone roles dialog
+function openFwRoles() {
+  $("#fwRoleRows").innerHTML = fwZones().map(z => `<div class="rule-row"><span class="zchip" translate="no">${esc(z.name)}</span><select data-zr="${esc(z.id)}" aria-label="Role of ${esc(z.name)}"><option value="">Auto: ${esc(FW_ROLE_NAME[fwRoleGuess(z)] || "No role")}</option>${FW_ROLES.map(([k, l]) => `<option value="${k}" ${FWS.zone_roles[z.id] === k ? "selected" : ""}>${esc(l)}</option>`).join("")}</select></div>`).join("");
+  $("#dlgFwRoles").showModal();
+}
+$("#fwRolesSave").addEventListener("click", async () => {
+  const roles = {}; for (const s of $("#fwRoleRows").querySelectorAll("[data-zr]")) if (s.value) roles[s.dataset.zr] = s.value;
+  try { await saveFwSettings({ zone_roles: roles }); $("#dlgFwRoles").close(); renderAll(); toast("Zone roles saved"); } catch (e) { toast(e.message); }
+});
+for (const id of ["#fwRolesCancel", "#fwRolesClose"]) $(id).addEventListener("click", () => $("#dlgFwRoles").close());
+
+// ---------- firewall: guided wizard for a new rule (also for one client, and prefilled from a recommendation) ----------
+const WZ_STEPS = ["What", "From", "To", "Traffic", "Check"];
+const WZ_TRAFFIC = [["all", "All traffic", "all", ""], ["web", "Web (TCP 80, 443)", "tcp", "80,443"], ["dns", "DNS (TCP/UDP 53)", "tcp_udp", "53"], ["ntp", "Time / NTP (UDP 123)", "udp", "123"], ["mqtt", "MQTT (TCP 1883)", "tcp", "1883"], ["esphome", "ESPHome API (TCP 6053)", "tcp", "6053"], ["rtsp", "Camera stream / RTSP (TCP 554)", "tcp", "554"], ["custom", "Custom", "", ""]];
+let WZ = null;
+function openWiz(c, tpl) {
+  const z = c ? zoneOf(c) : null, ext = fwZoneByKey("external");
+  WZ = { step: 0, dev: c || null, action: "ALLOW", src: { mode: c ? "dev" : "zone", zone: z?.id || fwZones().find(x => x.key === "internal")?.id || "", macs: [], ips: "" },
+    dst: { mode: c ? "inet" : "zone", zone: ext?.id || "", macs: [], ips: "", domains: "" }, traffic: "all", protocol: "tcp", port: "", ipv: "BOTH", ret: true, name: "", desc: "", nameSet: false, confirm: false, busy: false, err: "" };
+  if (tpl) {
+    const side = (t, s) => { s.zone = t.zone; s.macs = t.macs || []; s.mode = t.target === "CLIENT" ? (t.macs?.length === 1 && t.macs[0] === haHostDev()?.mac ? "ha" : "devs") : t.target === "WEB" ? "inet" : t.zone === ext?.id ? "inet" : "zone"; s.domains = (t.domains || []).join(", "); };
+    side(tpl.src, WZ.src); side(tpl.dst, WZ.dst); WZ.action = tpl.action; WZ.ret = tpl.allow_return !== false;
+    const pre = WZ_TRAFFIC.find(t => t[2] === (tpl.protocol || "all") && t[3] === (tpl.port || "")); WZ.traffic = pre ? pre[0] : "custom"; WZ.protocol = tpl.protocol === "all" ? "tcp" : tpl.protocol; WZ.port = tpl.port || "";
+    WZ.name = tpl.name; WZ.nameSet = true; WZ.step = 4;
+  }
+  $("#dlgFwWiz").showModal(); renderWiz();
+}
+const wzZoneSel = (side, cur, filter = () => true) => `<select data-wz="${side}.zone" aria-label="Zone">${fwZones().filter(filter).map(z => `<option value="${esc(z.id)}" translate="no" ${z.id === cur ? "selected" : ""}>${esc(z.name)}</option>`).join("")}</select>`;
+function wzSideOpts(side) {
+  const S = WZ[side], ha = haHostDev(), opts = [];
+  const other = side === "src" ? WZ.dst : WZ.src;
+  if (WZ.dev && other.mode !== "dev") opts.push(["dev", `This device (${devName(WZ.dev)})`]);
+  if (side === "dst") opts.push(["inet", "Internet"]);
+  if (ha && WZ.dev !== ha && other.mode !== "ha") opts.push(["ha", `Home Assistant (${devName(ha)})`]);
+  opts.push(["zone", "All devices of a zone"], ["devs", "Selected devices"], ["ip", "IP address or range"]);
+  const extra = S.mode === "inet" ? `<label class="wz-sub">Only these domains <input data-wz="${side}.domains" value="${esc(S.domains)}" placeholder="empty = the whole internet, e.g. shelly.cloud, api.example.com"></label>`
+    : S.mode === "zone" ? `<label class="wz-sub">Zone ${wzZoneSel(side, S.zone, z => z.key !== "external")}</label>`
+    : S.mode === "devs" ? `<label class="wz-sub">Zone ${wzZoneSel(side, S.zone, z => z.key !== "external")}</label><div class="wz-devs">${state.clients.filter(c => c.mac && zoneOf(c)?.id === S.zone).map(c => `<label class="opt"><input type="checkbox" data-wzmac="${side}" value="${esc(c.mac)}" ${S.macs.includes(c.mac) ? "checked" : ""}><span translate="no">${esc(devName(c))}</span> <span class="muted mono">${esc(c.use_fixedip ? c.fixed_ip : c.ip)}</span></label>`).join("") || `<span class="muted">No device in this zone.</span>`}</div><span class="hint">UniFi rules hold devices of one zone per side.</span>`
+    : S.mode === "ip" ? `<label class="wz-sub">Zone ${wzZoneSel(side, S.zone)}</label><label class="wz-sub">IP, subnet or range <input data-wz="${side}.ips" class="mono" value="${esc(S.ips)}" placeholder="192.168.1.10, 192.168.30.0/24, 10.0.0.5-10.0.0.9"></label>` : "";
+  return `<div class="wz-opts">${opts.map(([k, l]) => `<label class="wz-opt ${S.mode === k ? "on" : ""}"><input type="radio" name="wz${side}" value="${k}" ${S.mode === k ? "checked" : ""}><span translate="no">${esc(l)}</span></label>`).join("")}</div>${extra}`;
+}
+// the rule as the server takes it
+function wzRule() {
+  const ha = haHostDev(), ext = fwZoneByKey("external");
+  const ep = S => {
+    if (S.mode === "dev") return { zone_id: zoneOf(WZ.dev)?.id, target: "CLIENT", macs: [WZ.dev.mac] };
+    if (S.mode === "ha") return { zone_id: zoneOf(ha)?.id, target: "CLIENT", macs: [ha.mac] };
+    if (S.mode === "inet") { const d = S.domains.split(/[\s,;]+/).filter(Boolean); return { zone_id: ext?.id, target: d.length ? "WEB" : "ANY", domains: d }; }
+    if (S.mode === "devs") return { zone_id: S.zone, target: "CLIENT", macs: S.macs };
+    if (S.mode === "ip") return { zone_id: S.zone, target: "IP", ips: S.ips.split(/[\s,;]+/).filter(Boolean) };
+    return { zone_id: S.zone, target: "ANY" };
+  };
+  const t = WZ_TRAFFIC.find(x => x[0] === WZ.traffic), proto = WZ.traffic === "custom" ? WZ.protocol : t[2], port = WZ.traffic === "custom" ? WZ.port.replace(/\s/g, "") : t[3];
+  const dst = ep(WZ.dst); if (port && proto !== "all") dst.port = port;
+  return { name: WZ.name.trim(), description: WZ.desc.trim(), action: WZ.action, source: ep(WZ.src), destination: dst, protocol: proto, ip_version: WZ.ipv, allow_return: WZ.action === "ALLOW" && WZ.ret };
+}
+const wzSideTxt = (S, e) => S.mode === "dev" ? devName(WZ.dev) : S.mode === "ha" ? "Home Assistant" : S.mode === "inet" ? (e.target === "WEB" ? e.domains.join(", ") : "Internet") : S.mode === "devs" ? `${e.macs.length} devices in ${fwZoneName(e.zone_id)}` : S.mode === "ip" ? `${e.ips.join(", ")} (${fwZoneName(e.zone_id)})` : `all of ${fwZoneName(e.zone_id)}`;
+function wzAutoName() {
+  if (WZ.nameSet) return;
+  const r = wzRule(), t = WZ_TRAFFIC.find(x => x[0] === WZ.traffic);
+  WZ.name = `${WZ.action === "ALLOW" ? "Allow" : "Block"} ${wzSideTxt(WZ.src, r.source)} to ${wzSideTxt(WZ.dst, r.destination)}${WZ.traffic !== "all" ? ` (${WZ.traffic === "custom" ? `${r.protocol.toUpperCase()} ${r.destination.port || ""}`.trim() : t[1].split(" (")[0]})` : ""}`.slice(0, 120);
+}
+function wzCheck() {
+  const r = wzRule(), probs = [];
+  for (const [k, e] of [["From", r.source], ["To", r.destination]]) {
+    if (!e.zone_id) probs.push(`${k}: no zone`);
+    if (e.target === "CLIENT" && !e.macs?.length) probs.push(`${k}: pick at least one device`);
+    if (e.target === "IP" && !e.ips?.length) probs.push(`${k}: enter an IP address`);
+  }
+  if (WZ.traffic === "custom" && WZ.protocol !== "all" && WZ.port && !/^\d{1,5}(-\d{1,5})?(,\d{1,5}(-\d{1,5})?)*$/.test(WZ.port.replace(/\s/g, ""))) probs.push("Port: e.g. 443, 80,443 or 8000-8100");
+  return { r, probs };
+}
+function renderWiz() {
+  if (!WZ) return;
+  const st = WZ.step, ha = haHostDev();
+  $("#wzSteps").innerHTML = WZ_STEPS.map((s, i) => `<button type="button" class="wz-st ${i === st ? "on" : i < st ? "done" : ""}" data-wzgo="${i}" ${i > st || WZ.busy ? "disabled" : ""}><b>${i + 1}</b> <span>${s}</span></button>`).join("");
+  $("#wzTitle").textContent = WZ.dev ? `Firewall rule for ${devName(WZ.dev)}` : "New firewall rule";
+  let body = "";
+  if (st === 0) body = `<p class="wz-q">Should the rule allow or block traffic?</p><div class="wz-big">${[["ALLOW", "Allow", "Opens a way the zone defaults block – e.g. Home Assistant to an IoT device, or one device to the internet."], ["BLOCK", "Block", "Closes a way the zone defaults allow – e.g. a camera to the internet. The traffic is dropped silently."], ["REJECT", "Reject", "Like Block, but the sender gets an answer at once (no time-out)."]].map(([k, l, d]) => `<label class="wz-card ${WZ.action === k ? "on" : ""}"><input type="radio" name="wzact" value="${k}" ${WZ.action === k ? "checked" : ""}><b class="fw-act ${k === "ALLOW" ? "allow" : "block"}">${l}</b><span>${d}</span></label>`).join("")}</div>`;
+  if (st === 1) body = `<p class="wz-q">Who starts the connection?</p>${wzSideOpts("src")}`;
+  if (st === 2) body = `<p class="wz-q">Where to?</p>${wzSideOpts("dst")}`;
+  if (st === 3) body = `<p class="wz-q">Which traffic?</p><div class="wz-opts">${WZ_TRAFFIC.map(([k, l]) => `<label class="wz-opt ${WZ.traffic === k ? "on" : ""}"><input type="radio" name="wztr" value="${k}" ${WZ.traffic === k ? "checked" : ""}><span>${l}</span></label>`).join("")}</div>
+    ${WZ.traffic === "custom" ? `<div class="wz-row"><label class="wz-sub">Protocol <select data-wz="protocol">${[["tcp", "TCP"], ["udp", "UDP"], ["tcp_udp", "TCP/UDP"], ["all", "All"]].map(([k, l]) => `<option value="${k}" ${WZ.protocol === k ? "selected" : ""}>${l}</option>`).join("")}</select></label><label class="wz-sub">Destination port <input data-wz="port" class="mono" value="${esc(WZ.port)}" placeholder="443 · 80,443 · 8000-8100" ${WZ.protocol === "all" ? "disabled" : ""}></label></div>` : ""}
+    <div class="wz-row"><label class="wz-sub">IP version <select data-wz="ipv">${[["BOTH", "Both"], ["IPV4", "IPv4"], ["IPV6", "IPv6"]].map(([k, l]) => `<option value="${k}" ${WZ.ipv === k ? "selected" : ""}>${l}</option>`).join("")}</select></label>${WZ.action === "ALLOW" ? `<label class="opt"><input type="checkbox" data-wzc="ret" ${WZ.ret ? "checked" : ""}><span>Allow the replies too (return traffic)</span></label>` : ""}</div>`;
+  if (st === 4) {
+    wzAutoName();
+    const { r, probs } = wzCheck(), sz = r.source.zone_id, dz = r.destination.zone_id;
+    const one = x => x.target === "CLIENT" && x.macs?.length === 1 ? devByMac(x.macs[0]) : null;
+    const now = sz && dz ? fwDecide(sz, dz, one(r.source) || (r.source.target === "ANY" ? null : FW_NODEV), one(r.destination) || (r.destination.target === "ANY" ? null : FW_NODEV)) : null;
+    const earlier = now?.by && !now.by.predefined ? now.by : null;
+    const lock = r.action !== "ALLOW" && ha && [r.source].some(e => (e.target === "ANY" && e.zone_id === zoneOf(ha)?.id) || (e.target === "CLIENT" && e.macs.includes(ha.mac))) && (FW.data.zones.find(z => z.id === dz)?.key === "gateway" || r.destination.target === "ANY" && FW.data.controller_ip && FW.zoneOfNet[state.networks.find(n => inSubnet(FW.data.controller_ip, n.subnet))?.id]?.id === dz);
+    body = `<div class="field"><label for="wzName">Name</label><input id="wzName" data-wz="name" value="${esc(WZ.name)}" maxlength="128"></div>
+      <div class="field"><label for="wzDesc">Description</label><input id="wzDesc" data-wz="desc" value="${esc(WZ.desc)}" placeholder="optional – why this rule exists"></div>
+      <div class="wz-sum"><span class="fw-act ${r.action === "ALLOW" ? "allow" : "block"}">${FW_ACTION[r.action][0]}</span> <span class="zchip" translate="no">${esc(fwZoneName(sz))}</span> <b translate="no">${esc(wzSideTxt(WZ.src, r.source))}</b> → <span class="zchip" translate="no">${esc(fwZoneName(dz))}</span> <b translate="no">${esc(wzSideTxt(WZ.dst, r.destination))}</b> · <span>${esc(r.protocol === "all" ? "All traffic" : `${r.protocol.toUpperCase().replace("_", "/")}${r.destination.port ? " " + r.destination.port : ""}`)}</span>${r.allow_return ? ` · <span>with replies</span>` : ""}</div>
+      ${now && now.lvl ? `<p class="hint"><span>Today:</span> ${fwLvlTag(now.lvl)} ${now.by ? `<span>by</span> <b translate="no">${esc(now.by.name)}</b>` : ""}</p>` : ""}
+      ${now && ((r.action === "ALLOW" && now.lvl === "full") || (r.action !== "ALLOW" && now.lvl === "none")) && !earlier ? `<p class="fw-warn">⚠ <span>${r.action === "ALLOW" ? "This traffic is already allowed today – the rule would change nothing." : "This traffic is already blocked today – the rule would change nothing."}</span></p>` : ""}
+      ${earlier ? `<p class="fw-warn">⚠ <span>The rule</span> <b translate="no">${esc(earlier.name)}</b> <span>already decides this traffic. UniFi puts new rules after the existing ones – move the new rule up in UniFi if it has to win.</span></p>` : ""}
+      ${lock ? `<p class="err">This rule would block Home Assistant from the UniFi console – the app would lock itself out. The app will refuse it.</p>` : ""}
+      ${probs.length ? `<div class="err">${probs.map(esc).join("<br>")}</div>` : ""}
+      ${WZ.err ? `<div class="err">${esc(WZ.err)}</div>` : ""}
+      ${WZ.confirm ? `<div class="cl-confirm"><b>Create this rule in UniFi?</b> <span>A version of the current settings is saved first. The rule is active at once.</span></div>` : ""}`;
+  }
+  $("#wzBody").innerHTML = body;
+  $("#wzBack").hidden = st === 0; $("#wzBack").disabled = WZ.busy;
+  const next = $("#wzNext"), chk = st === 4 ? wzCheck() : null;
+  next.textContent = st < 4 ? "Next" : WZ.busy ? "Creating …" : WZ.confirm ? "Confirm & create" : "Create in UniFi";
+  next.disabled = WZ.busy || (st === 4 && (chk.probs.length || !WZ.name.trim())) || (st === 1 && WZ.src.mode === "devs" && !WZ.src.macs.length) || (st === 2 && WZ.dst.mode === "devs" && !WZ.dst.macs.length);
+}
+$("#wzBody").addEventListener("change", e => {
+  const t = e.target;
+  if (t.name === "wzact") WZ.action = t.value;
+  else if (t.name === "wzsrc" || t.name === "wzdst") { const S = WZ[t.name.slice(2)]; S.mode = t.value; S.macs = []; if (t.value === "inet") S.zone = fwZoneByKey("external")?.id; else if (fwZoneByKey("external")?.id === S.zone || !S.zone) S.zone = (WZ.dev && zoneOf(WZ.dev)?.id) || fwZones()[0]?.id; }
+  else if (t.name === "wztr") WZ.traffic = t.value;
+  else if (t.dataset.wzmac) { const S = WZ[t.dataset.wzmac]; S.macs = t.checked ? [...S.macs, t.value] : S.macs.filter(m => m !== t.value); }
+  else if (t.dataset.wzc === "ret") WZ.ret = t.checked;
+  else if (t.dataset.wz) { const [a, b] = t.dataset.wz.split("."); if (b) { WZ[a][b] = t.value; if (b === "zone") WZ[a].macs = []; } else { WZ[a] = t.value; if (a === "name") WZ.nameSet = true; } }
+  WZ.confirm = false; WZ.err = ""; if (!t.dataset.wz || !["name", "desc"].includes(t.dataset.wz)) renderWiz();
+});
+$("#wzBody").addEventListener("input", e => { const t = e.target; if (t.dataset.wz === "name" || t.dataset.wz === "desc") { WZ[t.dataset.wz] = t.value; if (t.dataset.wz === "name") WZ.nameSet = true; $("#wzNext").disabled = !WZ.name.trim() || wzCheck().probs.length > 0; } else if (t.dataset.wz) { const [a, b] = t.dataset.wz.split("."); if (b) WZ[a][b] = t.value; else WZ[a] = t.value; } });
+$("#wzSteps").addEventListener("click", e => { const b = e.target.closest("[data-wzgo]"); if (b && !WZ.busy) { WZ.step = +b.dataset.wzgo; WZ.confirm = false; renderWiz(); } });
+$("#wzBack").addEventListener("click", () => { if (WZ.step > 0) { WZ.step--; WZ.confirm = false; renderWiz(); } });
+$("#wzNext").addEventListener("click", async () => {
+  if (WZ.step < 4) { WZ.step++; renderWiz(); return; }
+  if (!WZ.confirm) { WZ.confirm = true; renderWiz(); return; }
+  WZ.busy = true; renderWiz();
+  try {
+    const res = await api("api/fw_policy", wzRule());
+    $("#dlgFwWiz").close(); toast(`Rule “${WZ.name}” created in UniFi`);
+    await loadFw(); loadVersionsMeta(); renderAll(); if (state.sel) renderInfo();
+    if (isFw() && res.policy) { const p = FW.data?.policies.find(x => x.id === res.policy.id); if (p) openFwFor({ src: p.source?.zone_id, dst: p.destination?.zone_id, open: p.id }); }
+  } catch (err) { WZ.err = err.message + (err.hint ? " – " + err.hint : ""); WZ.confirm = false; }
+  finally { if (WZ) { WZ.busy = false; if ($("#dlgFwWiz").open) renderWiz(); } }
+});
+for (const id of ["#wzCancel", "#wzClose"]) $(id).addEventListener("click", () => { if (!WZ?.busy) $("#dlgFwWiz").close(); });
+$("#btnNewRule").addEventListener("click", () => { if (!FW.data) { toast("The zone-based firewall is not available."); return; } openWiz(null); });
+
+// ---------- firewall: the rule chain of one zone pair – order, what decides first, which rules never apply ----------
+const fwEpItems = e => [...fwMacs(e), ...fwIpEntries(e).map(r => r.entry), ...fwNets(e), ...fwList(e, "web_domains"), ...fwList(e, "regions"), e?.iid || ""].filter(Boolean);
+// does endpoint a match everything endpoint b matches?
+function fwEpCovers(a, b) {
+  if (!fwPortAny(a) && (fwPortAny(b) || String(a.port ?? "") !== String(b.port ?? "") || (a.port_group_id || "") !== (b.port_group_id || "") || !!a.match_opposite_ports !== !!b.match_opposite_ports)) return false;
+  const ta = fwTarget(a), tb = fwTarget(b);
+  if (ta === "ANY") return true;
+  if (ta !== tb || a.match_opposite_ips || a.match_opposite_networks || b.match_opposite_ips || b.match_opposite_networks) return false;
+  const la = fwEpItems(a), lb = fwEpItems(b); return lb.length > 0 && lb.every(x => la.includes(x));
+}
+const fwEpOverlap = (a, b) => fwTarget(a) === "ANY" || fwTarget(b) === "ANY" || fwEpItems(a).some(x => fwEpItems(b).includes(x)) || (fwTarget(a) !== fwTarget(b));
+function fwCovers(q, p) {
+  if (q.enabled === false || fwSched(q) || fwCst(q) !== "ALL") return false;
+  const qp = fwProto(q), pp = fwProto(p);
+  if (qp !== "All" && qp !== pp && !(qp === "TCP/UDP" && (pp === "TCP" || pp === "UDP"))) return false;
+  return fwEpCovers(q.source, p.source) && fwEpCovers(q.destination, p.destination);
+}
+const fwIsAllow = p => String(p.action || "").toUpperCase() === "ALLOW";
+// evaluation order of a zone pair: custom rules before UniFi's built-in ones, then built-in, then custom rules placed after them
+function fwSeq(s, d, order) {
+  const all = FW.byPair[s + ">" + d] || [], pre = all.filter(p => p.predefined).sort((a, b) => (a.index ?? 0) - (b.index ?? 0));
+  const minPre = pre.length ? (pre[0].index ?? 0) : Infinity;
+  let cust = all.filter(p => !p.predefined).sort((a, b) => (a.index ?? 0) - (b.index ?? 0));
+  const nb = cust.filter(p => (p.index ?? 0) < minPre).length;
+  if (order) cust = order.map(id => cust.find(p => p.id === id)).filter(Boolean);
+  return { seq: [...cust.slice(0, nb), ...pre, ...cust.slice(nb)], cust, nb, pre };
+}
+// per rule: its number in the chain and what is odd about it
+function fwChainFlags(s, d, order) {
+  const { seq } = fwSeq(s, d, order), out = new Map(), def = fwPair(s, d).def;
+  let n = 0, ended = null;
+  seq.forEach((p, i) => {
+    const f = [];
+    const num = p.predefined ? null : ++n;
+    if (p.enabled === false) f.push(["paused", "Paused", "info"]);
+    else {
+      if (ended) f.push(["dead", `Never applies – ${ended.name} catches all traffic before it`, "bad"]);
+      else {
+        const q = seq.slice(0, i).find(x => x.enabled !== false && fwCovers(x, p));
+        if (q && !p.predefined) f.push(fwIsAllow(q) === fwIsAllow(p) ? ["redund", `Redundant – ${q.name} already does this`, "warn"] : ["dead", `Never applies – ${q.name} decides first`, "bad"]);
+        else if (!p.predefined && fwCst(p) === "ALL") {
+          const sameAsDefault = fwIsAllow(p) ? def === "allow" : (def === "block" || def === "ret");
+          const opp = seq.slice(0, i).some(x => x.enabled !== false && fwIsAllow(x) !== fwIsAllow(p) && fwEpOverlap(x.source, p.source) && fwEpOverlap(x.destination, p.destination));
+          const after = seq.slice(i + 1).some(x => !x.predefined && x.enabled !== false && fwIsAllow(x) !== fwIsAllow(p) && fwEpOverlap(x.source, p.source) && fwEpOverlap(x.destination, p.destination));
+          if (sameAsDefault && !opp && !after) f.push(["dflt", `No effect – the zone default (${FW_DEF[def]}) does the same`, "warn"]);
+          if (sameAsDefault && !opp && after) f.push(["guard", "Exception for a rule further down", "info"]);
+        }
+      }
+      if (typeof p.hits === "number" && !p.hits && !p.last_hit && !p.predefined) f.push(["idle", "Never matched", "info"]);
+      if (!p.predefined && ["source", "destination"].some(k => fwMacs(p[k]).some(m => !devByMac(m)))) f.push(["stale", "Names an unknown device", "warn"]);
+      if (!ended && fwTarget(p.source) === "ANY" && fwTarget(p.destination) === "ANY" && fwPortAny(p.source) && fwPortAny(p.destination) && fwProto(p) === "All" && fwCst(p) === "ALL" && !fwSched(p)) ended = p;
+    }
+    out.set(p.id, { num, f, pos: i });
+  });
+  return out;
+}
+// tidiness of the rules from or to a zone (like the IP plan's tidiness): effective rules 40, no stale references 20, no idle rules 20, few single-device exceptions 20
+function fwTidy(zid) {
+  const ps = (FW.data?.policies || []).filter(p => !p.predefined && (p.source?.zone_id === zid || p.destination?.zone_id === zid));
+  if (!ps.length) return { score: 100, n: 0, bad: 0, stale: 0, idle: 0, exc: 0 };
+  const flags = new Map(); for (const p of ps) { const k = p.source?.zone_id + ">" + p.destination?.zone_id; if (!flags.has(k)) flags.set(k, fwChainFlags(p.source?.zone_id, p.destination?.zone_id)); }
+  const fl = p => (flags.get(p.source?.zone_id + ">" + p.destination?.zone_id).get(p.id)?.f || []).map(x => x[0]);
+  const n = ps.length, bad = ps.filter(p => fl(p).some(k => ["dead", "redund", "dflt"].includes(k))).length, stale = ps.filter(p => fl(p).includes("stale")).length;
+  const idle = ps.filter(p => fl(p).some(k => ["paused", "idle"].includes(k))).length, exc = ps.filter(p => ["CLIENT", "IP"].includes(fwTarget(p.source)) || ["CLIENT", "IP"].includes(fwTarget(p.destination))).length;
+  return { score: Math.round(40 * (1 - bad / n) + 20 * (1 - stale / n) + 20 * (1 - idle / n) + 20 * Math.max(0, 1 - Math.max(0, exc - 3) / 10)), n, bad, stale, idle, exc };
+}
+const fwTidyBadge = (t, prefix = "") => t ? `<span class="tidy ${t.score >= 80 ? "good" : t.score >= 50 ? "mid" : "bad"}" title="${esc(`Tidiness ${t.score}/100 – ${t.n} custom rules: ${t.bad || 0} without effect (-40 max), ${t.stale || 0} with unknown devices (-20 max), ${t.idle || 0} paused or never matched (-20 max), ${t.exc || 0} single-device rules (-20 max above 3)`)}">${prefix}${t.score}</span>` : "";
+const fwTidyAll = () => { const ts = fwZones().map(z => fwTidy(z.id)), n = ts.reduce((a, t) => a + t.n, 0); return { score: n ? Math.round(ts.reduce((a, t) => a + t.score * t.n, 0) / n) : 100, n, bad: ts.reduce((a, t) => a + t.bad, 0), stale: ts.reduce((a, t) => a + t.stale, 0), idle: ts.reduce((a, t) => a + t.idle, 0), exc: ts.reduce((a, t) => a + t.exc, 0) }; };
+// ---- the chain panel: swimlane (left → right) and the order list with drag handle and arrows
+// "TCP 80,443", "UDP 123 → 3 Domains", "all" – what a rule lets through or blocks
+function fwPortLabel(p) {
+  const proto = fwProto(p), port = fwPortText(p.destination), dt = fwTarget(p.destination);
+  let w = proto === "All" && port === "Any" ? "all" : `${proto === "All" ? "" : proto + " "}${port === "Any" ? "" : port}`.trim();
+  if (dt !== "ANY") w += ` → ${fwEpText(p.destination).txt}`;
+  if (fwTarget(p.source) !== "ANY") w += ` (${fwEpText(p.source).txt})`;
+  return w;
+}
+const fwPortsSum = (ps, max = 3) => { const l = [...new Set(ps.map(fwPortLabel))]; return l.slice(0, max).join(" · ") + (l.length > max ? ` · +${l.length - max}` : ""); };
+const fwShort = e => { const t = fwEpText(e); return t.txt; };
+function renderChain() {
+  const box = $("#fwChain");
+  if (!FW.src || !FW.dst || !FW.data) { box.hidden = true; box.innerHTML = ""; return; }
+  const key = FW.src + ">" + FW.dst, order = FW.ord?.key === key ? FW.ord.ids : null;
+  const { seq, cust, nb } = fwSeq(FW.src, FW.dst, order), flags = fwChainFlags(FW.src, FW.dst, order);
+  if (!seq.length) { box.hidden = true; return; }
+  box.hidden = false;
+  const icon = p => p.enabled === false ? "Ⅱ" : fwCst(p) === "RESPOND_ONLY" ? "↩" : fwIsAllow(p) ? "✓" : "✕";
+  const cls = p => p.enabled === false ? "off" : fwCst(p) === "RESPOND_ONLY" ? "ret" : fwIsAllow(p) ? "allow" : "block";
+  let reached = true;
+  const lane = seq.map((p, i) => {
+    const fl = flags.get(p.id), dead = fl.f.some(x => x[0] === "dead");
+    const html = `<button type="button" class="lb ${cls(p)}${p.predefined ? " pre" : ""}${dead || !reached ? " dead" : ""}${fl.f.some(x => ["redund", "dflt"].includes(x[0])) ? " odd" : ""}${FW.open === p.id ? " sel" : ""}" data-fwlb="${esc(p.id)}" title="${esc([p.name, `${fwShort(p.source)} → ${fwShort(p.destination)} · ${fwProto(p)}${fwPortText(p.destination) !== "Any" ? " " + fwPortText(p.destination) : ""}`, ...fl.f.map(x => x[1])].join("\n"))}">
+      <span class="lb-top"><span class="lb-id">${p.predefined ? "🔒" : "#" + fl.num}</span><span class="lb-ic">${icon(p)}</span>${fl.f.some(x => x[2] !== "info") ? `<span class="lb-w">⚠</span>` : ""}</span>
+      <span class="lb-n" translate="no">${esc(p.name || "?")}</span><span class="lb-s" translate="no">${esc(fwShort(p.source))} → ${esc(fwShort(p.destination))}</span>${typeof p.hits === "number" ? `<span class="lb-h">${p.hits.toLocaleString(I18N.locale)} <span>hits</span></span>` : ""}</button>`;
+    if (p.enabled !== false && fwTarget(p.source) === "ANY" && fwTarget(p.destination) === "ANY" && fwPortAny(p.source) && fwPortAny(p.destination) && fwProto(p) === "All" && fwCst(p) === "ALL" && !fwSched(p)) reached = false;
+    return html + (i < seq.length - 1 ? `<span class="lb-arr" aria-hidden="true">→</span>` : "");
+  }).join("");
+  const dirty = !!order && order.join() !== fwSeq(FW.src, FW.dst).cust.map(p => p.id).join();
+  const rows = cust.map((p, i) => {
+    const fl = flags.get(p.id);
+    return `${i === nb && nb < cust.length ? `<div class="or-pre"><span>🔒</span> <span>UniFi's built-in zone defaults run here</span></div>` : ""}<div class="or-row ${cls(p)}" draggable="true" data-orid="${esc(p.id)}">
+      <span class="or-grip" title="Drag to move" aria-hidden="true">⠿</span><span class="lb-id">#${fl.num}</span>
+      <span class="or-mv"><button type="button" class="icon-sm" data-ormv="-1" ${i === 0 ? "disabled" : ""} aria-label="Move up" title="Move up">↑</button><button type="button" class="icon-sm" data-ormv="1" ${i === cust.length - 1 ? "disabled" : ""} aria-label="Move down" title="Move down">↓</button></span>
+      <span class="lb-ic">${icon(p)}</span><span class="or-n"><b translate="no">${esc(p.name || "?")}</b><span class="muted" translate="no">${esc(fwShort(p.source))} → ${esc(fwShort(p.destination))} · ${esc(fwProto(p))}${fwPortText(p.destination) !== "Any" ? " " + esc(fwPortText(p.destination)) : ""}</span></span>
+      <span class="or-f">${fl.f.map(x => `<span class="tag ${x[2] === "bad" ? "bad" : x[2] === "warn" ? "warn" : "info"}">${esc(x[1])}</span>`).join("")}</span></div>`;
+  }).join("") + (nb >= cust.length ? `<div class="or-pre"><span>🔒</span> <span>UniFi's built-in zone defaults come last</span></div>` : "");
+  box.innerHTML = `<div class="fw-chain-h"><b>Rule chain</b> <span class="zchip" translate="no">${esc(fwZoneName(FW.src))}</span> → <span class="zchip" translate="no">${esc(fwZoneName(FW.dst))}</span><span class="hint">Traffic runs through the rules from left to right – the first matching rule decides.</span></div>
+    <div class="fw-lane">${lane}</div>
+    <div class="fw-legend"><span><i class="lb-ic allow">✓</i> Allow</span><span><i class="lb-ic block">✕</i> Block</span><span><i class="lb-ic ret">↩</i> Replies only</span><span><i class="lb-ic off">Ⅱ</i> Paused</span><span><i class="lb-dead"></i> Never reached</span><span><span class="lb-w">⚠</span> No effect or never applies</span></div>
+    ${cust.length > 1 ? `<details class="fw-order" ${FW.ordOpen || dirty ? "open" : ""}><summary>Change the order (${cust.length} custom rules)</summary><div class="or-list">${rows}</div>
+      <div class="or-foot">${dirty ? `<span class="fw-warn">${FW.ordConfirm ? "Save this order in UniFi? A version is saved first; the new order applies at once." : "The order is changed – it is not saved in UniFi yet."}</span>` : `<span class="hint">Drag with ⠿ or use ↑ ↓. The chain above shows the effect before you save.</span>`}<span class="sp"></span>${dirty ? `<button class="btn" type="button" data-ordx>Discard</button><button class="btn primary" type="button" data-ordsave ${FW.ordBusy ? "disabled" : ""}>${FW.ordBusy ? "Saving …" : FW.ordConfirm ? "Confirm & save" : "Save order in UniFi"}</button>` : ""}</div></details>` : ""}`;
+}
+function fwOrdMove(id, to) {
+  const key = FW.src + ">" + FW.dst, cur = FW.ord?.key === key ? [...FW.ord.ids] : fwSeq(FW.src, FW.dst).cust.map(p => p.id);
+  const i = cur.indexOf(id); if (i < 0) return; cur.splice(i, 1); cur.splice(Math.max(0, Math.min(cur.length, to)), 0, id);
+  FW.ord = { key, ids: cur }; FW.ordConfirm = false; FW.ordOpen = true; renderFw();
+}
+$("#fwChain").addEventListener("click", async e => {
+  const lb = e.target.closest("[data-fwlb]"); if (lb) { FW.open = FW.open === lb.dataset.fwlb ? null : lb.dataset.fwlb; renderFw(); requestAnimationFrame(() => document.querySelector(`#fwRows tr[data-fwp="${CSS.escape(lb.dataset.fwlb)}"]`)?.scrollIntoView({ block: "nearest" })); return; }
+  const mv = e.target.closest("[data-ormv]"); if (mv) { const row = mv.closest("[data-orid]"), ids = [...$("#fwChain").querySelectorAll("[data-orid]")].map(x => x.dataset.orid); fwOrdMove(row.dataset.orid, ids.indexOf(row.dataset.orid) + +mv.dataset.ormv); return; }
+  if (e.target.closest("[data-ordx]")) { FW.ord = null; FW.ordConfirm = false; renderFw(); return; }
+  if (e.target.closest("[data-ordsave]")) {
+    if (!FW.ordConfirm) { FW.ordConfirm = true; renderFw(); return; }
+    FW.ordBusy = true; renderFw();
+    try { await api("api/fw_order", { source_zone: FW.src, destination_zone: FW.dst, order: FW.ord.ids }); FW.ord = null; toast("Order saved in UniFi"); await loadFw(); loadVersionsMeta(); }
+    catch (err) { toast(err.message + (err.hint ? " – " + err.hint : "")); }
+    finally { FW.ordBusy = false; FW.ordConfirm = false; renderAll(); }
+  }
+});
+$("#fwChain").addEventListener("toggle", e => { if (e.target.matches?.(".fw-order")) FW.ordOpen = e.target.open; }, true);
+// drag & drop of the order rows (the arrows do the same without a mouse)
+$("#fwChain").addEventListener("dragstart", e => { const r = e.target.closest("[data-orid]"); if (!r) return; FW.drag = r.dataset.orid; r.classList.add("dragging"); e.dataTransfer.effectAllowed = "move"; e.dataTransfer.setData("text/plain", r.dataset.orid); });
+$("#fwChain").addEventListener("dragover", e => {
+  const r = e.target.closest("[data-orid]"); if (!r || !FW.drag) return; e.preventDefault();
+  const b = r.getBoundingClientRect(), after = e.clientY > b.top + b.height / 2;
+  for (const x of $("#fwChain").querySelectorAll(".drop-before,.drop-after")) x.classList.remove("drop-before", "drop-after");
+  r.classList.add(after ? "drop-after" : "drop-before");
+});
+$("#fwChain").addEventListener("drop", e => {
+  const r = e.target.closest("[data-orid]"); if (!r || !FW.drag) return; e.preventDefault();
+  const ids = [...$("#fwChain").querySelectorAll("[data-orid]")].map(x => x.dataset.orid).filter(x => x !== FW.drag);
+  const b = r.getBoundingClientRect(), after = e.clientY > b.top + b.height / 2;
+  let i = ids.indexOf(r.dataset.orid); if (r.dataset.orid === FW.drag) return; if (after) i++;
+  const id = FW.drag; FW.drag = null; fwOrdMove(id, i);
+});
+$("#fwChain").addEventListener("dragend", () => { FW.drag = null; for (const x of $("#fwChain").querySelectorAll(".dragging,.drop-before,.drop-after")) x.classList.remove("dragging", "drop-before", "drop-after"); });
+
+// ---------- Relations: who talks to whom (UniFi traffic flows), with the firewall's verdict ----------
+// standard ports get a colour (the dominant port of a pair colours its arrows)
+const REL_PORTS = [["DNS", [53, 853], "#14b8a6"], ["Web", [80, 443, 8080, 8443], "#3b82f6"], ["NTP", [123], "#a3a3a3"], ["MQTT", [1883, 8883], "#f59e0b"], ["Camera / RTSP", [554], "#ec4899"], ["Home Assistant", [8123], "#0ea5e9"], ["ESPHome", [6053], "#22c55e"], ["SSH / remote", [22, 3389, 5900], "#ef4444"], ["Files / SMB", [139, 445, 2049], "#8b5cf6"], ["Discovery (mDNS / SSDP)", [5353, 1900], "#84cc16"], ["Streaming / casting", [8008, 8009, 7000, 1400, 32400], "#f97316"], ["Other", [], "#94a3b8"]];
+const relPortCat = port => REL_PORTS.find(c => c[1].includes(+port)) || REL_PORTS[REL_PORTS.length - 1];
+const REL = { data: null, err: null, busy: false, preset: store.get("relPreset", "24h"), from: null, to: null, inet: store.get("relInet", true), ha: store.get("relHa", true), unifi: store.get("relUnifi", true), nas: store.get("relNas", true), printer: store.get("relPrinter", true), scope: store.get("relScope", "all"), q: "", sel: null, pos: {}, max: 120 };
+const REL_SCOPES = [["all", "All relations"], ["zone", "Within a firewall zone"], ["vlan", "Within a VLAN"], ["xvlan", "Across VLANs"], ["inet", "To the internet"], ["vendor", "Same vendor"], ["integ", "Same HA integration"], ["ha", "With Home Assistant"], ["susp", "Suspicious"], ["unexp", "Unexpected"], ["rules", "Against the firewall rules"], ["blocked", "Blocked by UniFi"]];
+const isRel = () => document.body.classList.contains("rel-mode");
+function relRange() {
+  const now = Date.now(), h = { "1h": 1, "6h": 6, "24h": 24, "7d": 168 }[REL.preset];
+  if (h) return [now - h * 3600e3, now];
+  return [REL.from || now - 24 * 3600e3, REL.to || now];
+}
+async function loadRel() {
+  const [f, t] = relRange(); REL.busy = true; REL.err = null; renderRel();
+  try { const d = await api(`api/relations?from=${Math.round(f)}&to=${Math.round(t)}`); if (d.available) { REL.data = d; REL.pos = {}; } else { REL.data = null; REL.err = { msg: d.reason, hint: d.hint }; } }
+  catch (e) { REL.data = null; REL.err = { msg: e.message, hint: e.hint }; }
+  finally { REL.busy = false; renderRel(); }
+}
+// the device behind a node id (MAC, "ip:…", "internet")
+function relDev(id) { if (id === "internet") return null; if (id.startsWith("ip:")) { const ip = id.slice(3); return state.clients.find(c => c.ip === ip || (c.use_fixedip && c.fixed_ip === ip)) || null; } return devByMac(id); }
+function relLabel(id) { if (id === "internet") return "Internet"; const c = relDev(id), n = REL.data?.nodes[id]; return c ? devName(c) : n?.name || n?.ip || id.replace(/^ip:/, ""); }
+// what the current rules say about a flow: first matching rule for protocol + port (and domain / IP for the internet)
+function fwFlowVerdict(sz, dz, src, dst, proto, port, extra) {
+  if (!FW.data || !sz || !dz) return null;
+  const ps = (FW.byPair[sz + ">" + dz] || []).filter(p => p.enabled !== false && fwCst(p) !== "RESPOND_ONLY").sort((a, b) => (a.index ?? 0) - (b.index ?? 0));
+  const T = String(proto || "").toUpperCase(), P = +port;
+  const protoOk = p => { const x = String(p.protocol || "all").toLowerCase(); return x === "all" || (x === "tcp_udp" ? ["TCP", "UDP"].includes(T) : x.toUpperCase() === T); };
+  const portOk = e => { if (fwPortAny(e)) return true; if (!P) return false; let hit = String(e.port || "").split(",").some(r => { const [a, b] = r.split("-").map(Number); return b ? P >= a && P <= b : P === a; }); const g = e.port_group_id && FW.groupById[e.port_group_id]; if (g) hit = g.members.some(m => { const [a, b] = String(m).split("-").map(Number); return b ? P >= a && P <= b : P === a; }); return e.match_opposite_ports ? !hit : hit; };
+  const sideOk = (e, dev, isDst) => {
+    const t = fwTarget(e);
+    if (t === "ANY") return true;
+    if (dev) return fwSideMatch(e, dev) === "all";
+    if (isDst && t === "WEB") return (extra?.domains || []).some(d => fwList(e, "web_domains").some(w => d === w || d.endsWith("." + w.replace(/^\*\./, ""))));
+    if (isDst && t === "IP") return (extra?.ips || []).some(ip => fwIpEntries(e).some(r => ipEntryHas(r.entry, ip)));
+    if (isDst && t === "REGION") return !!extra?.region && fwList(e, "regions").includes(extra.region);
+    return false;
+  };
+  for (const p of ps) if (protoOk(p) && sideOk(p.source, src, false) && sideOk(p.destination, dst, true) && portOk(p.destination)) return { allow: fwIsAllow(p), by: p };
+  return null;
+}
+function relEdges() {
+  const D = REL.data; if (!D) return [];
+  return D.edges.map(e => {
+    const ca = relDev(e.a), cb = relDev(e.b), za = ca ? zoneOf(ca) : FW.data?.zones.find(z => z.name === e.a_zone), zb = e.b === "internet" ? fwZoneByKey("external") : cb ? zoneOf(cb) : FW.data?.zones.find(z => z.name === e.b_zone);
+    const na = ca?.network_id || "", nb = cb?.network_id || "";
+    // flows UniFi let through although the current rules would block them (rules changed, or a gap in the analysis)
+    const bad = [];
+    if (FW.data && za && zb) for (const pt of e.ports) {
+      if (pt.flows - pt.blocked <= 0) continue;
+      const v = fwFlowVerdict(za.id, zb.id, ca, cb, pt.proto, pt.port, { domains: e.domains, ips: e.ips });
+      if (v && !v.allow) bad.push({ pt, by: v.by });
+    }
+    const top = e.ports[0], cat = relPortCat(top?.port);
+    const domsA = ca ? [...new Set(haOf(ca).flatMap(h => haDoms(ca, h)))] : [], domsB = cb ? [...new Set(haOf(cb).flatMap(h => haDoms(cb, h)))] : [];
+    const vk = c => String(c?.oui || "").split(/[ ,.]/)[0].toLowerCase();
+    // communication one would not expect from the device types and zone roles
+    const pa = ca ? fwClassify(ca) : null, pb = cb ? fwClassify(cb) : null, ok = x => x && x.conf >= 0.55;
+    const ra = ok(pa) ? pa.p.a : fwZoneRole(za), rb = e.b === "internet" ? "internet" : ok(pb) ? pb.p.a : fwZoneRole(zb), unexp = [];
+    const toHaOut = cb && isHaHost(cb) && ok(pa) && pa.p.ha === "out";
+    if (FW_UNTRUSTED.has(ra) && ra !== "guest" && FW_SENSITIVE.has(rb) && !toHaOut) unexp.push(`${FW_ROLE_SHORT[ra]} → ${FW_ROLE_SHORT[rb]}`);
+    if (e.b === "internet" && ok(pa) && pa.p.net === "none") unexp.push(`${pa.p.name} → Internet`);
+    if (fwZoneRole(za) === "guest" && cb && !(zb && fwZoneRole(zb) === "guest")) unexp.push("Guest → own network");
+    if (FW_UNTRUSTED.has(ra) && e.ports.some(x => [22, 23, 3389, 5900].includes(+x.port))) unexp.push("Remote access from an IoT device");
+    return { ...e, ca, cb, za, zb, na, nb, bad, cat, unexp, nasA: ok(pa) && pa.p.id === "nas", nasB: ok(pb) && pb.p.id === "nas", prA: ok(pa) && pa.p.id === "printer", prB: ok(pb) && pb.p.id === "printer",
+      susp: (REL.data.suspicious || []).filter(x => x.src === e.a || "ip:" + x.src === e.a || (x.ip && "ip:" + x.ip === e.a)), sameVendor: !!(ca && cb && vk(ca) && vk(ca) === vk(cb)), sameInteg: domsA.some(x => domsB.includes(x)), integ: domsA.filter(x => domsB.includes(x)) };
+  });
+}
+function relFilter(list) {
+  const s = REL.scope, q = REL.q.trim().toLowerCase();
+  return list.filter(e => {
+    if (!REL.inet && (e.b === "internet" || e.a === "internet")) return false;
+    const isHa = (e.ca && isHaHost(e.ca)) || (e.cb && isHaHost(e.cb));
+    if (!REL.ha && isHa && s !== "ha") return false;
+    if (s === "ha" && !isHa) return false;
+    if (!REL.unifi && (e.ca?.is_device || e.cb?.is_device)) return false;
+    if (!REL.nas && (e.nasA || e.nasB)) return false;
+    if (!REL.printer && (e.prA || e.prB)) return false;
+    if (s === "susp" && !e.susp.length) return false;
+    if (s === "unexp" && !e.unexp.length && !e.bad.length) return false;
+    if (s === "zone" && !(e.za && e.zb && e.za.id === e.zb.id)) return false;
+    if (s === "vlan" && !(e.na && e.na === e.nb)) return false;
+    if (s === "xvlan" && !(e.na && e.nb && e.na !== e.nb)) return false;
+    if (s === "inet" && e.b !== "internet") return false;
+    if (s === "vendor" && !e.sameVendor) return false;
+    if (s === "integ" && !e.sameInteg) return false;
+    if (s === "rules" && !e.bad.length) return false;
+    if (s === "blocked" && !e.blocked) return false;
+    if (q && ![relLabel(e.a), relLabel(e.b), e.a_zone, e.b_zone, ...e.domains, ...e.ports.map(p => p.service + " " + p.port)].join(" ").toLowerCase().includes(q)) return false;
+    return true;
+  });
+}
+const relBytes = n => n >= 1e9 ? (n / 1e9).toFixed(1) + " GB" : n >= 1e6 ? (n / 1e6).toFixed(1) + " MB" : n >= 1e3 ? Math.round(n / 1e3) + " kB" : n + " B";
+// small force layout (no library): nodes repel, links pull; positions are kept between renders
+function relLayout(nodes, links, W, H) {
+  const P = REL.pos;
+  nodes.forEach((n, i) => { if (!P[n]) { const a = i / nodes.length * Math.PI * 2; P[n] = { x: W / 2 + Math.cos(a) * W * 0.35, y: H / 2 + Math.sin(a) * H * 0.35, vx: 0, vy: 0 }; } });
+  if (P.internet && nodes.includes("internet")) P.internet.fixed = true, P.internet.x = W - 70, P.internet.y = H / 2;
+  const k = Math.sqrt(W * H / Math.max(1, nodes.length)) * 0.55;
+  for (let it = 0; it < 220; it++) {
+    const t = 1 - it / 220;
+    for (const a of nodes) { const p = P[a]; p.fx = 0; p.fy = 0; }
+    for (let i = 0; i < nodes.length; i++) for (let j = i + 1; j < nodes.length; j++) {
+      const p = P[nodes[i]], q = P[nodes[j]]; let dx = p.x - q.x, dy = p.y - q.y, d = Math.hypot(dx, dy) || 0.1;
+      const f = k * k / d; dx /= d; dy /= d; p.fx += dx * f; p.fy += dy * f; q.fx -= dx * f; q.fy -= dy * f;
+    }
+    for (const l of links) { const p = P[l.a], q = P[l.b]; let dx = q.x - p.x, dy = q.y - p.y, d = Math.hypot(dx, dy) || 0.1; const f = d * d / k * 0.6; dx /= d; dy /= d; p.fx += dx * f; p.fy += dy * f; q.fx -= dx * f; q.fy -= dy * f; }
+    for (const a of nodes) { const p = P[a]; if (p.fixed) continue; p.fx += (W / 2 - p.x) * 0.02; p.fy += (H / 2 - p.y) * 0.02; const m = Math.hypot(p.fx, p.fy) || 1, step = Math.min(m, 18 * t + 1); p.x = Math.max(40, Math.min(W - 40, p.x + p.fx / m * step)); p.y = Math.max(30, Math.min(H - 30, p.y + p.fy / m * step)); }
+  }
+}
+function renderRel() {
+  if (!isRel()) return;
+  const D = REL.data;
+  for (const b of document.querySelectorAll("[data-relp]")) b.setAttribute("aria-pressed", String(b.dataset.relp === REL.preset));
+  $("#relCustom").hidden = REL.preset !== "custom"; $("#relInet").checked = REL.inet; $("#relHa").checked = REL.ha; $("#relUnifi").checked = REL.unifi; $("#relNas").checked = REL.nas; $("#relPrinter").checked = REL.printer; $("#relLoad").disabled = REL.busy;
+  $("#relScopes").innerHTML = REL_SCOPES.map(([k, l]) => { return `<button type="button" class="pn rel-sc ${REL.scope === k ? "on" : ""}" data-relsc="${k}" aria-pressed="${REL.scope === k}"><span class="l1"><b>${l}</b><span class="sp"></span><span class="muted" data-relcnt="${k}"></span></span></button>`; }).join("");
+  const sp = D?.suspicious || [], on = !!FWS.alerts?.suspicious;
+  $("#relSusp").innerHTML = `<div class="fa-card ${sp.length ? "bad" : "info"} rel-susp"><span class="fa-dot"></span><div class="fa-c"><div class="fa-h"><span>Suspicious network traffic</span>${D ? ` <span class="fa-n">${sp.length}</span>` : ""}<span class="sp"></span><label class="opt" title="Checks the flows every 10 minutes and sends a Home Assistant notification and the event clients_reservations_suspicious_traffic"><input type="checkbox" id="relAlert" ${on ? "checked" : ""}><span>Notify me in Home Assistant</span></label></div>
+    <div class="fa-d">${!D ? "<span>Scans (one device knocking on many devices or ports), many blocked attempts, remote-access ports from IoT or guest devices and connections from untrusted into trusted zones.</span>" : sp.length ? sp.map(x => `<div><b translate="no">${esc(x.name)}</b> <span class="muted" translate="no">${esc(x.ip || "")}${x.zone ? " · " + esc(x.zone) : ""}</span>: <span>${esc(x.text)}</span></div>`).join("") + `<button type="button" class="btn sm" data-relsusp style="margin-top:6px">Show in the graph</button>` : "<span>Nothing suspicious in this time range.</span>"}</div></div></div>`;
+  if (REL.busy) { $("#relMsg").innerHTML = `<p class="muted"><span class="spin"></span> Loading the traffic flows from UniFi …</p>`; return; }
+  if (!D) { $("#relGraph").innerHTML = ""; $("#relRows").innerHTML = ""; $("#relMsg").innerHTML = REL.err ? `<div class="banner fw-ban"><b>Relations not available:</b> ${esc(REL.err.msg || "")}${REL.err.hint ? `<div class="banner-hint"><b>Hint:</b> ${esc(REL.err.hint)}</div>` : ""}</div>` : `<p class="hint">Pick a time range and click <b>Show</b>.</p>`; return; }
+  const all = relEdges(), list = relFilter(all).slice(0, REL.max);
+  for (const [k] of REL_SCOPES) { const el = document.querySelector(`[data-relcnt="${k}"]`); if (el) { const save = REL.scope; REL.scope = k; el.textContent = relFilter(all).length; REL.scope = save; } }
+  $("#relMsg").innerHTML = `<div class="sumrow"><span class="pill">Flows <b>${D.flows.toLocaleString(I18N.locale)}</b></span><span class="pill">Relations <b>${all.length}</b></span><span class="pill">Shown <b>${list.length}</b></span>${all.some(e => e.bad.length) ? `<span class="pill" title="Flows that UniFi let through although the current rules would block them">Against the rules <b style="color:var(--bad)">${all.filter(e => e.bad.length).length}</b></span>` : ""}<span class="pill">${isoDateTime(D.from / 1000)} – ${isoDateTime(D.to / 1000)}</span>${D.truncated ? `<span class="pill" title="Only the first flows of the window were read">${D.flows} <span>flows read – narrow the time range for all</span></span>` : ""}</div>`;
+  // graph
+  const box = $("#relGraph"), W = Math.max(600, box.clientWidth || 900), H = Math.max(420, Math.min(760, Math.round(W * 0.58)));
+  const nodes = [...new Set(list.flatMap(e => [e.a, e.b]))], max = Math.max(1, ...list.flatMap(e => [e.ab, e.ba]));
+  relLayout(nodes, list, W, H);
+  const P = REL.pos, wid = b => b ? 1.2 + 9 * Math.sqrt(b / max) : 0;
+  const zcol = id => { const c = relDev(id), z = id === "internet" ? null : c ? zoneOf(c) : null; const i = z ? fwZones().findIndex(x => x.id === z.id) : -1; return id === "internet" ? "var(--muted)" : i < 0 ? "var(--faint)" : `hsl(${(i * 67) % 360} 55% 52%)`; };
+  const arrow = (e, from, to, bytes, back) => {
+    if (!bytes) return "";
+    const p = P[from], q = P[to], dx = q.x - p.x, dy = q.y - p.y, d = Math.hypot(dx, dy) || 1, nx = -dy / d, ny = dx / d, off = 10;
+    const r = 15, sx = p.x + dx / d * r + nx * off * 0.4, sy = p.y + dy / d * r + ny * off * 0.4, ex = q.x - dx / d * (r + 6) + nx * off * 0.4, ey = q.y - dy / d * (r + 6) + ny * off * 0.4;
+    const mx = (sx + ex) / 2 + nx * off * 2, my = (sy + ey) / 2 + ny * off * 2, col = e.bad.length ? "var(--bad)" : e.cat[2];
+    return `<path d="M${sx.toFixed(1)},${sy.toFixed(1)} Q${mx.toFixed(1)},${my.toFixed(1)} ${ex.toFixed(1)},${ey.toFixed(1)}" stroke="${col}" stroke-width="${wid(bytes).toFixed(1)}" fill="none" marker-end="url(#ra${e.bad.length ? "b" : REL_PORTS.indexOf(e.cat)})" class="rel-e${e.bad.length || e.susp.length ? " bad" : e.unexp.length ? " unexp" : ""}${e.blocked ? " blk" : ""}${REL.sel === e.a + "|" + e.b ? " sel" : ""}${back ? " back" : ""}" data-rele="${esc(e.a + "|" + e.b)}"><title>${esc(`${relLabel(from)} → ${relLabel(to)}: ${relBytes(bytes)} · ${e.ports.slice(0, 3).map(x => `${x.service || x.proto} ${x.port ?? ""}`).join(", ")}${e.bad.length ? " · against the rules" : ""}`)}</title></path>`;
+  };
+  const markers = REL_PORTS.map((c, i) => `<marker id="ra${i}" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="${c[2]}"/></marker>`).join("") + `<marker id="rab" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--bad)"/></marker>`;
+  box.innerHTML = `<svg class="rel-svg" viewBox="0 0 ${W} ${H}" width="100%" height="${H}" role="img" aria-label="Relations graph"><defs>${markers}</defs>
+    ${list.map(e => arrow(e, e.a, e.b, e.ab, false) + arrow(e, e.b, e.a, e.ba, true)).join("")}
+    ${nodes.map(n => { const p = P[n], c = relDev(n); return `<g class="rel-n${n === "internet" ? " inet" : ""}" data-reln="${esc(n)}" transform="translate(${p.x.toFixed(1)},${p.y.toFixed(1)})"><circle r="${n === "internet" ? 20 : 13}" fill="${zcol(n)}"/>${n === "internet" ? `<text class="rel-ic" y="5">🌐</text>` : c?.is_device ? `<text class="rel-ic" y="4">U</text>` : ""}<text class="rel-l" y="${n === "internet" ? 34 : 27}" translate="no">${esc(relLabel(n))}</text></g>`; }).join("")}</svg>`;
+  $("#relLegend").innerHTML = REL_PORTS.map(c => `<span><i style="background:${c[2]}"></i>${esc(c[0])}</span>`).join("") + `<span><i style="background:var(--bad)"></i>Against the firewall rules</span><span><i class="unexp"></i>Unexpected</span><span><i class="dash"></i>Blocked by UniFi</span><span class="muted">Arrow width = data volume · one arrow per direction · node colour = firewall zone</span>`;
+  // table of the relations
+  const rows = [...list].sort((x, y) => (y.ab + y.ba) - (x.ab + x.ba));
+  $("#relRows").innerHTML = rows.map(e => `<tr class="${REL.sel === e.a + "|" + e.b ? "sel" : ""}" data-rele="${esc(e.a + "|" + e.b)}"><td><b translate="no">${esc(relLabel(e.a))}</b><div class="muted" translate="no">${esc(e.za?.name || e.a_zone || "")}${e.a_net ? " · " + esc(e.a_net) : ""}</div></td><td><b translate="no">${esc(relLabel(e.b))}</b><div class="muted" translate="no">${esc(e.zb?.name || e.b_zone || "")}${e.b_net ? " · " + esc(e.b_net) : ""}${e.domains.length ? " · " + esc(e.domains.slice(0, 2).join(", ")) : ""}</div></td>
+    <td class="num">${relBytes(e.ab)}</td><td class="num">${relBytes(e.ba)}</td><td>${e.ports.slice(0, 4).map(x => `<span class="rel-port" style="--pc:${relPortCat(x.port)[2]}" translate="no">${esc(x.service || x.proto)} ${esc(x.port ?? "")}</span>`).join(" ")}</td>
+    <td class="num">${e.flows.toLocaleString(I18N.locale)}</td><td><div class="chg-list">${e.bad.map(b => `<span class="fa-f bad">✕ ${esc(b.pt.proto)} ${esc(b.pt.port ?? "")}: <span>blocked today by</span> <button type="button" class="link" data-fwpol="${esc(b.by.id)}" translate="no">${esc(b.by.name)}</button></span>`).join("")}${e.susp.map(x => `<span class="fa-f bad">⚠ <span>Suspicious:</span> <span>${esc(x.text)}</span></span>`).join("")}${e.unexp.map(u => `<span class="fa-f warn">⚠ <span>Unexpected:</span> <span translate="no">${esc(u)}</span></span>`).join("")}${e.blocked ? `<span class="fa-f warn">${e.blocked} <span>flows blocked by UniFi</span></span>` : ""}${e.sameInteg ? `<span class="muted" translate="no">${esc(e.integ.map(x => HA_DOM_NAMES[x] || x).join(", "))}</span>` : ""}</div></td></tr>`).join("") || `<tr><td colspan="7" class="muted">No relation matches.</td></tr>`;
+}
+$("#relView").addEventListener("click", e => {
+  const p = e.target.closest("[data-relp]"); if (p) { REL.preset = p.dataset.relp; store.set("relPreset", REL.preset); if (REL.preset !== "custom") loadRel(); else renderRel(); return; }
+  if (e.target.closest("#relLoad")) { REL.from = new Date($("#relFrom").value).getTime() || null; REL.to = new Date($("#relTo").value).getTime() || null; loadRel(); return; }
+  const n = e.target.closest("[data-reln]"); if (n) { const c = relDev(n.dataset.reln); if (c) openPanel(c); return; }
+  const ed = e.target.closest("[data-rele]"); if (ed && !e.target.closest("button")) { REL.sel = REL.sel === ed.dataset.rele ? null : ed.dataset.rele; renderRel(); }
+});
+$("#relInet").addEventListener("change", e => { REL.inet = e.target.checked; store.set("relInet", REL.inet); REL.pos = {}; renderRel(); });
+for (const [id, k, sk] of [["#relUnifi", "unifi", "relUnifi"], ["#relNas", "nas", "relNas"], ["#relPrinter", "printer", "relPrinter"]]) $(id).addEventListener("change", e => { REL[k] = e.target.checked; store.set(sk, REL[k]); REL.pos = {}; renderRel(); });
+$("#relSusp").addEventListener("change", async e => {
+  if (!e.target.matches("#relAlert")) return;
+  try { await saveFwSettings({ alerts: { suspicious: e.target.checked } }); toast(e.target.checked ? "Home Assistant will be notified about suspicious traffic" : "Suspicious-traffic notifications are off"); }
+  catch (err) { e.target.checked = !e.target.checked; toast(err.message); }
+});
+$("#relSusp").addEventListener("click", e => { const b = e.target.closest("[data-relsusp]"); if (!b) return; REL.scope = "susp"; REL.q = ""; $("#relQ").value = ""; REL.pos = {}; renderRel(); });
+$("#relHa").addEventListener("change", e => { REL.ha = e.target.checked; store.set("relHa", REL.ha); REL.pos = {}; renderRel(); });
+$("#relQ").addEventListener("input", e => { REL.q = e.target.value; renderRel(); });
+$("#relScopes").addEventListener("click", e => { const b = e.target.closest("[data-relsc]"); if (!b) return; REL.scope = b.dataset.relsc; store.set("relScope", REL.scope); REL.pos = {}; $("#side").classList.remove("open"); renderRel(); });
+function openRel() { const now = new Date(), iso = d => new Date(d - d.getTimezoneOffset() * 60e3).toISOString().slice(0, 16); if (!$("#relTo").value) { $("#relTo").value = iso(now); $("#relFrom").value = iso(new Date(now - 24 * 3600e3)); } if (!REL.data && !REL.busy) loadRel(); else renderRel(); }
+
 // ---------- detail panel ----------
 function setTab(t) {
   $("#tabInfo").setAttribute("aria-selected", String(t === "info")); $("#tabEdit").setAttribute("aria-selected", String(t === "edit"));
@@ -2462,6 +3625,7 @@ function openPanel(c, tab) {
   $("#tabInfo").hidden = !c; $("#tabs");
   if (c) renderInfo();
   fillForm(c);
+  $("#fwRuleCard").hidden = !(c?.mac && FW.data);
   setTab(c ? (tab || "info") : "edit");
   markSel();
 }
@@ -2619,6 +3783,7 @@ function haConfirm(what) {
   });
 }
 $("#haAck").addEventListener("change", e => { $("#haWarnOk").disabled = !e.target.checked; });
+$("#btnFwRule").addEventListener("click", () => { if (state.sel?.mac) openWiz(state.sel); });
 $("#fFixed").addEventListener("change", () => { syncToggles(); if ($("#fFixed").checked) onNetChange(); else updateHint(); });
 $("#fDnsOn").addEventListener("change", syncToggles);
 // the reservation has to be in the override network – follow it
@@ -3519,7 +4684,7 @@ function renderVerList() {
     <td><b>${esc(m.label || KIND[m.kind])}</b>${m.id === base ? ' <span class="tag info">Baseline</span>' : ""}${m.pinned ? ' <span class="tag warn">Pinned</span>' : ""}</td>
     <td><span class="st ${m.kind === "manual" ? "chg" : m.kind === "daily" ? "new" : "same"}">${KIND[m.kind]}</span></td>
     <td class="muted">${esc(m.user || "")}</td>
-    <td class="num">${m.devices}</td><td class="num">${m.reserved}</td>
+    <td class="num">${m.devices}</td><td class="num">${m.reserved}</td><td class="num">${m.policies ?? "–"}</td>
     <td><div class="vact">
       <button class="btn sm" type="button" data-va="cmp">Compare</button>
       <button class="btn sm" type="button" data-va="restore">Restore…</button>
@@ -3528,7 +4693,7 @@ function renderVerList() {
       <button class="btn sm" type="button" data-va="pin">${m.pinned ? "Unpin" : "Pin"}</button>
       <button class="btn sm" type="button" data-va="base">${m.id === base ? "Clear baseline" : "Set baseline"}</button>
       <button class="btn sm danger ${VER.armDel === m.id ? "armed" : ""}" type="button" data-va="del">${VER.armDel === m.id ? "Really delete?" : "Delete"}</button>
-    </div></td></tr>`).join("") || `<tr><td colspan="8" class="muted">No versions yet. Save the first one above.</td></tr>`;
+    </div></td></tr>`).join("") || `<tr><td colspan="9" class="muted">No versions yet. Save the first one above.</td></tr>`;
   const n = VER.sel.size; $("#verCmp2").disabled = n !== 2; $("#verCmp2").textContent = n === 2 ? "Compare selected (2)" : "Select two versions to compare";
 }
 $("#verRows").addEventListener("change", e => { const cb = e.target.closest("[data-vsel]"); if (!cb) return; cb.checked ? VER.sel.add(cb.dataset.vsel) : VER.sel.delete(cb.dataset.vsel); if (VER.sel.size > 2) { VER.sel.delete([...VER.sel][0]); } renderVerList(); });
@@ -3584,6 +4749,7 @@ function diffVersions(A, B) {
       ch("Local DNS", a.local_dns_record_enabled ? a.local_dns_record : "", b.local_dns_record_enabled ? b.local_dns_record : "");
       if (a.ip && b.ip) ch("IP address", a.ip, b.ip, "ip");
       if (a.network_id && b.network_id) ch("Network", nl(A, a.network_id), nl(B, b.network_id), "moved");
+      if (A.firewall && B.firewall && a.network_id && b.network_id) { const zn = (v, id) => (v.firewall.zones.find(z => z.network_ids.includes(id)) || {}).name || ""; const za = zn(A, a.network_id), zb = zn(B, b.network_id); if (za && zb) ch("Firewall zone", za, zb, "moved"); }
       // Home Assistant status: info only, when both sides recorded it
       if (a.ha_status !== undefined && b.ha_status !== undefined) {
         const hl = x => x.ha_status ? `${HA_ST[x.ha_status]?.[0] || x.ha_status}${x.ha_integrations ? " (" + x.ha_integrations + ")" : ""}` : "not in HA";
@@ -3790,7 +4956,7 @@ if (saved) { state.sort = saved.sort || state.sort; state.colFilters = saved.col
 for (const el of [document.scrollingElement, document.querySelector(".app"), document.querySelector("main")]) el?.addEventListener?.("scroll", () => { if (el.scrollTop || el.scrollLeft) { el.scrollTop = 0; el.scrollLeft = 0; } }, { passive: true });
 window.addEventListener("scroll", () => { if (window.scrollY || window.scrollX) window.scrollTo(0, 0); }, { passive: true });
 { const v0 = store.get("view", "clients"); if (v0 !== "clients") setView(v0); }
-buildHead(); renderAll(); Promise.all([loadRules(), loadScans()]).then(() => { if (state.clients.length) { computeWarnings(); renderAll(); } }); load(); loadViews(true); loadVersionsMeta();
+buildHead(); renderAll(); Promise.all([loadRules(), loadScans(), loadFwSettings()]).then(() => { if (state.clients.length) { computeWarnings(); renderAll(); } }); load(); loadViews(true); loadVersionsMeta();
 })();
 </script>
 </body>

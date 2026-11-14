@@ -16,6 +16,9 @@ configuration:
   certificate_fingerprint:
     name: "Certificaatvingerafdruk (SHA-256)"
     description: "Pint het zelfondertekende certificaat van de controller – het app-log toont bij de start de waarde om hier te plakken. Indien ingesteld, wordt de verbinding alleen geaccepteerd als het certificaat overeenkomt (verify_ssl is dan niet nodig)."
+  api_key:
+    name: UniFi-API-sleutel (optioneel)
+    description: Nodig om de volgorde van firewallregels te wijzigen. Maak hem aan in UniFi Network › Instellingen › Control Plane › Integraties.
   daily_version:
     name: "Dagelijkse automatische versie"
     description: "Slaat per dag één versie van de tabel op (getoond als \"Dagelijks\" onder Versies)."
