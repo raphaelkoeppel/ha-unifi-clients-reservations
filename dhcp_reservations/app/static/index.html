@@ -1351,6 +1351,7 @@ function ruleNet(c) {
   return "";
 }
 function computeWarnings() {
+  state.rev = (state.rev || 0) + 1; // data revision: caches built from the clients (firewall analysis) follow it
   const byIp = {}, byName = {}, byDns = {};
   for (const c of state.clients) if (c.use_fixedip && c.fixed_ip) (byIp[c.fixed_ip] ||= []).push(c);
   for (const c of state.clients) if (c.mac && !c.is_device && c.name) (byName[c.name.trim().toLowerCase()] ||= []).push(c);
@@ -2745,24 +2746,8 @@ const FW_PROFILE = Object.fromEntries(FW_PROFILES.map(p => [p.id, p]));
 const FWS = { zone_roles: {}, overrides: {}, alerts: { suspicious: false }, rev: 0 };
 async function loadFwSettings() { try { Object.assign(FWS, await api("api/fw_settings")); FWS.rev++; } catch {} }
 async function saveFwSettings(part) { Object.assign(FWS, await api("api/fw_settings", part)); FWS.rev++; }
-function fwRoleGuess(z) {
-  const k = z.key, n = String(z.name || "").toLowerCase();
-  if (k === "internal") return "trusted"; if (k === "hotspot") return "guest"; if (k === "dmz") return "dmz"; if (["external", "gateway", "vpn"].includes(k)) return "none";
-  return fwNameRole(n) || "none";
-}
-function fwNameRole(n) {
-  n = String(n || "").toLowerCase();
-  if (/contr|ctrl|hub|smart ?home|automation|home ?assistant/.test(n)) return "controller";
-  if (/cam|nvr|protect|video|surveil|überwach/.test(n)) return "camera";
-  if (/media|\btv\b|entertain|stream/.test(n)) return "media";
-  if (/print|drucker/.test(n)) return "printer";
-  if (/iot|smart|things|sensor/.test(n)) return "iot";
-  if (/guest|gast|visitor|hotspot/.test(n)) return "guest";
-  if (/dmz|expos|public/.test(n)) return "dmz";
-  if (/serv|nas|srv|lab|infra|storage/.test(n)) return "server";
-  if (/trust|lan|home|main|corp|user|client|privat|family|famil|default|office|büro/.test(n)) return "trusted";
-  return "";
-}
+// the role a zone's name suggests – guessed on the server (the same guess the suspicious-traffic check uses)
+const fwRoleGuess = z => z?.role_guess || "none";
 const fwZoneRole = z => z ? (FWS.zone_roles[z.id] || fwRoleGuess(z)) : "none";
 function fwRoleZones(role) {
   for (const r of [role, ...(FW_FALLBACK[role] || [])]) { const zs = (FW.data?.zones || []).filter(z => fwZoneRole(z) === r); if (zs.length) return zs; }
@@ -2862,7 +2847,7 @@ const fwConfTxt = x => x >= 0.85 ? "high" : x >= 0.55 ? "medium" : "low";
 const FA = { key: "", res: null, filter: "find", sec: store.get("faSec", {}) };
 function fwAnalysis() {
   if (!FW.data) return null;
-  const key = [FW.data.fetched_at, state.fetchedAt, state.clients.length, FWS.rev, Object.keys(state.scans || {}).length, state.haOk, !!haHostDev()].join("|");
+  const key = [FW.data.fetched_at, state.fetchedAt, state.rev, state.clients.length, FWS.rev, Object.keys(state.scans || {}).length, state.haOk, !!haHostDev()].join("|");
   if (FA.key === key && FA.res) return FA.res;
   const res = fwAnalyze(); FA.key = key; FA.res = res; return res;
 }
@@ -3038,7 +3023,7 @@ function fwAnalyze() {
   const total = state.clients.filter(c => c.mac && !c.is_device).length;
   for (const n of state.networks) {
     const cs = perNet.get(n.id) || [], z = zoneOfNetId(n.id), add = (sev, kind, txt, extra) => nst.push({ n, sev, kind, txt, ...extra });
-    const nrole = fwNameRole(n.name) || (z ? fwZoneRole(z) : "");
+    const nrole = FW.data.networks?.[n.id]?.role_guess || (z ? fwZoneRole(z) : "");
     if (!z && n.purpose !== "remote-user-vpn") add("warn", "nozone", "<span>Not in any firewall zone.</span>");
     if (n.purpose === "guest" && z && fwZoneRole(z) !== "guest") add("warn", "guest", `<span>Guest network in zone</span> ${zTag(z)} <span>– put it into the Hotspot zone so guests are isolated.</span>`);
     if (!cs.length && n.purpose !== "guest" && n.purpose !== "remote-user-vpn") add("info", "empty", "<span>No device has used this network – remove it, or merge it with another one.</span>");
@@ -3120,10 +3105,8 @@ function renderFa() {
   // consistency groups
   const groups = A.groups.filter(g => !zf || g.devs.some(inZ));
   const gHtml = groups.map(g => {
-    const cols = g.asp.map(a => a.k);
     return `<div class="fa-grp"><div class="fa-gh"><b translate="no">${esc(g.label)}</b> <span class="muted">${g.kind === "integration" ? "Home Assistant integration" : g.kind === "vendor" ? "Vendor" : "Device type"} · ${g.devs.length} <span>devices</span></span>${g.out.size ? ` <span class="tag warn">${g.out.size} <span>${g.out.size === 1 ? "differs" : "differ"}</span></span>` : ` <span class="tag info">No majority</span>`}</div>
       <div class="imp-table"><table><thead><tr><th>Device</th>${g.asp.map(a => `<th>${esc(a.label)}</th>`).join("")}</tr></thead><tbody>${g.devs.map(d => `<tr class="${g.out.has(d.c.mac) ? "fa-out" : ""}"><td><button type="button" class="link" data-fwdev="${esc(d.c.mac)}" translate="no">${esc(devName(d.c))}</button></td>${g.asp.map(a => { const v = a.get(d), odd = a.odd ? a.odd(d) : a.maj != null && v !== a.maj; return `<td class="${odd ? "fa-odd" : ""}" translate="no">${esc(v)}</td>`; }).join("")}</tr>`).join("")}</tbody></table></div></div>`;
-    void cols;
   }).join("");
   // device table
   const F = FA.filter, list = devs.filter(d => F === "all" || (F === "find" ? d.f.length : F === "unk" ? !d.cl : true));
@@ -3357,7 +3340,13 @@ function fwChainFlags(s, d, order) {
   return out;
 }
 // tidiness of the rules from or to a zone (like the IP plan's tidiness): effective rules 40, no stale references 20, no idle rules 20, few single-device exceptions 20
+const FW_TIDY = { key: "", map: {} };
 function fwTidy(zid) {
+  const key = (FW.data?.fetched_at || 0) + "|" + (state.rev || 0);
+  if (FW_TIDY.key !== key) { FW_TIDY.key = key; FW_TIDY.map = {}; FW_TIDY.all = null; }
+  return FW_TIDY.map[zid] ||= fwTidyCalc(zid);
+}
+function fwTidyCalc(zid) {
   const ps = (FW.data?.policies || []).filter(p => !p.predefined && (p.source?.zone_id === zid || p.destination?.zone_id === zid));
   if (!ps.length) return { score: 100, n: 0, bad: 0, stale: 0, idle: 0, exc: 0 };
   const flags = new Map(); for (const p of ps) { const k = p.source?.zone_id + ">" + p.destination?.zone_id; if (!flags.has(k)) flags.set(k, fwChainFlags(p.source?.zone_id, p.destination?.zone_id)); }
@@ -3367,7 +3356,8 @@ function fwTidy(zid) {
   return { score: Math.round(40 * (1 - bad / n) + 20 * (1 - stale / n) + 20 * (1 - idle / n) + 20 * Math.max(0, 1 - Math.max(0, exc - 3) / 10)), n, bad, stale, idle, exc };
 }
 const fwTidyBadge = (t, prefix = "") => t ? `<span class="tidy ${t.score >= 80 ? "good" : t.score >= 50 ? "mid" : "bad"}" title="${esc(`Tidiness ${t.score}/100 – ${t.n} custom rules: ${t.bad || 0} without effect (-40 max), ${t.stale || 0} with unknown devices (-20 max), ${t.idle || 0} paused or never matched (-20 max), ${t.exc || 0} single-device rules (-20 max above 3)`)}">${prefix}${t.score}</span>` : "";
-const fwTidyAll = () => { const ts = fwZones().map(z => fwTidy(z.id)), n = ts.reduce((a, t) => a + t.n, 0); return { score: n ? Math.round(ts.reduce((a, t) => a + t.score * t.n, 0) / n) : 100, n, bad: ts.reduce((a, t) => a + t.bad, 0), stale: ts.reduce((a, t) => a + t.stale, 0), idle: ts.reduce((a, t) => a + t.idle, 0), exc: ts.reduce((a, t) => a + t.exc, 0) }; };
+const fwTidyAll = () => { fwTidy(""); return FW_TIDY.all ||= fwTidyAllCalc(); };
+const fwTidyAllCalc = () => { const ts = fwZones().map(z => fwTidy(z.id)), n = ts.reduce((a, t) => a + t.n, 0); return { score: n ? Math.round(ts.reduce((a, t) => a + t.score * t.n, 0) / n) : 100, n, bad: ts.reduce((a, t) => a + t.bad, 0), stale: ts.reduce((a, t) => a + t.stale, 0), idle: ts.reduce((a, t) => a + t.idle, 0), exc: ts.reduce((a, t) => a + t.exc, 0) }; };
 // ---- the chain panel: swimlane (left → right) and the order list with drag handle and arrows
 // "TCP 80,443", "UDP 123 → 3 Domains", "all" – what a rule lets through or blocks
 function fwPortLabel(p) {
@@ -3479,8 +3469,8 @@ function fwFlowVerdict(sz, dz, src, dst, proto, port, extra) {
     const t = fwTarget(e);
     if (t === "ANY") return true;
     if (dev) return fwSideMatch(e, dev) === "all";
+    if (t === "IP") return ((isDst ? extra?.ips : extra?.srcIps) || []).some(ip => fwIpEntries(e).some(r => ipEntryHas(r.entry, ip)) !== !!e.match_opposite_ips);
     if (isDst && t === "WEB") return (extra?.domains || []).some(d => fwList(e, "web_domains").some(w => d === w || d.endsWith("." + w.replace(/^\*\./, ""))));
-    if (isDst && t === "IP") return (extra?.ips || []).some(ip => fwIpEntries(e).some(r => ipEntryHas(r.entry, ip)));
     if (isDst && t === "REGION") return !!extra?.region && fwList(e, "regions").includes(extra.region);
     return false;
   };
@@ -3496,7 +3486,7 @@ function relEdges() {
     const bad = [];
     if (FW.data && za && zb) for (const pt of e.ports) {
       if (pt.flows - pt.blocked <= 0) continue;
-      const v = fwFlowVerdict(za.id, zb.id, ca, cb, pt.proto, pt.port, { domains: e.domains, ips: e.ips });
+      const v = fwFlowVerdict(za.id, zb.id, ca, cb, pt.proto, pt.port, { domains: e.domains, ips: e.b === "internet" ? e.ips : e.b.startsWith("ip:") ? [e.b.slice(3)] : [], srcIps: e.a.startsWith("ip:") ? [e.a.slice(3)] : [] });
       if (v && !v.allow) bad.push({ pt, by: v.by });
     }
     const top = e.ports[0], cat = relPortCat(top?.port);

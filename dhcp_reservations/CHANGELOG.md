@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.32.1 – 2026-11-14
+
+Fixes from a code review:
+- **Suspicious traffic:** Home Assistant, the UniFi console and trusted devices that talk to many devices are no longer reported as scans; a scan needs a source in an untrusted zone or a large share of blocked attempts.
+- **Lock-out protection** for new firewall rules also works when the Supervisor does not report Home Assistant's address (the host is then found by its name, like in the UI).
+- **Relations:** devices known only by their IP are checked against IP rules – no more false “against the firewall rules”.
+- The analysis and the tidiness score follow inline edits at once; the tidiness score is computed once instead of on every keystroke.
+- Zone and network roles are guessed in one place (the server), so alerts and the Analysis tab agree; VPN networks get no role from their name.
+- The check whether the zone-based firewall is enabled is cached for 10 minutes instead of running on every refresh.
+
 ## 1.32.0 – 2026-11-14
 
 **Firewall analysis and recommendations** (new tab *Analysis* next to *Matrix*, in the look of the IP plan's CleanUp Proposal):
