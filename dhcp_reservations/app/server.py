@@ -771,6 +771,24 @@ def ha_host():
     return _HA_HOST["v"]
 
 
+HA_HOST_NAME = re.compile(r"^(homeassistant|home-assistant|hassio|hass)(\.|$)", re.I)
+
+
+def ha_host_ids(api):
+    """IPs and MACs of the Home Assistant host: from the Supervisor, otherwise the UniFi clients named like it."""
+    h = ha_host()
+    ips, macs = list(h.get("ips") or []), list(h.get("macs") or [])
+    if not ips and api:
+        try:
+            for c in build_snapshot(api)["clients"]:
+                if any(HA_HOST_NAME.match(str(c.get(k) or "").strip()) for k in ("name", "hostname")):
+                    ips += [x for x in (c.get("fixed_ip"), c.get("ip")) if x]
+                    macs += [c["mac"]] if c.get("mac") else []
+        except UnifiError:
+            pass
+    return {"ips": sorted(set(ips)), "macs": sorted(set(macs))}
+
+
 def ha_status(d):
     """ok | partial | unavailable | error | disabled | unknown – how the device looks in Home Assistant."""
     if d.get("disabled"):
@@ -864,7 +882,8 @@ def fw_policy(p):
 
 def fw_zone(z):
     return {"id": z.get("_id") or z.get("id") or "", "name": z.get("name") or "?", "key": z.get("zone_key") or "",
-            "default": bool(z.get("default_zone")), "network_ids": [str(x) for x in z.get("network_ids") or []]}
+            "default": bool(z.get("default_zone")), "network_ids": [str(x) for x in z.get("network_ids") or []],
+            "role_guess": _zone_role_guess(z.get("name"), z.get("zone_key") or "")}
 
 
 FW_OFF_HINT = ("Switch it on in UniFi Network › Settings › Security › Firewall (“Upgrade to zone-based firewall”). "
@@ -878,7 +897,17 @@ def _legacy_rule_count(api):
         return None
 
 
+_FW_MODE = {"t": 0, "v": ""}
+
+
 def firewall_mode(api):
+    if time.time() - _FW_MODE["t"] < 600:
+        return _FW_MODE["v"]
+    _FW_MODE.update(t=time.time(), v=_firewall_mode(api))
+    return _FW_MODE["v"]
+
+
+def _firewall_mode(api):
     """'zone' | 'legacy' | '' (unknown). The web-UI paths answer [] whether the zone-based firewall is off or empty, so
     the official Integration API decides: it answers 400 api.firewall.zone-based-firewall-not-configured on a site that
     still uses the classic firewall. A recorded migration (site-feature-migration) means zone-based."""
@@ -941,6 +970,7 @@ def firewall_state(api):
         for n in api.call("GET", "/rest/networkconf"):
             if n.get("_id"):
                 nets[n["_id"]] = {"name": n.get("name") or "?", "purpose": n.get("purpose") or "",
+                                  "role_guess": "" if "vpn" in str(n.get("purpose") or "") or n.get("purpose") == "wan" else name_role(n.get("name")),
                                   "vlan": n.get("vlan") if n.get("vlan_enabled") else None, "subnet": n.get("ip_subnet") or ""}
     except UnifiError as e:
         log("Networks for the firewall view not available:", e)
@@ -1048,16 +1078,34 @@ _UNTRUSTED = {"iot", "media", "camera", "printer", "guest", "dmz"}
 _SENSITIVE = {"trusted", "server", "controller"}
 
 
-def _zone_role_guess(name):
+ROLE_PATTERNS = (  # first match wins – the only place where roles are guessed from names (the UI uses role_guess)
+    (r"contr|ctrl|hub|smart ?home|automation|home ?assistant", "controller"), (r"cam|nvr|protect|video|surveil|überwach", "camera"),
+    (r"media|\btv\b|entertain|stream", "media"), (r"print|drucker", "printer"), (r"iot|smart|things|sensor", "iot"),
+    (r"guest|gast|visitor|hotspot", "guest"), (r"dmz|expos|public", "dmz"), (r"serv|nas|srv|lab|infra|storage", "server"),
+    (r"trust|lan|home|main|corp|user|client|privat|famil|default|office|büro", "trusted"))
+ROLE_BY_KEY = {"internal": "trusted", "hotspot": "guest", "dmz": "dmz", "external": "none", "gateway": "none", "vpn": "none"}
+
+
+def name_role(name):
+    """Role a zone or network name suggests, '' when it says nothing."""
     n = str(name or "").lower()
-    for rx, role in ((r"^internal$", "trusted"), (r"^hotspot$", "guest"), (r"^dmz$", "dmz"), (r"^(external|gateway|vpn)$", "none"),
-                     (r"contr|ctrl|hub|smart ?home|automation|home ?assistant", "controller"), (r"cam|nvr|protect|video|surveil", "camera"),
-                     (r"media|\btv\b|entertain|stream", "media"), (r"print|drucker", "printer"), (r"iot|smart|things|sensor", "iot"),
-                     (r"guest|gast|visitor|hotspot", "guest"), (r"serv|nas|srv|lab|infra|storage", "server"),
-                     (r"trust|lan|home|main|corp|user|client|privat|famil|default|office", "trusted")):
-        if re.search(rx, n):
-            return role
-    return "none"
+    return next((role for rx, role in ROLE_PATTERNS if re.search(rx, n)), "")
+
+
+def _zone_role_guess(name, key=""):
+    if key in ROLE_BY_KEY:
+        return ROLE_BY_KEY[key]
+    n = str(name or "").strip().lower()
+    if n in ROLE_BY_KEY:  # built-in zones by their (English) name
+        return ROLE_BY_KEY[n]
+    return name_role(n) or "none"
+
+
+def quiet_hosts(api):
+    """Hosts that talk to many devices by design: the Home Assistant host and the UniFi console."""
+    h = ha_host_ids(api)
+    ctl = re.sub(r"^https?://", "", api.base).split("/")[0].split(":")[0]
+    return set(h["ips"]) | set(h["macs"]) | {ctl}
 
 
 def zone_roles_by_name(api):
@@ -1067,16 +1115,19 @@ def zone_roles_by_name(api):
     try:
         for z in api.call("GET", "/firewall/zone", v2=True):
             if isinstance(z, dict) and z.get("name"):
-                out[z["name"]] = roles.get(z.get("_id")) or _zone_role_guess(z["name"])
+                out[z["name"]] = roles.get(z.get("_id")) or _zone_role_guess(z["name"], z.get("zone_key") or "")
     except UnifiError:
         pass
     return out
 
 
-def suspicious_patterns(flows, roles):
+def suspicious_patterns(flows, roles, quiet=()):
     """Patterns that hint at a scan or an attack from inside: one device knocking on many devices or ports, many blocked
-    attempts, remote-access ports from IoT / guest devices, connections from untrusted into trusted zones."""
-    role = lambda z: roles.get(z) or _zone_role_guess(z)
+    attempts, remote-access ports from IoT / guest devices, connections from untrusted into trusted zones.
+    `quiet`: IPs / MACs that talk to many devices by design (Home Assistant, the UniFi console) – never reported as scans."""
+    def role(z):
+        return roles.get(z) or _zone_role_guess(z)
+    quiet = {str(x).lower() for x in quiet if x}
     by_src = {}
     for f in flows:
         src, dst = f.get("source") or {}, f.get("destination") or {}
@@ -1084,7 +1135,9 @@ def suspicious_patterns(flows, roles):
             continue
         key = normalize_mac(src.get("mac") or "") or src.get("ip")
         b = by_src.setdefault(key, {"name": src.get("device_name") or src.get("ip"), "ip": src.get("ip"), "mac": normalize_mac(src.get("mac") or "") or "",
-                                    "zone": src.get("zone_name") or "", "hosts": set(), "ports": {}, "blocked": 0, "remote": {}, "lateral": {}})
+                                    "zone": src.get("zone_name") or "", "hosts": set(), "ports": {}, "blocked": 0, "remote": {}, "lateral": {},
+                                    "flows": 0, "role": role(src.get("zone_name"))})
+        b["flows"] += int(f.get("count") or 1)
         internal = (dst.get("zone_name") or "").lower() != "external"
         dip, port = dst.get("ip"), dst.get("port")
         if internal and dip:
@@ -1107,12 +1160,15 @@ def suspicious_patterns(flows, roles):
     out = []
     for key, b in by_src.items():
         who = {"src": key, "name": b["name"], "ip": b["ip"], "mac": b["mac"], "zone": b["zone"]}
-        if len(b["hosts"]) >= 20:
+        # many hosts or ports is normal for controllers, servers and trusted devices – unless the firewall blocks a large share
+        mostly_blocked = b["flows"] and b["blocked"] / b["flows"] >= 0.3
+        scanner = (b["role"] in _UNTRUSTED or mostly_blocked) and not ({str(b["ip"]).lower(), b["mac"]} & quiet)
+        if scanner and len(b["hosts"]) >= 20:
             out.append({**who, "kind": "scan_hosts", "count": len(b["hosts"]), "text": f"contacted {len(b['hosts'])} devices in the network"})
-        for dip, ports in b["ports"].items():
+        for dip, ports in b["ports"].items() if scanner else ():
             if len(ports) >= 25:
                 out.append({**who, "kind": "scan_ports", "count": len(ports), "target": dip, "text": f"probed {len(ports)} ports on {dip}"})
-        if b["blocked"] >= 50:
+        if b["blocked"] >= 50 and not ({str(b["ip"]).lower(), b["mac"]} & quiet):
             out.append({**who, "kind": "blocked", "count": b["blocked"], "text": f"{b['blocked']} connection attempts blocked by the firewall"})
         for svc, ts in b["remote"].items():
             ts = sorted(ts)
@@ -1139,7 +1195,7 @@ def check_suspicious(api):
     except UnifiError as e:
         log("Suspicious traffic check: flows not available:", e)
         return []
-    pats = suspicious_patterns(flows, zone_roles_by_name(api))
+    pats = suspicious_patterns(flows, zone_roles_by_name(api), quiet_hosts(api))
     seen = _read_json(SUSP_PATH, {})
     now = time.time()
     seen = {k: t for k, t in seen.items() if now - t < 6 * 3600}  # the same pattern is reported again after 6 hours
@@ -1250,7 +1306,7 @@ def traffic_relations(api, qs):
     out.sort(key=lambda e: -(e["ab"] + e["ba"]))
     log("Relations:", len(flows), "flows,", len(out), "pairs")
     return {"available": True, "from": frm, "to": to, "flows": len(flows), "truncated": len(flows) >= FLOW_MAX,
-            "nodes": nodes, "edges": out[:1500], "suspicious": suspicious_patterns(flows, zone_roles_by_name(api)),
+            "nodes": nodes, "edges": out[:1500], "suspicious": suspicious_patterns(flows, zone_roles_by_name(api), quiet_hosts(api)),
             "alerts": load_fw_settings()["alerts"]}
 
 
@@ -1372,12 +1428,11 @@ def create_fw_policy(api, body, user=""):
             except ValueError:
                 return ""
             return next((zone_of_net.get(nid, "") for net, nid in nets if a in net), "")
-        h = ha_host()
+        h = ha_host_ids(api)
         ctl = fw.get("controller_ip") or ""
         ctl_zone = zone_of_ip(ctl) if ctl and not any(ipaddress.ip_address(ctl) == n.network_address + 1 for n, _ in nets if ctl) else gw_zone
         for ip in h.get("ips") or []:
-            mac = (h.get("macs") or [""])[0]
-            if _fw_side_hits(src, zone_of_ip(ip), ip, mac) and dst["zone_id"] in (gw_zone, ctl_zone) and \
+            if any(_fw_side_hits(src, zone_of_ip(ip), ip, mac) for mac in (h.get("macs") or [""])) and dst["zone_id"] in (gw_zone, ctl_zone) and \
                     (dst["matching_target"] == "ANY" or (ctl and _fw_side_hits(dst, dst["zone_id"], ctl, ""))):
                 raise UnifiError("This rule would block Home Assistant from the UniFi console – the app would lock itself out.", 400,
                                  "Narrow the source or the destination, or create the rule in UniFi if you really want it.")
