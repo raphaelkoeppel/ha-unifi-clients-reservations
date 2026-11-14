@@ -1,7 +1,7 @@
 name: "IP Manager for UniFi"
-version: "1.31.0"
+version: "1.32.0"
 slug: dhcp_reservations
-description: "UniFi clients, fixed IPs and DHCP reservations – IP plan, cleanup, firewall zones, views, bulk changes, versions (unofficial)"
+description: "UniFi clients, fixed IPs and DHCP reservations – IP plan, cleanup, firewall analysis and rules, relations graph, views, bulk changes, versions (unofficial)"
 url: https://github.com/ha-unifi-friends/ha-ip-manager-unifi
 arch:
   - aarch64
@@ -22,6 +22,7 @@ options:
   site: default
   verify_ssl: false
   certificate_fingerprint: ""
+  api_key: ""
   daily_version: true
   auto_version_retention_days: 30
   notify_new_devices: true
@@ -35,6 +36,7 @@ schema:
   site: str
   verify_ssl: bool
   certificate_fingerprint: str?
+  api_key: password?
   daily_version: bool?
   auto_version_retention_days: int(1,3650)?
   notify_new_devices: bool?

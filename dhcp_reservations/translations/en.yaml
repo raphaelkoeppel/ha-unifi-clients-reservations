@@ -16,6 +16,9 @@ configuration:
   certificate_fingerprint:
     name: Certificate fingerprint (SHA-256)
     description: Pin the controller's self-signed certificate – the app log shows the value to paste here at start. When set, the connection is only accepted if the certificate matches (verify_ssl is then not needed).
+  api_key:
+    name: UniFi API key (optional)
+    description: Needed to change the order of firewall rules. Create it in UniFi Network › Settings › Control Plane › Integrations.
   daily_version:
     name: Daily automatic version
     description: Saves one version of the table per day (shown as "Daily" under Versions).

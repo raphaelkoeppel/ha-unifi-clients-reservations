@@ -16,6 +16,9 @@ configuration:
   certificate_fingerprint:
     name: Empreinte du certificat (SHA-256)
     description: Épingle le certificat auto-signé du contrôleur – le journal de l'app affiche au démarrage la valeur à coller ici. Si renseignée, la connexion n'est acceptée que si le certificat correspond (verify_ssl n'est alors pas nécessaire).
+  api_key:
+    name: Clé API UniFi (facultative)
+    description: Nécessaire pour changer l'ordre des règles du pare-feu. À créer dans UniFi Network › Paramètres › Control Plane › Intégrations.
   daily_version:
     name: Version automatique quotidienne
     description: Enregistre une version du tableau par jour (affichée comme "Quotidienne" sous Versions).

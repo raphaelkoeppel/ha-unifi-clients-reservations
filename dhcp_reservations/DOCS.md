@@ -85,6 +85,22 @@ UniFi Network › Client Devices. Every column can be sorted (click the header) 
   - When a fixed IP changes (edit panel, inline edit, CleanUp, Replace subnet, CSV import, Restore) the app warns if a policy uses
     the old IP, if the new IP falls under a policy, or if the device moves into another zone – update those policies in UniFi.
   - Versions also store the zones and the custom policies; *Compare › Firewall* lists new, removed and changed policies and zones.
+- **Firewall analysis** (tab *Analysis* on the Firewall page, read only): device types (from the HA integration, hostname, name,
+  vendor and open ports – set by hand in the device table), zone roles (*Zone roles…*), checks per device, consistency of similar
+  devices (same HA integration, vendor or type), zone and VLAN structure (merge, split, own zone), recommendations and a
+  segmentation and tidiness score per zone. *Create rule…* opens the rule wizard pre-filled; *Prepare move…* sets the Virtual Network
+  Override in the edit panel – nothing changes until you apply.
+- **Rule chain and order:** click a zone pair in the matrix. The chain shows the rules in UniFi's order with what decides first and
+  rules that never apply or have no effect. *Change the order* (⠿ or ↑ ↓) saves the order in UniFi through the official Integration
+  API – this needs the option `api_key`. Rules are matched by name within the zone pair, so names must be unique there.
+- **New firewall rule:** *Add firewall rule* on the Firewall page or *Create firewall rule for this client…* in a client's settings
+  opens a guided wizard. A version is saved before the rule is created; rules that would block Home Assistant from the UniFi console
+  are refused.
+- **Relations:** fourth view. A graph of the traffic flows UniFi recorded (Insights › Flows), up to 7 days back, with filters for
+  zones, VLANs, the internet, vendors, HA integrations, unexpected and suspicious traffic and traffic against the current rules.
+  *Notify me in Home Assistant* checks the flows every 10 minutes and creates a notification and the event
+  `clients_reservations_suspicious_traffic` (data: kind, name, ip, mac, zone, text) for scans, many blocked attempts, remote-access
+  ports from IoT or guest devices and connections from untrusted into trusted zones. The same pattern is reported again after 6 hours.
 - **CSV export** of the current filtered view.
 - **CSV import (bulk):** Actions → *Import CSV*. Required column `MAC`; optional `Name`, `Note`,
   `Fixed IP`, `Reservation VLAN` (name or VLAN ID, empty = derived from the IP), `Reserved` (yes/no),
@@ -101,6 +117,7 @@ UniFi Network › Client Devices. Every column can be sorted (click the header) 
 | `username` / `password` | Local UniFi account with permission to edit clients |
 | `site` | Internal site name, usually `default`. The display name (e.g. “Dream Machine Pro”) also works; with a single site it is detected automatically. |
 | `verify_ssl` | Keep `false` while the gateway uses a self-signed certificate |
+| `api_key` | UniFi API key (UniFi Network › Settings › Control Plane › Integrations) – only needed to change the order of firewall rules |
 | `certificate_fingerprint` | SHA-256 fingerprint of the controller certificate (pinning). The app log shows the current value at start; with a pin the connection is only accepted if it matches. |
 | `daily_version` | Save one version of the table per day (default on) |
 | `auto_version_retention_days` | Days to keep automatic versions (daily / before bulk actions), default 30 |
