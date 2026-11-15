@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="dhcp_reservations/logo.png" alt="IP Manager for UniFi" height="80">
+  <img src="dhcp_reservations/logo.png" alt="IP Manager for UniFi BETA" height="80">
 </p>
 
 <p align="center">
